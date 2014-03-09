@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+
+    {% block head %}
+        {% include "includes/meta.inc.html" %}
+        {% include "includes/css.inc.html" %}
+
+        <title>Ernir.net - {{sitename}}</title>
+    {% endblock head %}
+
+</head>
+
+<body>
+
+<div id="wrap">
+    {% include "includes/nav.inc.html" %}
+    <div class="container">
+    {% block content %}
+        This is the placeholder content used by the site skeleton. You should not see this on a webpage.
+    {% endblock content%}
+    </div>
+</div>
+
+{% block footer %}
+    {% include "includes/footer.inc.html" %}
+    {% include "includes/js.inc.html"%}
+{% endblock footer %}
+</body>
+</html>

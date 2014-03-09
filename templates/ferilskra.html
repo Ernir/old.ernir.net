@@ -1,0 +1,37 @@
+{% extends "skeleton.html" %}
+{% block content %}
+
+{% from "macros/cv.macro.html" import short_cv_row,long_cv_row %}
+
+<h1>Ferilskrá</h1>
+<div class="row"> <!-- picture container -->
+    <div class="row col-md-10">
+        <div class="row col-md-10"> <!-- menntun -->
+            <h2 class="col-md-12">Menntun</h2>
+
+            <div class="row col-md-12">
+                <b class="col-md-2">2009-2013</b>
+
+                <p class="col-md-10">BS í tölvunarfræði frá Háskóla Íslands. Reiknifræðikjörsvið. Fyrsta einkunn.</p>
+            </div>
+            <div class="row col-md-12">
+                <b class="col-md-2">2005-2007</b>
+
+                <p class="col-md-10">Stúdentspróf frá Menntaskólanum við Hamrahlíð. Náttúrufræðibraut.
+                    Ágætiseinkunn.</p>
+            </div>
+        </div>
+        <!-- /menntun -->
+
+        <div class="row col-md-10"><!-- störf -->
+            <h2 class="col-md-12">Störf</h2>
+            {{ long_cv_row("2013 - í dag","Kennari","Tækniskólinn í Reykjavík","<p>Kenni 16-20 ára nemendum forritun. Meðal áfanga eru netforritun og þráðavinnsla (Java), notkun gagnasafna (MySQL), smátækjaforritun (Java - Android), reiknirit (Python) og vefforritun (ýmis mál)</p> <p>Afrek:</p> <ul><li>Stuff1</li><li>Stuff2</li></ul>") }}
+            {{ long_cv_row("2012","Android-forritari","Stokkur Mobile Software","Androidforritun. Frekari lýsing...<ul><li>App1</li><li>App2</li></ul>")}}
+         </div>
+        <!-- /störf -->
+    </div>
+
+    <img src="{{url_for('static',filename='img/Ernir.jpg')}}" class="col-md-2 hidden-xs hidden-sm" alt="Prófílmynd">
+</div> <!-- /picture container -->
+
+{% endblock content %}
