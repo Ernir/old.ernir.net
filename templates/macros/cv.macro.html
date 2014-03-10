@@ -1,8 +1,8 @@
-{% macro short_cv_row(year="",text="placeholder text") %}
+{% macro short_cv_row(leftcol="",text="placeholder text") %}
 <div class="row col-md-12">
-    <b class="col-md-2">{{year}}</b>
+    <b class="col-md-2">{{leftcol}}</b>
 
-    <p class="col-md-10">{{text}}</p>
+    <p class="col-md-10">{{text|safe}}</p>
 </div>
 {% endmacro %}
 
