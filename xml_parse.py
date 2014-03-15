@@ -6,10 +6,11 @@ class Parser:
 
     def get_mw_data(self, id):
 
-        ability_scores = self.parse_mw_sheet(id)
+        abilities = self.parse_mw_sheet(id)
 
         data = dict(status=200)
-        data["message"] = dict(ability_scores=ability_scores)
+        data["message"] = "OK"
+        data["content"] = dict(ability_scores = abilities)
 
         return data
 

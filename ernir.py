@@ -7,6 +7,13 @@ from errors import InvalidUsage
 
 app = Flask(__name__)
 
+if __name__ == "__main__":
+    app.run(debug=True)
+
+'''
+ROUTES
+'''
+
 @app.route("/")
 def heim():
     return render_template("index.html", sitename=u"Heim")
@@ -37,12 +44,12 @@ def mw_parse():
         raise InvalidUsage("No Myth-Weavers sheet with the given ID was found", status_code=400)
     return jsonify(data)
 
+'''
+Error handlers
+'''
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
-
-if __name__ == "__main__":
-    app.run(debug=True)
