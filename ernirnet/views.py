@@ -1,18 +1,7 @@
-#/usr/lib/python2.7
-# -*- coding: utf-8 -*-
-
-from flask import Flask, render_template, jsonify, request
-from xml_parse import Parser
-from errors import InvalidUsage
-
-app = Flask(__name__)
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
-'''
-ROUTES
-'''
+from flask import render_template, jsonify, request
+from ernirnet.xml_parse import Parser
+from ernirnet import app
+from ernirnet.errors import InvalidUsage
 
 @app.route("/")
 def heim():
@@ -43,13 +32,3 @@ def mw_parse():
     except:
         raise InvalidUsage("No Myth-Weavers sheet with the given ID was found", status_code=400)
     return jsonify(data)
-
-'''
-Error handlers
-'''
-
-@app.errorhandler(InvalidUsage)
-def handle_invalid_usage(error):
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
-    return response
