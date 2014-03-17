@@ -10,7 +10,7 @@ class Parser:
 
         data = dict(status=200)
         data["message"] = "OK"
-        data["content"] = dict(ability_scores = abilities)
+        data["content"] = dict(abilityScores = abilities)
 
         return data
 
