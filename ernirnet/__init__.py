@@ -8,7 +8,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/spells.db'
 db = SQLAlchemy(app)
 
 from ernirnet import views
-import ernirnet.models
+import ernirnet.spell_models
 
 '''
 Error handlers

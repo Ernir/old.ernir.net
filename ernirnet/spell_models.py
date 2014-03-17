@@ -13,6 +13,9 @@ class Spells(db.Model):
     def __repr__(self):
         return "<Spell %r>" % self.name
 
+    def serialize(self):
+        return dict(id=self.id, name=self.name)
+
 
 class ModifierTypes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,6 +27,9 @@ class ModifierTypes(db.Model):
     def __repr__(self):
         return "<ModifierType %r>" % self.name
 
+    def serialize(self):
+        return dict(id=self.id, name=self.name)
+
 
 class Statistics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,6 +40,9 @@ class Statistics(db.Model):
 
     def __repr__(self):
         return "<Statistic %r>" % self.name
+
+    def serialize(self):
+        return dict(id=self.id, name=self.name)
 
 
 class NumericalBonuses(db.Model):
@@ -54,6 +63,10 @@ class NumericalBonuses(db.Model):
 
     def __repr__(self):
         return "<Numerical spell bonus described by the function %r>" % self.bonus
+
+    def serialize(self):
+        return dict(id=self.id, associatedSpell=self.associated_spell_id,
+                    modifier=self.modifier_type_id, applicableTo=self.applicable_to_id)
 
 
 class MiscBonuses(db.Model):
