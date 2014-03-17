@@ -1,10 +1,14 @@
 from flask import Flask, jsonify
 from ernirnet.xml_parse import Parser
 from ernirnet.errors import InvalidUsage
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/spells.db'
+db = SQLAlchemy(app)
 
 from ernirnet import views
+import ernirnet.models
 
 '''
 Error handlers
