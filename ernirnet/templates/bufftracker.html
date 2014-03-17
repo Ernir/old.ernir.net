@@ -1,9 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+{% extends "skeleton.html" %}
+{% block content %}
+<h1>Dungeons and Dragons 3.5 Buff Tracker</h1>
 
-</body>
-</html>
+<div class="row col-md-4">
+    <h2>d20 SRD Buff Spells</h2>
+
+    <div id="srd-container">
+        {% for spell in spell_list %}
+        <span><input type="checkbox" id="spell-{{spell['id']}}"/> {{spell['name']}}</span></br>
+        {% endfor %}
+    </div>
+    <h2>Spell Compendium Buff Spells</h2>
+</div>
+<div class="row col-md-4">
+    <h2>Your Character</h2>
+</div>
+<div class="row col-md-4">
+    <h2>Results</h2>
+
+    <div id="results-container">
+    </div>
+</div>
+
+{% endblock content %}
