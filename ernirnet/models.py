@@ -52,6 +52,5 @@ class NumericalBonuses(db.Model):
         self.modifier_type = type
         self.applicable_to = applies_to
 
-
     def __repr__(self):
         pass #TODO
