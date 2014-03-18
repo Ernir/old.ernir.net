@@ -8,8 +8,10 @@
 
 {% macro long_cv_row(year,position,institution,description) %}
 <div class="row col-md-12">
-        <b class="col-md-2">{{year}}</b>
-        <p class="col-md-10"><b>{{position}}</b>, {{institution}}</p>
-        <div class="col-md-10 col-md-offset-2">{{description|safe}}</div>
+    <b class="col-md-2">{{year}}</b>
+
+    <p class="col-md-10"><b>{{position}}</b>, {{institution}}</p>
+
+    <div class="col-md-10 col-md-offset-2">{{description|safe}}</div>
 </div>
 {% endmacro %}
