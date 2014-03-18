@@ -3,6 +3,7 @@ import urllib2
 
 
 class Parser:
+    # TODO: Refactor this ugly code
 
     def get_mw_data(self, id):
 
