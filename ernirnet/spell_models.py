@@ -65,7 +65,7 @@ class NumericalBonuses(db.Model):
         return "<Numerical spell bonus described by the function %r>" % self.bonus
 
     def serialize(self):
-        return dict(id=self.id, associatedSpell=self.associated_spell_id,
+        return dict(id=self.id, bonus=self.bonus, associatedSpell=self.associated_spell_id,
                     modifier=self.modifier_type_id, applicableTo=self.applicable_to_id)
 
 
