@@ -1,4 +1,7 @@
 function updateResults() {
+
+    CL = $("#caster-level").val();
+
     var inEffect = bonusesInEffect(selectedSpellIDs, numericalBonuses);
     var applicable = bonusesThatApply(inEffect, statistics, modifierTypes, 5);
     var combined = combineBonuses(applicable, statistics);

@@ -5,10 +5,12 @@ function setListeners() {
             selectedSpellIDs.push(currentSpellId);
         }
         else {
-            selectedSpellIDs.splice(selectedSpellIDs.indexOf(currentSpellId),1);
+            selectedSpellIDs.splice(selectedSpellIDs.indexOf(currentSpellId), 1);
         }
         updateResults();
     });
 
-    $("").change();
+    $("#caster-level").change(function () {
+        updateResults();
+    });
 }
