@@ -20,23 +20,22 @@ def samband():
     return render_template("hafasamband.jinja2", sitename=u"Hafa samband")
 
 
-@app.route("/forritun/") #TODO Do
+@app.route("/forritun/")  #TODO Do
 def forritun():
     return None
 
 
-@app.route("/kennsla/") #TODO Do
+@app.route("/kennsla/")  #TODO Do
 def kennsla():
     return None
 
 
-@app.route("/bufftracker")
+@app.route("/bufftracker/")
 def buff_tracker():
     spell_objects = spell_models.Spells.query.order_by(spell_models.Spells.id).all()
-    print(spell_objects)
     spell_list = [spell.serialize() for spell in spell_objects]
-    print(spell_list)
-    return render_template("bufftracker.jinja2", spell_list=spell_list)
+
+    return render_template("bufftracker.jinja2", spell_list=spell_list, sitename=u"D&D 3.5 Buff Tracker")
 
 
 @app.route("/api/parseMW")
@@ -66,6 +65,10 @@ def buff_tracker_json_builder():
     numerical_bonuses = spell_models.NumericalBonuses.query.all()
     numerical_bonuses_list = [bonus.serialize() for bonus in numerical_bonuses]
 
-    content = dict(spells=spell_list, modifierTypes=modifier_list, numericalBonuses=numerical_bonuses_list)
+    statistics = spell_models.Statistics.query.all()
+    statistics_list = [statistic.serialize() for statistic in statistics]
+
+    content = dict(spells=spell_list, modifierTypes=modifier_list, numericalBonuses=numerical_bonuses_list,
+                   statistics=statistics_list)
 
     return dict(content=content, status=200, message="OK")

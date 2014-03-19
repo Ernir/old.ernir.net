@@ -1,4 +1,18 @@
 {% extends "skeleton.jinja2" %}
+
+{% block head %}
+    {% include "includes/meta.jinja2" %}
+    {% include "includes/css.jinja2" %}
+    {% include "includes/js.jinja2" %}
+    <script src="{{ url_for('static', filename='js/bufftracker/listeners.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bufftracker/calculations.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bufftracker/update.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bufftracker/initialize.js') }}"></script>
+
+    <title>Ernir.net - {{ sitename }}</title>
+
+{% endblock head %}
+
 {% block content %}
     <h1>Dungeons and Dragons 3.5 Buff Tracker</h1>
 
@@ -13,13 +27,19 @@
         <h2>Spell Compendium Buff Spells</h2>
     </div>
     <div class="row col-md-4">
-        <h2>Your Character</h2>
-    </div>
-    <div class="row col-md-4">
         <h2>Results</h2>
 
         <div id="results-container">
         </div>
     </div>
+    <div class="row col-md-4">
+        <h2>Your Character</h2>
+        <div id="character-container" class="row col-md-12">
+            <span class="col-md-8">Myth-Weavers sheet id: </span>
+            <input type="text" id="mw-url-input" class="col-md-4">
 
+            <span class="col-md-8">Caster Level:</span>
+            <input type="text" id="caster-level" class="col-md-4" value="1">
+        </div>
+    </div>
 {% endblock content %}
