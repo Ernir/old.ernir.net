@@ -23,12 +23,12 @@ function bonusesInEffect(selectedSpellIDs, numericalBonuses) {
  * @param CL
  * @returns {Array}
  */
-function bonusesThatApply(bonusesInEffect, statistics, modifierTypes, CL) {
+function bonusesThatApply(bonusesInEffect, statistics, modifierTypes) {
 
     var highestBonusMap = new Array(statistics.length);
     var highestBonuses = new Array(bonusesInEffect.length);
 
-    for (var bonusIndex = 0; bonusIndex < bonusesInEffect.length; bonusIndex++){
+    for (var bonusIndex = 0; bonusIndex < bonusesInEffect.length; bonusIndex++) {
         highestBonuses[bonusIndex] = bonusesInEffect[bonusIndex];
     }
 
@@ -49,25 +49,26 @@ function bonusesThatApply(bonusesInEffect, statistics, modifierTypes, CL) {
         if (!(currentBonusValue > highestBonusMap[currentBonus.applicableTo][currentBonus.modifier])) {
             highestBonuses[bonusIndex] = null;
         } else {
-            currentBonus.bonus = currentBonusValue;
             highestBonusMap[currentBonus.applicableTo][currentBonus.modifier] = currentBonusValue;
         }
     }
-    highestBonuses = highestBonuses.filter(function(element){return element != null});
+    highestBonuses = highestBonuses.filter(function (element) {
+        return element != null
+    });
 
     return highestBonuses;
 }
 
-function combineBonuses(applicableBonuses,statistics){
+function combineBonuses(applicableBonuses, statistics) {
     var statisticsArray = new Array(statistics.length);
-    for (var statisticIndex = 0; statisticIndex < statistics.length; statisticIndex++){
+    for (var statisticIndex = 0; statisticIndex < statistics.length; statisticIndex++) {
         var currentStatistic = statistics[statisticIndex];
         statisticsArray[currentStatistic.id] = 0;
     }
 
-    for (var bonusIndex = 0; bonusIndex < applicableBonuses.length; bonusIndex++){
+    for (var bonusIndex = 0; bonusIndex < applicableBonuses.length; bonusIndex++) {
         var currentBonus = applicableBonuses[bonusIndex];
-        statisticsArray[currentBonus.applicableTo] += currentBonus.bonus;
+        statisticsArray[currentBonus.applicableTo] += calculateBonus(currentBonus.bonus);
     }
 
     return statisticsArray;
@@ -80,19 +81,34 @@ function combineBonuses(applicableBonuses,statistics){
  This is as safe as any other local JS evaluation.
  This is also not unclear, thanks to this comment.
  */
-function calculateBonus(bonusString, CL) {
-    //TODO whitelist appropriate content
-    return eval(bonusString);
+function calculateBonus(bonusString) {
+    var parsed = parseInt(bonusString);
+
+    if (!isNaN(parsed) && isFinite(parsed)) {
+        return parsed;
+    }
+    else {
+        var f = uglyFunctions[bonusString];
+        return f(CL);
+    }
 }
 
 
 /*
  HERE BEGIN THE TRULY UGLY FUNCTIONS
  */
+var uglyFunctions = { _2plus1per3CL_Max5: _2plus1per3CL_Max5};
+
 
 function _1d8plusCL_Max1d8plus10(level) {
     var maximumBonus = 10;
-    var integerPart = Math.max(level,maximumBonus);
+    var integerPart = Math.max(level, maximumBonus);
     var bonus = "1d8 + " + integerPart;
+    return bonus;
+}
+
+function _2plus1per3CL_Max5(level) {
+    var maximumBonus = 5;
+    var bonus = Math.min(maximumBonus, 2 + Math.floor(level / 3));
     return bonus;
 }
