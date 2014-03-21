@@ -48,6 +48,7 @@ function bonusesThatApply(bonusesInEffect, statistics, modifierTypes) {
 
         if (!(currentBonusValue > highestBonusMap[currentBonus.applicableTo][currentBonus.modifier])) {
             highestBonuses[bonusIndex] = null;
+            console.log("Higher bonus found"); //TODO Find out why this isn't firing on Divine Power + Bull's Strength
         } else {
             highestBonusMap[currentBonus.applicableTo][currentBonus.modifier] = currentBonusValue;
         }
@@ -74,13 +75,6 @@ function combineBonuses(applicableBonuses, statistics) {
     return statisticsArray;
 }
 
-/*
- So, this is a wrapper function around eval. Let me explain.
- The numericalBonuses variable contains information on the bonuses provided by each spell,
- in string format as a function of caster level. Alternatives were significantly more verbose and/or far less performant.
- This is as safe as any other local JS evaluation.
- This is also not unclear, thanks to this comment.
- */
 function calculateBonus(bonusString) {
     var parsed = parseInt(bonusString);
 
@@ -97,7 +91,10 @@ function calculateBonus(bonusString) {
 /*
  HERE BEGIN THE TRULY UGLY FUNCTIONS
  */
-var uglyFunctions = { _2plus1per3CL_Max5: _2plus1per3CL_Max5};
+var uglyFunctions = {
+    _2plus1per3CL_Max5: _2plus1per3CL_Max5,
+    _1per3CL_Min1_Max3: _1per3CL_Min1_Max3
+};
 
 
 function _1d8plusCL_Max1d8plus10(level) {
@@ -110,5 +107,12 @@ function _1d8plusCL_Max1d8plus10(level) {
 function _2plus1per3CL_Max5(level) {
     var maximumBonus = 5;
     var bonus = Math.min(maximumBonus, 2 + Math.floor(level / 3));
+    return bonus;
+}
+
+function _1per3CL_Min1_Max3(level) {
+    var minimumBonus = 1;
+    var maximumBonus = 3;
+    var bonus = Math.floor(Math.min(maximumBonus, Math.max(minimumBonus, level/3)));
     return bonus;
 }
