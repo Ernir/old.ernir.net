@@ -1,4 +1,5 @@
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, url_for
+from os import listdir
 from ernirnet.xml_parse import Parser
 from ernirnet import app
 from ernirnet.errors import InvalidUsage
@@ -28,6 +29,22 @@ def forritun():
 @app.route("/kennsla/")  #TODO Do
 def kennsla():
     return None
+
+
+@app.route("/vanciantopsionics/")
+def vtp():
+
+    # TODO: Generate this
+    version_numbers = reversed(
+        ["103", "104", "105", "105a", "106", "107", "108", "109", "110", "110b", "110c"])
+
+    versions = []
+    for number in version_numbers:
+        versions.append((number,'content/VtP/VancianToPsionicsBeta' + number + '.pdf'))
+
+    print(versions)
+
+    return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", versions=versions)
 
 
 @app.route("/bufftracker/")

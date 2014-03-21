@@ -1,0 +1,26 @@
+{% extends "skeleton.jinja2" %}
+{% block content %}
+    <h2 class="row col-md-12">The Vancian to Psionics project</h2>
+
+    <div class="row col-md-5">
+        <p>The "Vancian to Psionics" project is a conversion of the standard (Vancian) system of magic used by version 3.5 of the <i>Dungeons and Dragons</i> role-playing game over to a different (Psionic) system.</p>
+        <p>The result is a .pdf with a current page count over 300, serving as a lasting testament to my powers of procrastination.</p>
+        <p>The project has a <a href="http://www.giantitp.com/forums/showthread.php?t=194002">discussion thread</a> on
+            giantitp.com.</p>
+    </div>
+
+    <div class="row col-md-5 col-md-offset-2">
+        <h3>Download</h3>
+        <p>The current version of the document can be found on the project's <a
+                href="https://github.com/Ernir/VancianToPsionics">Github repository</a>.</p>
+
+        <p>Previously released:</p>
+        <ul>
+            <li><a href="{{ url_for('static', filename='content/VtP/VancianToPsionicsBeta111.pdf') }}">Version 111</a> (current, 25/05/13)</li>
+            {% for old_version in versions %}
+                <li><a href="{{ url_for('static', filename=old_version[1]) }}">Version {{ old_version[0] }}</a></li>
+            {% endfor %}
+        </ul>
+
+    </div>
+{% endblock content %}
