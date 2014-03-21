@@ -1,22 +1,79 @@
 {% extends "skeleton.jinja2" %}
-{% block content %}
-    <h2 class="row col-md-12">The Vancian to Psionics project</h2>
 
-    <div class="row col-md-5">
-        <p>The "Vancian to Psionics" project is a conversion of the standard (Vancian) system of magic used by version 3.5 of the <i>Dungeons and Dragons</i> role-playing game over to a different (Psionic) system.</p>
-        <p>The result is a .pdf with a current page count over 300, serving as a lasting testament to my powers of procrastination.</p>
+{% block head %}
+    {% include "includes/meta.jinja2" %}
+    {% include "includes/css.jinja2" %}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/vtp.css') }}">
+    {% include "includes/js.jinja2" %}
+    <script src="{{ url_for('static', filename='js/vtp.js') }}"></script>
+
+    <title>Ernir.net - {{ sitename }}</title>
+
+{% endblock head %}
+
+{% block content %}
+    <h2 class="col-md-12">The Vancian to Psionics project</h2>
+
+    <div class="col-md-5">
+
+        <p>The "Vancian to Psionics" project is a conversion of the standard (Vancian) system of magic used by version
+            3.5 of the <i>Dungeons and Dragons</i> role-playing game over to a different (Psionic) system.</p>
+
+        <p>The result is a .pdf with a current page count over 300, serving as a lasting testament to my powers of
+            procrastination.</p>
+
         <p>The project has a <a href="http://www.giantitp.com/forums/showthread.php?t=194002">discussion thread</a> on
             giantitp.com.</p>
+
+        <p>
+            <button id="reveal-statement">Read more (for D&D fans)</button>
+        </p>
+
+        <div id="statement">
+            <p>I am one of those who thinks the psionic subsystem is one of the most elegantly designed things in D&D
+                3.5. In many ways, I think it's how spellcasting should have been done in 3.5 to begin with. And I'd
+                like to use it for more things.</p>
+
+            <p>But when I try to replace the core vancian casting with psionics, I run into a couple of problems.</p>
+            <ul>
+                <li>Options are missing. There are things the core classes can do that simply can't be faithfully
+                    replicated with psionics. The psionic system is powerful enough, no doubt about that. It can pretty
+                    much always get the job done. But if I wanted to, say, play a necromancer, I'd probably have to
+                    reflavor Astral Constructs as my zombies and some Stygian powers as my negative energy effects.
+                    Which works, but wasn't really what I was looking for in the first place. Which brings me to the
+                    second problem:
+                </li>
+                <li>The flavor doesn't always fit. Now, I think it's cool - if viewed on its own terms. The crystals and
+                    tattoo theme the books have going on is a perfectly good way to look at magic, but in my experience,
+                    it doesn't always live up to people's ideas about what D&D magic "should" look like. DMs still ban
+                    psionics for "flavor reasons", or because it doesn't "fit their setting". Which, I must say, I
+                    understand perfectly.
+                </li>
+            </ul>
+            <p>So what can I do? Well, I devised a twofold solution to the twofold problem.</p>
+            <ul>
+                <li>I translated the core spells and classes over to psionic mechanics.</li>
+                <li>As for the system itself (as well as some doodads like the basic magic items), I changed every
+                    reference to "power", "manifester", "crystals" and "psionic", and so on to... well, their arcane
+                    counterparts. In other words, when people say "just reflavor psionics to fit your setting/concept" -
+                    I'd like to think I did precisely that.
+                </li>
+            </ul>
+        </div>
+
     </div>
 
-    <div class="row col-md-5 col-md-offset-2">
+    <div class="col-md-5 col-md-offset-2">
         <h3>Download</h3>
+
         <p>The current version of the document can be found on the project's <a
                 href="https://github.com/Ernir/VancianToPsionics">Github repository</a>.</p>
 
         <p>Previously released:</p>
         <ul>
-            <li><a href="{{ url_for('static', filename='content/VtP/VancianToPsionicsBeta111.pdf') }}">Version 111</a> (current, 25/05/13)</li>
+            <li><a href="{{ url_for('static', filename='content/VtP/VancianToPsionicsBeta111.pdf') }}">Version 111</a>
+                (current, 25/05/13)
+            </li>
             {% for old_version in versions %}
                 <li><a href="{{ url_for('static', filename=old_version[1]) }}">Version {{ old_version[0] }}</a></li>
             {% endfor %}
