@@ -5,31 +5,31 @@ from ernirnet import app
 from ernirnet.errors import InvalidUsage
 import spell_models
 
+'''
+Main pages
+'''
 
 @app.route("/")
 def heim():
-    return render_template("index.jinja2", sitename=u"Heim")
+    return render_template("index.jinja2", sitename=u"Home")
 
+@app.route("/CV/") # Icelandic CV
+def cv():
+    return render_template("cv.jinja2", sitename=u"CV")
 
-@app.route("/ferilskra/")
+@app.route("/ferilskra/") # Icelandic CV
 def ferilskra():
     return render_template("ferilskra.jinja2", sitename=u"CV")
 
 
-@app.route("/hafasamband/")
-def samband():
-    return render_template("hafasamband.jinja2", sitename=u"Hafa samband")
+@app.route("/contact/")
+def contact():
+    return render_template("contact.jinja2", sitename=u"Contact")
 
 
-@app.route("/forritun/")  #TODO Do
-def forritun():
-    return None
-
-
-@app.route("/kennsla/")  #TODO Do
-def kennsla():
-    return None
-
+'''
+Hobby subpages
+'''
 
 @app.route("/vanciantopsionics/")
 def vtp():
@@ -42,9 +42,7 @@ def vtp():
     for number in version_numbers:
         versions.append((number,'content/VtP/VancianToPsionicsBeta' + number + '.pdf'))
 
-    print(versions)
-
-    return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", versions=versions)
+    return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", versions=versions, english=True)
 
 
 @app.route("/bufftracker/")
@@ -53,6 +51,11 @@ def buff_tracker():
     spell_list = [spell.serialize() for spell in spell_objects]
 
     return render_template("bufftracker.jinja2", spell_list=spell_list, sitename=u"D&D 3.5 Buff Tracker")
+
+
+'''
+API routes
+'''
 
 
 @app.route("/api/parseMW")
