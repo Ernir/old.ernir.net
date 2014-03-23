@@ -19,12 +19,15 @@
                 <li {% if sitename == "Contact" %} class="active" {% endif %} >
                     <a href="/contact/">Contact</a>
                 </li>
-                <li class="dropdown">
+                <li class="dropdown {% if sitename == "The Vancian to Psionics Project" %}active{% endif %} ">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hobbies <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="divider"></li>
                         <li class="dropdown-header">D&D</li>
                         <li><a href="/vanciantopsionics/">Vancian to Psionics</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">EVE Online</li>
+                        <li><a href="#">Coming <del>soon</del> sometime!</a></li>
                     </ul>
                 </li>
             </ul>

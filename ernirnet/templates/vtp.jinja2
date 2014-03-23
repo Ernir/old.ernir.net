@@ -4,8 +4,6 @@
     {% include "includes/meta.jinja2" %}
     {% include "includes/css.jinja2" %}
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/vtp.css') }}">
-    {% include "includes/js.jinja2" %}
-    <script src="{{ url_for('static', filename='js/vtp.js') }}"></script>
 
     <title>Ernir.net - {{ sitename }}</title>
 
@@ -78,6 +76,11 @@
                 <li><a href="{{ url_for('static', filename=old_version[1]) }}">Version {{ old_version[0] }}</a></li>
             {% endfor %}
         </ul>
-
     </div>
 {% endblock content %}
+
+{% block footer %}
+    {% include "includes/footer.jinja2" %}
+    {% include "includes/js.jinja2" %}
+    <script src="{{ url_for('static', filename='js/vtp.js') }}"></script>
+{% endblock footer %}

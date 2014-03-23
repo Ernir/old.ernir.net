@@ -13,7 +13,7 @@ Main pages
 def heim():
     return render_template("index.jinja2", sitename=u"Home")
 
-@app.route("/CV/") # Icelandic CV
+@app.route("/CV/") # English CV
 def cv():
     return render_template("cv.jinja2", sitename=u"CV")
 
@@ -42,7 +42,7 @@ def vtp():
     for number in version_numbers:
         versions.append((number,'content/VtP/VancianToPsionicsBeta' + number + '.pdf'))
 
-    return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", versions=versions, english=True)
+    return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", versions=versions)
 
 
 @app.route("/bufftracker/")
