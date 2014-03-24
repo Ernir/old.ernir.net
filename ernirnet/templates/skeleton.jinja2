@@ -5,6 +5,7 @@
     {% block head %}
         {% include "includes/meta.jinja2" %}
         {% include "includes/css.jinja2" %}
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 
         <title>Ernir.net - {{ sitename }}</title>
     {% endblock head %}
