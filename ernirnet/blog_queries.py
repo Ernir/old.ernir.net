@@ -20,7 +20,3 @@ def get_blogs_ordered_by_date():
                 blogs.append(last_blog)
 
     return blogs
-
-
-# posts = [dict(title="First title", date=date(2014, 3, 24), body="First body", tags=["Tag1"]),
-#              dict(title="Second title", date=date(2014, 3, 24), body="Second body", tags=["Tag1", "Tag2", "Tag3"])]
