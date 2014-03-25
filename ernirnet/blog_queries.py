@@ -24,7 +24,6 @@ def get_blogs_by_tag(tag_name):
 
     return blogs
 
-
 def get_blog_by_title(blog_url):
     # The intertron says it's "basically impossible" to inject SQLAlchemy. I'm going to trust that.
     raw_blogs = Blogs.query.with_entities(Blogs.title, Blogs.body, Blogs.date, Blogs.url, Tags.name).filter_by(
