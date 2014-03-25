@@ -1,0 +1,66 @@
+{#Blog template shamelessly stolen from http://getbootstrap.com/examples/blog/# #}
+
+{% extends "skeleton.jinja2" %}
+{% block wrapper %}
+    <div id="wrap">
+        {% include "includes/nav.jinja2" %}
+        <div class="container">
+
+            <div class="blog-header">
+                <h1 class="blog-title">Ernir's Blog</h1>
+
+                <p class="lead blog-description">Programming, RPGs and other cool things</p>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8 blog-main">
+
+                    {% for post in posts %}
+                        <div class="blog-post">
+                            <h2 class="blog-post-title">{{ post["title"] }}</h2>
+
+                            <div class="blog-post-body">{{ post["body"] }}</div>
+                            <br/>
+
+                            <p class="blog-post-meta">
+                                <b>Posted:</b> {{ post["date"].strftime("%Y-%m-%d") }}
+                            </p>
+
+                            <p class="blog-post-meta">
+                                <b>Tags:</b>
+                                {% for tag in post["tags"] %}
+                                    {{ tag }}
+                                    {%- if not loop.last %},{% endif %}
+                                {% endfor %}
+                            </p>
+                        </div> <!-- /.blog-post -->
+                    {% endfor %}
+
+                    {#TODO: Enable pagination functionality #}
+                    {#                    <ul class="pager">#}
+                    {#                        <li><a href="#">Previous</a></li>#}
+                    {#                        <li><a href="#">Next</a></li>#}
+                    {#                    </ul>#}
+
+                </div>
+
+                <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+                    <div class="sidebar-module sidebar-module-inset">
+                        <h4>About</h4>
+
+                        <p>This looks an awful lot like a blog. It is more of a technical experiment, though.</p>
+                    </div>
+                    <div class="sidebar-module">
+                        <h4>Tags</h4>
+                        {% for tag in tags %}
+                            <a href="/blog/tags/{{ tag[0] }}">{{ tag[0] }} ({{ tag[1] }})</a>
+                            {%- if not loop.last %},{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.blog-sidebar -->
+            </div>
+
+        </div>
+    </div>
+{% endblock wrapper %}

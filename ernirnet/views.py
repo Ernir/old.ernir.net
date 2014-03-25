@@ -1,23 +1,27 @@
-from flask import render_template, jsonify, request, url_for
-from os import listdir
+from flask import render_template, jsonify, request
+from datetime import date
 from ernirnet.xml_parse import Parser
 from ernirnet import app
 from ernirnet.errors import InvalidUsage
+from ernirnet import blog_queries
 import spell_models
 
 '''
 Main pages
 '''
 
+
 @app.route("/")
 def heim():
     return render_template("index.jinja2", sitename=u"Home")
 
-@app.route("/CV/") # English CV
+
+@app.route("/CV/")  # English CV
 def cv():
     return render_template("cv.jinja2", sitename=u"CV")
 
-@app.route("/ferilskra/") # Icelandic CV
+
+@app.route("/ferilskra/")  # Icelandic CV
 def ferilskra():
     return render_template("ferilskra.jinja2", sitename=u"CV")
 
@@ -27,20 +31,29 @@ def contact():
     return render_template("contact.jinja2", sitename=u"Contact")
 
 
+@app.route("/blog")
+def blog():
+    posts = blog_queries.get_blogs_ordered_by_date()#[dict(title="First title", date=date(2014, 3, 24), body="First body", tags=["Tag1"]),
+             #dict(title="Second title", date=date(2014, 3, 24), body="Second body", tags=["Tag1", "Tag2", "Tag3"])]
+
+    tags = blog_queries.get_tags_ordered_by_usage()
+    return render_template("blog.jinja2", sitename=u"Blog", posts=posts, tags=tags)
+
+
 '''
 Hobby subpages
 '''
 
+
 @app.route("/vanciantopsionics/")
 def vtp():
-
     # TODO: Generate this
     version_numbers = reversed(
         ["103", "104", "105", "105a", "106", "107", "108", "109", "110", "110b", "110c"])
 
     versions = []
     for number in version_numbers:
-        versions.append((number,'content/VtP/VancianToPsionicsBeta' + number + '.pdf'))
+        versions.append((number, 'content/VtP/VancianToPsionicsBeta' + number + '.pdf'))
 
     return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", versions=versions)
 
