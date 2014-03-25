@@ -14,10 +14,12 @@ def get_blogs_ordered_by_date():
     return blogs
 
 def get_blogs_by_tag(tag_name):
-    # The intertron says it's "basically impossible" to inject SQLAlchemy. I'm going to trust that.
-    raw_blogs = Blogs.query.with_entities(Blogs.title,Blogs.body,Blogs.date,Tags.name).join(tag_association).join(Tags).filter_by(name=tag_name).order_by(Blogs.date.desc()).all()
+    all_blogs = get_blogs_ordered_by_date()
 
-    blogs = combine_entries(raw_blogs)
+    blogs = []
+    for blog in all_blogs:
+        if tag_name in blog["tags"]:
+            blogs.append(blog)
 
     return blogs
 
