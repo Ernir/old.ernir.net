@@ -4,7 +4,8 @@ from ernirnet.errors import InvalidUsage
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/spells.db'
+app.config["SQLALCHEMY_BINDS"] = {"blog" : "sqlite:///db/blog.db", "spells" : "sqlite:///db/spells.db"}
+
 db = SQLAlchemy(app)
 
 from ernirnet import views

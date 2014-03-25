@@ -4,6 +4,8 @@ from ernirnet import db
 
 
 class Spells(db.Model):
+    __bind_key__ = "spells"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
 
@@ -18,6 +20,8 @@ class Spells(db.Model):
 
 
 class ModifierTypes(db.Model):
+    __bind_key__ = "spells"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
 
@@ -32,6 +36,8 @@ class ModifierTypes(db.Model):
 
 
 class Statistics(db.Model):
+    __bind_key__ = "spells"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
 
@@ -46,6 +52,8 @@ class Statistics(db.Model):
 
 
 class NumericalBonuses(db.Model):
+    __bind_key__ = "spells"
+
     id = db.Column(db.Integer, primary_key=True)
     bonus = db.Column(db.String(120))
     associated_spell_id = db.Column(db.Integer, db.ForeignKey("spells.id"))
@@ -70,6 +78,8 @@ class NumericalBonuses(db.Model):
 
 
 class MiscBonuses(db.Model):
+    __bind_key__ = "spells"
+
     id = db.Column(db.Integer, primary_key=True)
     bonus_description = db.Column(db.String(120))
     associated_spell_id = db.Column(db.Integer, db.ForeignKey("spells.id"))
