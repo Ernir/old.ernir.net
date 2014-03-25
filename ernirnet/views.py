@@ -37,12 +37,19 @@ def blog():
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=posts, tags=tags)
 
-@app.route("/blog/<blog_title>")
+@app.route("/blog/<blog_title>/")
 def individual_blog(blog_title):
     blog = blog_queries.get_blog_by_title(blog_title)
     tags = blog_queries.get_tags_ordered_by_usage()
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=blog, tags=tags)
+
+@app.route("/blog/tags/<tag_name>/")
+def tagged_blogs(tag_name):
+    blogs = blog_queries.get_blogs_by_tag(tag_name)
+    tags = blog_queries.get_tags_ordered_by_usage()
+
+    return render_template("blog.jinja2", sitename=u"Blog", posts=blogs, tags=tags)
 
 
 '''
