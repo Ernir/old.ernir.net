@@ -12,13 +12,15 @@ class Blogs(db.Model):
     __bind_key__ = "blog"
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.Text(), unique=True)
+    title = db.Column(db.Text())
     body = db.Column(db.Text())
     date = db.Column(db.Date())
+    url = db.Column(db.Text(), unique=True)
     tags = db.relationship("Tags", secondary=tag_association, backref=db.backref("blogs", lazy="dynamic"))
 
     def __init__(self, title, body, date):
         self.title = title
+        self.url = title.replace(" ", "-").lower()
         self.body = body
         self.date = date
 
