@@ -60,15 +60,11 @@ Hobby subpages
 
 @app.route("/vanciantopsionics/")
 def vtp():
-    # TODO: Generate this
-    version_numbers = reversed(
-        ["103", "104", "105", "105a", "106", "107", "108", "109", "110", "110b", "110c"])
+    from ernirnet.vtp import get_old_vtp_files
+    files = get_old_vtp_files()
+    print(files)
 
-    versions = []
-    for number in version_numbers:
-        versions.append((number, 'content/VtP/VancianToPsionicsBeta' + number + '.pdf'))
-
-    return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", versions=versions)
+    return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", old_files=files)
 
 
 @app.route("/bufftracker/")

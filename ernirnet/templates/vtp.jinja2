@@ -146,11 +146,11 @@
 
         <p>Previously released:</p>
         <ul>
-            <li><a href="{{ url_for('static', filename='content/VtP/VancianToPsionicsBeta111.pdf') }}">Version 111</a>
-                (current, 25/05/13)
+            <li><a href="{{ url_for('static', filename='content/VtP/VancianToPsionicsBeta111.pdf') }}">VancianToPsionicsBeta111.pdf</a>
+                 (current, 25/05/13)
             </li>
-            {% for old_version in versions %}
-                <li><a href="{{ url_for('static', filename=old_version[1]) }}">Version {{ old_version[0] }}</a></li>
+            {% for file in old_files %}
+                <li><a href="{{ url_for('static', filename=("content/VtP/" + file) ) }}">{{ file }}</a></li>
             {% endfor %}
         </ul>
     </div>
