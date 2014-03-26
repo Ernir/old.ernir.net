@@ -20,9 +20,18 @@ class Blogs(db.Model):
 
     def __init__(self, title, body, date):
         self.title = title
-        self.url = title.replace(" ", "-").lower()
+        self.url = self._url_from_title(title)
         self.body = body
         self.date = date
+
+    def _url_from_title(self, title):
+        url = title.replace(" ", "-")
+        bad_symbols = "!*'();:@&=+$,./?%#[]"
+        for symbol in bad_symbols:
+            url = url.replace(symbol, "")
+        url = url.lower()
+
+        return url
 
 
 class Tags(db.Model):
