@@ -1,6 +1,9 @@
-from sqlalchemy import func
-from ernirnet.blog_models import Tags, tag_association, Blogs
 from datetime import date
+
+from sqlalchemy import func
+
+from ernirnet.helpers.blog.blog_models import Tags, tag_association, Blogs
+
 
 def get_tags_ordered_by_usage():
     return Tags.query.with_entities(Tags.name, func.count(Tags.id).label("frequency")).join(tag_association).join(

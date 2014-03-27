@@ -3,7 +3,7 @@ import os, re
 
 def get_old_vtp_files():
     module_dir = os.path.dirname(os.path.abspath(__file__))
-    vtp_dir = os.path.join(module_dir, "static/content/VtP/")
+    vtp_dir = os.path.join(module_dir, "../static/content/VtP/")
     file_names = natural_sort_reverse(os.listdir(vtp_dir))
     return file_names[1:]
 

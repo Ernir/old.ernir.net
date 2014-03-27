@@ -1,7 +1,10 @@
 from flask import Flask, jsonify
-from ernirnet.xml_parse import Parser
-from ernirnet.errors import InvalidUsage
 from flask_sqlalchemy import SQLAlchemy
+
+from ernirnet.helpers.bufftracker.xml_parse import Parser
+
+from ernirnet.helpers.errors import InvalidUsage
+
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_BINDS"] = {"blog" : "sqlite:///db/blog.db", "spells" : "sqlite:///db/spells.db"}
@@ -9,7 +12,7 @@ app.config["SQLALCHEMY_BINDS"] = {"blog" : "sqlite:///db/blog.db", "spells" : "s
 db = SQLAlchemy(app)
 
 from ernirnet import views
-import ernirnet.spell_models
+import ernirnet.helpers.bufftracker.spell_models
 
 '''
 Error handlers

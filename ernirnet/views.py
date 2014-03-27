@@ -1,9 +1,13 @@
 from flask import render_template, jsonify, request
-from ernirnet.xml_parse import Parser
+
 from ernirnet import app
-from ernirnet.errors import InvalidUsage
-from ernirnet import blog_queries
-import spell_models
+
+from ernirnet.helpers.blog import blog_queries
+from ernirnet.helpers.bufftracker import spell_models
+
+from ernirnet.helpers.bufftracker.xml_parse import Parser
+from ernirnet.helpers.errors import InvalidUsage
+
 
 '''
 Main pages
@@ -60,9 +64,8 @@ Hobby subpages
 
 @app.route("/vanciantopsionics/")
 def vtp():
-    from ernirnet.vtp import get_old_vtp_files
+    from ernirnet.helpers.vtp import get_old_vtp_files
     files = get_old_vtp_files()
-    print(files)
 
     return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", old_files=files)
 
