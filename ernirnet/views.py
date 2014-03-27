@@ -4,6 +4,7 @@ from ernirnet import app
 
 from ernirnet.helpers.blog import blog_queries
 from ernirnet.helpers.bufftracker import spell_models
+from ernirnet.helpers.bufftracker.json_builder import build_json
 
 from ernirnet.helpers.bufftracker.xml_parse import Parser
 from ernirnet.helpers.errors import InvalidUsage
@@ -96,24 +97,5 @@ def mw_parse_api():
 
 @app.route("/api/bufftracker")
 def buff_tracker_api():
-    json_dict = buff_tracker_json_builder()
+    json_dict = build_json()
     return jsonify(json_dict)
-
-
-def buff_tracker_json_builder():
-    spells = spell_models.Spells.query.all()
-    spell_list = [spell.serialize() for spell in spells]
-
-    modifier_types = spell_models.ModifierTypes.query.all()
-    modifier_list = [modifier.serialize() for modifier in modifier_types]
-
-    numerical_bonuses = spell_models.NumericalBonuses.query.all()
-    numerical_bonuses_list = [bonus.serialize() for bonus in numerical_bonuses]
-
-    statistics = spell_models.Statistics.query.all()
-    statistics_list = [statistic.serialize() for statistic in statistics]
-
-    content = dict(spells=spell_list, modifierTypes=modifier_list, numericalBonuses=numerical_bonuses_list,
-                   statistics=statistics_list)
-
-    return dict(content=content, status=200, message="OK")
