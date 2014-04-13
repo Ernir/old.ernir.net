@@ -7,7 +7,7 @@ from ernirnet.helpers.errors import InvalidUsage
 
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_BINDS"] = {"blog" : "sqlite:///db/blog.db", "spells" : "sqlite:///db/spells.db"}
+app.config.from_object("config")
 
 db = SQLAlchemy(app)
 
