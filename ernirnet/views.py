@@ -1,14 +1,17 @@
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, flash, redirect, g, url_for, session
+from flask_login import login_user, logout_user, current_user, login_required
 
-from ernirnet import app
+from ernirnet import app, lm, oid, db
+from ernirnet.helpers.admin.models import User, role_user
 
 from ernirnet.helpers.blog import blog_queries
 from ernirnet.helpers.bufftracker import spell_models
 from ernirnet.helpers.bufftracker.json_builder import build_json
 
+from ernirnet.helpers.admin.forms import LoginForm
+
 from ernirnet.helpers.bufftracker.xml_parse import Parser
 from ernirnet.helpers.errors import InvalidUsage
-
 
 '''
 Main pages
@@ -16,18 +19,13 @@ Main pages
 
 
 @app.route("/")
-def heim():
+def home():
     return render_template("index.jinja2", sitename=u"Home")
 
 
-@app.route("/CV/")  # English CV
+@app.route("/CV/")
 def cv():
     return render_template("cv.jinja2", sitename=u"CV")
-
-
-@app.route("/ferilskra/")  # Icelandic CV
-def ferilskra():
-    return render_template("ferilskra.jinja2", sitename=u"CV")
 
 
 @app.route("/contact/")
@@ -50,12 +48,77 @@ def individual_blog(blog_url):
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=blog, tags=tags)
 
+
 @app.route("/blog/tags/<tag_name>/")
 def tagged_blogs(tag_name):
     blogs = blog_queries.get_blogs_by_tag(tag_name)
     tags = blog_queries.get_tags_ordered_by_usage()
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=blogs, tags=tags)
+
+
+'''
+Admin and login
+'''
+
+
+@app.route("/admin/")
+@login_required
+def admin():
+    if g.user.role == 1:
+        return render_template("admin.jinja2", sitename=u"Admin")
+    else:
+        return redirect(url_for("login"))
+
+
+@lm.unauthorized_handler
+def unauthorized():
+    return redirect(url_for("login"))
+
+
+@lm.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+
+@app.before_request
+def before_request():
+    g.user = current_user
+
+
+@app.route("/login", methods=["GET", "POST"])
+@oid.loginhandler
+def login():
+    if g.user is not None and g.user.is_authenticated():
+        return redirect(url_for("home"))
+    form = LoginForm()
+    if form.validate_on_submit():
+        return oid.try_login(form.openid.data, ask_for=["nickname", "email"])
+    return render_template("login.jinja2", sitename=u"Login", form=form)
+
+
+@oid.after_login
+def after_login(resp):
+    if resp.email is None or resp.email == "":
+        flash("Invalid login. Please try again.")
+        return redirect(url_for("login"))
+    user = User.query.filter_by(email=resp.email).first()
+    if user is None:
+        nickname = resp.nickname
+        if nickname is None or nickname == "":
+            nickname = resp.email.split('@')[0]
+        user = User(nickname=nickname, email=resp.email, role=role_user)
+        db.session.add(user)
+        db.session.commit()
+    login_user(user)
+    return redirect(request.args.get("next") or url_for("home"))
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    logout_user()
+    return redirect(url_for("home"))
 
 
 '''
@@ -66,6 +129,7 @@ Hobby subpages
 @app.route("/vanciantopsionics/")
 def vtp():
     from ernirnet.helpers.vtp import get_old_vtp_files
+
     files = get_old_vtp_files()
 
     return render_template("vtp.jinja2", sitename=u"The Vancian to Psionics Project", old_files=files)

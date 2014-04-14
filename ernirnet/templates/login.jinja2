@@ -1,0 +1,20 @@
+{% extends "skeleton.jinja2" %}
+{% block content %}
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }} </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form action="" method="post" name="login">
+        {{ form.hidden_tag() }}
+        {{ form.openid() }}
+
+        <input type="submit" value="Sign in with Google" class="btn btn-lg btn-default">
+    </form>
+{% endblock content %}
