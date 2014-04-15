@@ -1,8 +1,7 @@
 SQLALCHEMY_BINDS = \
     {
         "blog": "sqlite:///db/blog.db",
-        "spells": "sqlite:///db/spells.db",
-        "users": "sqlite:///db/users.db"
+        "spells": "sqlite:///db/spells.db"
     }
 
 CSRF_ENABLED = True

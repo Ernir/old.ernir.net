@@ -2,16 +2,15 @@ from flask import render_template, jsonify, request, flash, redirect, g, url_for
 from flask_login import login_user, logout_user, current_user, login_required
 
 from ernirnet import app, lm, oid, db
-from ernirnet.helpers.admin.models import User, role_user
-
 from ernirnet.helpers.blog import blog_queries
+from ernirnet.helpers.blog.blog_models import role_user
+from ernirnet.helpers.blog.blog_models import User
+from ernirnet.helpers.blog.forms import LoginForm
 from ernirnet.helpers.bufftracker import spell_models
 from ernirnet.helpers.bufftracker.json_builder import build_json
-
-from ernirnet.helpers.admin.forms import LoginForm
-
 from ernirnet.helpers.bufftracker.xml_parse import Parser
 from ernirnet.helpers.errors import InvalidUsage
+
 
 '''
 Main pages
