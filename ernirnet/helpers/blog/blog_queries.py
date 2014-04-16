@@ -2,23 +2,23 @@ from datetime import date
 
 from sqlalchemy import func
 
-from ernirnet.helpers.blog.blog_models import Tags, tag_association, Blogs
+from ernirnet.helpers.blog.blog_models import Tag, tag_association, Blog
 from ernirnet import db
 
 
 def get_tags_ordered_by_usage():
-    return Tags.query.with_entities(Tags.name, func.count(Tags.id).label("frequency")).join(tag_association).join(
-        Blogs).group_by(Tags.id).order_by("frequency DESC").all()
+    return Tag.query.with_entities(Tag.name, func.count(Tag.id).label("frequency")).join(tag_association).join(
+        Blog).group_by(Tag.id).order_by("frequency DESC").all()
 
 
 def create_tag_if_new(proposed_name):
-    if Tags.query.filter_by(name=proposed_name).count() == 0:
-        db.session.add(Tags(proposed_name))
+    if Tag.query.filter_by(name=proposed_name).count() == 0:
+        db.session.add(Tag(proposed_name))
 
 
 def get_blogs_ordered_by_date():
-    raw_blogs = Blogs.query.with_entities(Blogs.title, Blogs.body, Blogs.date, Blogs.url, Tags.name).join(
-        tag_association).join(Tags).order_by(Blogs.date.desc()).all()
+    raw_blogs = Blog.query.with_entities(Blog.title, Blog.body, Blog.date, Blog.url, Tag.name).join(
+        tag_association).join(Tag).order_by(Blog.date.desc()).all()
 
     blogs = combine_entries(raw_blogs)
 
@@ -38,8 +38,8 @@ def get_blogs_by_tag(tag_name):
 
 def get_blog_by_title(blog_url):
     # The intertron says it's "basically impossible" to inject SQLAlchemy. I'm going to trust that.
-    raw_blogs = Blogs.query.with_entities(Blogs.title, Blogs.body, Blogs.date, Blogs.url, Tags.name).filter_by(
-        url=blog_url).join(tag_association).join(Tags).all()
+    raw_blogs = Blog.query.with_entities(Blog.title, Blog.body, Blog.date, Blog.url, Tag.name).filter_by(
+        url=blog_url).join(tag_association).join(Tag).all()
 
     if len(raw_blogs) > 0:
         blog = combine_entries(raw_blogs)

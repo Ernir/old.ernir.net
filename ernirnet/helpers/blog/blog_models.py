@@ -4,12 +4,12 @@ role_user = 0
 role_admin = 1
 
 tag_association = db.Table("tag_assignments",
-                           db.Column("tag_id", db.Integer, db.ForeignKey("tags.id")),
-                           db.Column("blog_id", db.Integer, db.ForeignKey("blogs.id")),
+                           db.Column("tag_id", db.Integer, db.ForeignKey("tag.id")),
+                           db.Column("blog_id", db.Integer, db.ForeignKey("blog.id")),
                            info={"bind_key": "blog"})
 
 
-class Blogs(db.Model):
+class Blog(db.Model):
     __bind_key__ = "blog"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -17,7 +17,8 @@ class Blogs(db.Model):
     body = db.Column(db.Text())
     date = db.Column(db.Date())
     url = db.Column(db.Text(), unique=True)
-    tags = db.relationship("Tags", secondary=tag_association, backref=db.backref("blogs", lazy="dynamic"))
+    tags = db.relationship("Tag", secondary=tag_association, backref=db.backref("blogs", lazy="dynamic"))
+    comments = db.relationship("Comments", backref="blog_comments")
 
     def __init__(self, title, body, date):
         self.title = title
@@ -35,7 +36,7 @@ class Blogs(db.Model):
         return url
 
 
-class Tags(db.Model):
+class Tag(db.Model):
     __bind_key__ = "blog"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -45,6 +46,22 @@ class Tags(db.Model):
         self.name = name
 
 
+class Comments(db.Model):
+    __bind_key__ = "blog"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text())
+    date = db.Column(db.Date())
+    author = db.Column(db.Integer, db.ForeignKey("user.id"))
+    associated_blog = db.Column(db.Integer, db.ForeignKey("blog.id"))
+
+    def __init__(self, content, date, author, blog):
+        self.content = content
+        self.date = date
+        self.author = author
+        self.associated_blog = blog
+
+
 class User(db.Model):
     __bind_key__ = "blog"
 
@@ -52,7 +69,7 @@ class User(db.Model):
     nickname = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(120), unique=True)
     role = db.Column(db.SmallInteger, default=role_user)
-    # posts = db.relationship('Post', backref='author', lazy='dynamic') #TODO add references
+    comments = db.relationship("Comments", backref="author_comments")
 
     def is_authenticated(self):
         return True
