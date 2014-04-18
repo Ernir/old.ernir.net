@@ -1,6 +1,17 @@
 {#Blog template shamelessly stolen from http://getbootstrap.com/examples/blog/# #}
 
 {% extends "skeleton.jinja2" %}
+
+{% block head %}
+    {% include "includes/meta.jinja2" %}
+    {% include "includes/css.jinja2" %}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/blog.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+    <title>Ernir.net - {{ sitename }}</title>
+
+{% endblock head %}
+
 {% block wrapper %}
     <div id="wrap">
         {% include "includes/nav.jinja2" %}
@@ -17,22 +28,41 @@
 
                     {% for post in posts %}
                         <div class="blog-post">
-                            <h2 class="blog-post-title"><a href="/blog/{{ post["url"] }}">{{ post["title"] }}</a></h2>
+                            <h2 class="blog-post-title"><a href="/blog/{{ post.url }}">{{ post.title }}</a></h2>
 
-                            <div class="blog-post-body">{{ post["body"] }}</div>
+                            <div class="blog-post-body">{{ post.body }}</div>
                             <br/>
 
                             <p class="blog-post-meta">
-                                <b>Posted:</b> {{ post["date"].strftime("%Y-%m-%d") }}
+                                <b>Posted:</b> {{ post.date.strftime("%Y-%m-%d") }}
                             </p>
 
                             <p class="blog-post-meta">
                                 <b>Tags:</b>
-                                {% for tag in post["tags"] %}
-                                    <a href="/blog/tags/{{ tag }}">{{ tag }}</a>
+                                {% for tag in post.tags %}
+                                    <a href="/blog/tags/{{ tag.name }}">{{ tag.name }}</a>
                                     {%- if not loop.last %},{% endif %}
                                 {% endfor %}
                             </p>
+
+                            <div class="comment-section">
+                                <p class="blog-post-meta">
+                                    {% if post.comments|length == 1 %}
+                                        <a class="show-comments">{{ post.comments|length }} comment</a>
+                                    {% else %}
+                                        <a class="show-comments">{{ post.comments|length }} comments</a>
+                                    {% endif %}
+                                </p>
+
+                                <div class="comment-list">
+                                    {% for comment in post.comments %}
+                                        <div class="comment">
+                                        <p><b>On {{ comment.date.strftime("%Y-%m-%d") }}, {{ comment.author.nickname }} said:</b></p>
+                                        </div>
+                                        <p>{{ comment.content }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div> <!-- /.blog-post -->
                     {% endfor %}
 
@@ -64,3 +94,8 @@
         </div>
     </div>
 {% endblock wrapper %}
+{% block footer %}
+    {% include "includes/footer.jinja2" %}
+    {% include "includes/js.jinja2" %}
+    <script src="{{ url_for('static', filename='js/blog.js') }}"></script>
+{% endblock footer %}

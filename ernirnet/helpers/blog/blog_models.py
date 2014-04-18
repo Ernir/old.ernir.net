@@ -18,7 +18,7 @@ class Blog(db.Model):
     date = db.Column(db.Date())
     url = db.Column(db.Text(), unique=True)
     tags = db.relationship("Tag", secondary=tag_association, backref=db.backref("blogs", lazy="dynamic"))
-    comments = db.relationship("Comments", backref="blog_comments")
+    comments = db.relationship("Comment", backref="blog")
 
     def __init__(self, title, body, date):
         self.title = title
@@ -46,20 +46,18 @@ class Tag(db.Model):
         self.name = name
 
 
-class Comments(db.Model):
+class Comment(db.Model):
     __bind_key__ = "blog"
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text())
     date = db.Column(db.Date())
-    author = db.Column(db.Integer, db.ForeignKey("user.id"))
-    associated_blog = db.Column(db.Integer, db.ForeignKey("blog.id"))
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    blog_id = db.Column(db.Integer, db.ForeignKey("blog.id"))
 
-    def __init__(self, content, date, author, blog):
+    def __init__(self, content, date):
         self.content = content
         self.date = date
-        self.author = author
-        self.associated_blog = blog
 
 
 class User(db.Model):
@@ -69,7 +67,7 @@ class User(db.Model):
     nickname = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(120), unique=True)
     role = db.Column(db.SmallInteger, default=role_user)
-    comments = db.relationship("Comments", backref="author_comments")
+    comments = db.relationship("Comment", backref="author")
 
     def is_authenticated(self):
         return True

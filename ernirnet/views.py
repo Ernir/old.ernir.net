@@ -2,7 +2,7 @@ from flask import render_template, jsonify, request, flash, redirect, g, url_for
 from flask_login import login_user, logout_user, current_user, login_required
 
 from ernirnet import app, lm, oid, db
-from ernirnet.helpers.blog import blog_queries
+from ernirnet.helpers.blog import blog_statements
 from ernirnet.helpers.blog.blog_models import role_user
 from ernirnet.helpers.blog.blog_models import User
 from ernirnet.helpers.blog.forms import LoginForm
@@ -34,24 +34,24 @@ def contact():
 
 @app.route("/blog/")
 def blog():
-    posts = blog_queries.get_blogs_ordered_by_date()
-    tags = blog_queries.get_tags_ordered_by_usage()
+    posts = blog_statements.get_blogs_ordered_by_date()
+    tags = blog_statements.get_tags_ordered_by_usage()
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=posts, tags=tags)
 
 
 @app.route("/blog/<blog_url>/")
 def individual_blog(blog_url):
-    blog = blog_queries.get_blog_by_title(blog_url)
-    tags = blog_queries.get_tags_ordered_by_usage()
+    blog = blog_statements.get_blog_by_title(blog_url)
+    tags = blog_statements.get_tags_ordered_by_usage()
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=blog, tags=tags)
 
 
 @app.route("/blog/tags/<tag_name>/")
 def tagged_blogs(tag_name):
-    blogs = blog_queries.get_blogs_by_tag(tag_name)
-    tags = blog_queries.get_tags_ordered_by_usage()
+    blogs = blog_statements.get_blogs_by_tag(tag_name)
+    tags = blog_statements.get_tags_ordered_by_usage()
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=blogs, tags=tags)
 
