@@ -1,9 +1,9 @@
 $(function () {
 
     $(".show-comments").click(function () {
-        var $commentSection = $(this).parent().siblings(".comment-list");
+        var $commentSection = $(this).parent().siblings(".comment-section");
 
-        if ($commentSection.is(":hidden") && ($commentSection.children().length > 0 )) {
+        if ($commentSection.is(":hidden") && ($commentSection.children(".comment-list").length > 0 )) {
             $commentSection.slideDown("fast");
         } else if (!$commentSection.is(":hidden")) {
             $commentSection.slideUp("fast");

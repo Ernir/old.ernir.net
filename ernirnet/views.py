@@ -5,7 +5,7 @@ from ernirnet import app, lm, oid, db
 from ernirnet.helpers.blog import blog_statements
 from ernirnet.helpers.blog.blog_models import role_user
 from ernirnet.helpers.blog.blog_models import User
-from ernirnet.helpers.blog.forms import LoginForm
+from ernirnet.helpers.blog.forms import LoginForm, CommentForm
 from ernirnet.helpers.bufftracker import spell_models
 from ernirnet.helpers.bufftracker.json_builder import build_json
 from ernirnet.helpers.bufftracker.xml_parse import Parser
@@ -37,7 +37,10 @@ def blog():
     posts = blog_statements.get_blogs_ordered_by_date()
     tags = blog_statements.get_tags_ordered_by_usage()
 
-    return render_template("blog.jinja2", sitename=u"Blog", posts=posts, tags=tags)
+    form = CommentForm()
+    logged_in = g.user.is_authenticated()
+
+    return render_template("blog.jinja2", sitename=u"Blog", posts=posts, tags=tags, logged_in=logged_in, form=form)
 
 
 @app.route("/blog/<blog_url>/")

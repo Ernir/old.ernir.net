@@ -45,23 +45,35 @@
                                 {% endfor %}
                             </p>
 
-                            <div class="comment-section">
-                                <p class="blog-post-meta">
-                                    {% if post.comments|length == 1 %}
-                                        <a class="show-comments">{{ post.comments|length }} comment</a>
-                                    {% else %}
-                                        <a class="show-comments">{{ post.comments|length }} comments</a>
-                                    {% endif %}
-                                </p>
+                            <p>
+                                {% if post.comments|length == 1 %}
+                                    <a class="show-comments">{{ post.comments|length }} comment</a>
+                                {% else %}
+                                    <a class="show-comments">{{ post.comments|length }} comments</a>
+                                {% endif %}
+                            </p>
 
+                            <div class="comment-section">
                                 <div class="comment-list">
                                     {% for comment in post.comments %}
                                         <div class="comment">
-                                        <p><b>On {{ comment.date.strftime("%Y-%m-%d") }}, {{ comment.author.nickname }} said:</b></p>
+                                            <p>
+                                                <b>On {{ comment.date.strftime("%Y-%m-%d") }}, {{ comment.author.nickname }}
+                                                    said:</b></p>
                                         </div>
                                         <p>{{ comment.content }}</p>
                                     {% endfor %}
                                 </div>
+
+                                {% if logged_in %}
+                                    <form action="" method="post" name="comment" class="comment-form"> {# TODO: Add functionality #}
+                                        {{ form.hidden_tag() }}
+                                        {{ form.text(cols="60", rows="5") }}
+
+                                        <p><input type="hidden" name="blog-id" value="{{ post.id }}"></p>
+                                        <p><input type="submit" value="Add comment" class="btn btn-default"></p>
+                                    </form>
+                                {% endif %}
                             </div>
                         </div> <!-- /.blog-post -->
                     {% endfor %}
