@@ -18,15 +18,16 @@ class Blog(db.Model):
     date = db.Column(db.Date())
     url = db.Column(db.Text(), unique=True)
     tags = db.relationship("Tag", secondary=tag_association, backref=db.backref("blogs", lazy="dynamic"))
-    comments = db.relationship("Comment", backref="blog")
+    comments = db.relationship("Comment", backref="blog", order_by="Comment.date")
 
     def __init__(self, title, body, date):
         self.title = title
-        self.url = self._url_from_title(title)
+        self.url = Blog._url_from_title(title)
         self.body = body
         self.date = date
 
-    def _url_from_title(self, title):
+    @staticmethod
+    def _url_from_title(title):
         url = title.replace(" ", "-")
         bad_symbols = "!*'();:@&=+$,./?%#[]"
         for symbol in bad_symbols:
