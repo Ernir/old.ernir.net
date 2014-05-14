@@ -1,8 +1,8 @@
-from datetime import date
+from datetime import date, datetime
 
 from sqlalchemy import func
 
-from ernirnet.helpers.blog.blog_models import Tag, tag_association, Blog
+from ernirnet.helpers.blog.blog_models import Tag, tag_association, Blog, Comment
 from ernirnet import db
 
 '''
@@ -50,6 +50,14 @@ def create_tag_if_new(proposed_name):
     if Tag.query.filter_by(name=proposed_name).count() == 0:
         db.session.add(Tag(proposed_name))
 
+
+def add_comment(blog_id, text, user):
+    blog = Blog.query.filter_by(id=blog_id).first()
+    comment = Comment(text, datetime.now())
+    comment.author = user
+    blog.comments.append(comment)
+
+    db.session.commit()
 
 '''
 Helpers
