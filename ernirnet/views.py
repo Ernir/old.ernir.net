@@ -37,18 +37,21 @@ def blog():
     posts = blog_statements.get_blogs_ordered_by_date()
     tags = blog_statements.get_tags_ordered_by_usage()
 
-    form = CommentForm()
-    logged_in = g.user.is_authenticated()
-
-    return render_template("blog.jinja2", sitename=u"Blog", posts=posts, tags=tags, logged_in=logged_in, form=form)
+    return render_template("blog.jinja2", sitename=u"Blog", posts=posts, tags=tags)
 
 
-@app.route("/blog/<blog_url>/")
+@app.route("/blog/<blog_url>/", methods=["GET", "POST"])
 def individual_blog(blog_url):
     blog = blog_statements.get_blog_by_title(blog_url)
     tags = blog_statements.get_tags_ordered_by_usage()
 
-    return render_template("blog.jinja2", sitename=u"Blog", posts=blog, tags=tags)
+    form = CommentForm()
+    logged_in = g.user.is_authenticated()
+
+    if request.method == "POST":
+        blog_statements.add_comment(int(request.form["blog-id"]), request.form["text"], g.user)
+
+    return render_template("blog.jinja2", sitename=u"Blog", posts=blog, tags=tags, logged_in=logged_in, form=form)
 
 
 @app.route("/blog/tags/<tag_name>/")
@@ -57,7 +60,6 @@ def tagged_blogs(tag_name):
     tags = blog_statements.get_tags_ordered_by_usage()
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=blogs, tags=tags)
-
 
 '''
 Admin and login
