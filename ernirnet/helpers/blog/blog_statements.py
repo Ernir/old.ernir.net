@@ -41,6 +41,15 @@ def get_blog_by_title(blog_url):
     return [blog]
 
 
+def get_comments_by_date():
+    return Comment.query.order_by(Comment.date.desc()).all()
+
+
+def delete_comment_by_id(comment_id):
+    comment = Comment.query.filter_by(id=comment_id).first()
+    db.session.delete(comment)
+    db.session.commit()
+
 '''
 Insertion statements
 '''
