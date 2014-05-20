@@ -1,4 +1,6 @@
 from ernirnet import db
+from sqlalchemy import func
+from datetime import date, datetime
 
 role_user = 0
 role_admin = 1
@@ -36,6 +38,40 @@ class Blog(db.Model):
 
         return url
 
+    @classmethod
+    def get_by_date(cls):
+        return cls.query.order_by(cls.date.desc()).all()
+
+    @classmethod
+    def get_by_tag(cls, tag_name):
+        all_blogs = cls.get_by_date()
+        tag = Tag.query.filter_by(name=tag_name).first()
+
+        blogs = []
+        for blog in all_blogs:
+            if tag in blog.tags:
+                blogs.append(blog)
+
+        return blogs
+
+    @classmethod
+    def get_by_url(cls, blog_url):
+        # The intertron says it's "basically impossible" to inject SQLAlchemy. I'm going to trust that.
+        blog = Blog.query.filter_by(url=blog_url).first()
+
+        if blog is None:
+            blog = cls.get_empty()
+
+        return [blog]
+
+    @classmethod
+    def get_empty(cls):
+        blog = cls("Oh no!",
+                   "<p>The blog engine gremlins did not find any blogs matching your description. Try another?</p>",
+                   date=date.today())
+        blog.tags = [Tag("Whoops")]
+        return blog
+
 
 class Tag(db.Model):
     __bind_key__ = "blog"
@@ -45,6 +81,11 @@ class Tag(db.Model):
 
     def __init__(self, name):
         self.name = name
+
+    @classmethod
+    def get_by_usage(cls):
+        return cls.query.with_entities(cls.name, func.count(cls.id).label("frequency")).join(tag_association).join(
+            Blog).group_by(cls.id).order_by("frequency DESC").all()
 
 
 class Comment(db.Model):
@@ -59,6 +100,15 @@ class Comment(db.Model):
     def __init__(self, content, date):
         self.content = content
         self.date = date
+
+    @classmethod
+    def commit(cls, blog_id, text, user):
+        blog = Blog.query.filter_by(id=blog_id).first()
+        comment = cls(text, datetime.now())
+        comment.author = user
+        blog.comments.append(comment)
+
+        db.session.commit()
 
 
 class User(db.Model):
