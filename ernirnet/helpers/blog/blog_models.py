@@ -101,6 +101,11 @@ class Comment(db.Model):
         self.content = content
         self.date = date
 
+
+    @classmethod
+    def get_by_date(cls):
+        return cls.query.order_by(cls.date.desc()).all()
+
     @classmethod
     def commit(cls, blog_id, text, user):
         blog = Blog.query.filter_by(id=blog_id).first()
@@ -108,6 +113,12 @@ class Comment(db.Model):
         comment.author = user
         blog.comments.append(comment)
 
+        db.session.commit()
+
+    @classmethod
+    def delete(cls, comment_id):
+        comment = cls.query.filter_by(id=comment_id).first()
+        db.session.delete(comment)
         db.session.commit()
 
 

@@ -60,6 +60,16 @@ def tagged_blogs(tag_name):
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=blogs, tags=tags)
 
+
+@app.route("/admin/delete/comment/", methods=["POST"])
+@login_required
+def delete_comment():
+    if g.user.role == 1:
+        Comment.delete(request.form["id"])
+        return jsonify(status="OK")
+    else:
+        pass  # TODO: Handle unauthorized deletions
+
 '''
 Admin and login
 '''
@@ -69,7 +79,8 @@ Admin and login
 @login_required
 def admin():
     if g.user.role == 1:
-        return render_template("admin.jinja2", sitename=u"Admin")
+        comments = Comment.get_by_date()
+        return render_template("admin.jinja2", sitename=u"Admin", comments=comments)
     else:
         return redirect(url_for("login"))
 
