@@ -4,16 +4,22 @@
  */
 var selectedSpellIDs = [];
 
-var numericalBonuses;
+var calculatedBonuses;
 var statistics;
 var modifierTypes;
 var CL; //Caster Level
 
-$(function() {
-    $.getJSON("/api/bufftracker",function(data){
-        numericalBonuses =data.content.numericalBonuses;
-        statistics = data.content.statistics;
-        modifierTypes = data.content.modifierTypes;
-        setListeners();
+$(function () {
+    $.getJSON("/api/bufftracker/statistics/", function (data) {
+        if (data.status === 200) {
+            statistics = data.content;
+        }
     });
-})
+
+    $.getJSON("/api/bufftracker/modifiers/", function (data) {
+        if (data.status === 200) {
+            modifierTypes = data.content;
+        }
+    });
+    setListeners();
+});

@@ -2,24 +2,38 @@ function updateResults() {
 
     CL = $("#caster-level").val();
 
-    var inEffect = bonusesInEffect(selectedSpellIDs, numericalBonuses);
-    var applicable = bonusesThatApply(inEffect, statistics, modifierTypes, 5);
-    var combined = combineBonuses(applicable, statistics);
+//    var inEffect = bonusesInEffect(selectedSpellIDs, numericalBonuses);
+//    var applicable = bonusesThatApply(inEffect, statistics, modifierTypes, 5);
+//    var combined = combineBonuses(applicable, statistics);
 
-    displayResults(combined, statistics);
+    getBonuses(CL);
 }
 
-function displayResults(bonuses, statisticsArray) {
+function getBonuses(CL) {
+    var parameters = "?cl=" + CL;
 
-    var statistics = new Object();
-    for (var statisticIndex = 0; statisticIndex < statisticsArray.length; statisticIndex++) {
-        var currentStatistic = statisticsArray[statisticIndex];
-        statistics[currentStatistic.name] = bonuses[currentStatistic.id];
+    console.log(parameters);
+    for (var i = 0; i < selectedSpellIDs.length; i++){
+        parameters += ("&spells=" + selectedSpellIDs[i]);
     }
+
+    var bonuses;
+
+    $.getJSON("/api/bufftracker/bonuses/" + parameters, function (data) {
+        if (data.status === 200) {
+            bonuses = data.content;
+        }
+        displayResults(bonuses)
+    });
+
+}
+
+function displayResults(bonuses) {
+
     $("#results-container").empty();
-    $.each(statistics, function (statistic, value) {
-        if (value !== 0) {
-            var resultSpan = "<span class='row'>" + statistic + ": +" + value + "</span>";
+    $.each(statistics, function (index, name) {
+        if (bonuses[index] !== null) {
+            var resultSpan = "<span class='row'>" + statistics[index] + ": +" + bonuses[index] + "</span>";
             $("#results-container").append(resultSpan);
         }
     });

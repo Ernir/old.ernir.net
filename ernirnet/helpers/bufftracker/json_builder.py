@@ -4,16 +4,16 @@ __author__ = 'ernir'
 
 
 def build_json():
-    spells = spell_models.Spells.query.all()
+    spells = spell_models.Spell.query.all()
     spell_list = [spell.serialize() for spell in spells]
 
-    modifier_types = spell_models.ModifierTypes.query.all()
+    modifier_types = spell_models.ModifierType.query.all()
     modifier_list = [modifier.serialize() for modifier in modifier_types]
 
-    numerical_bonuses = spell_models.NumericalBonuses.query.all()
+    numerical_bonuses = spell_models.NumericalBonus.query.all()
     numerical_bonuses_list = [bonus.serialize() for bonus in numerical_bonuses]
 
-    statistics = spell_models.Statistics.query.all()
+    statistics = spell_models.Statistic.query.all()
     statistics_list = [statistic.serialize() for statistic in statistics]
 
     content = dict(spells=spell_list, modifierTypes=modifier_list, numericalBonuses=numerical_bonuses_list,

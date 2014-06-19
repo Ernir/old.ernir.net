@@ -6,7 +6,6 @@ from ernirnet.helpers.blog.blog_models import role_user, Blog, Tag, Comment
 from ernirnet.helpers.blog.blog_models import User
 from ernirnet.helpers.blog.forms import LoginForm, CommentForm
 from ernirnet.helpers.bufftracker import spell_models
-from ernirnet.helpers.bufftracker.json_builder import build_json
 from ernirnet.helpers.bufftracker.xml_parse import Parser
 from ernirnet.helpers.errors import InvalidUsage
 
@@ -151,8 +150,7 @@ def vtp():
 
 @app.route("/bufftracker/")
 def buff_tracker():
-    spell_objects = spell_models.Spells.query.order_by(spell_models.Spells.id).all()
-    spell_list = [spell.serialize() for spell in spell_objects]
+    spell_list = spell_models.Spell.get_all_as_list()
 
     return render_template("bufftracker.jinja2", spell_list=spell_list, sitename=u"D&D 3.5 Buff Tracker")
 
@@ -162,7 +160,7 @@ API routes
 '''
 
 
-@app.route("/api/parseMW")
+@app.route("/api/parseMW/")
 def mw_parse_api():
     sheet_id = request.args.get("id", 0, type=int)
 
@@ -173,7 +171,27 @@ def mw_parse_api():
     return jsonify(data)
 
 
-@app.route("/api/bufftracker")
-def buff_tracker_api():
-    json_dict = build_json()
-    return jsonify(json_dict)
+@app.route("/api/bufftracker/bonuses/")
+def buff_tracker_bonuses_calculation():
+    caster_level = request.args.get("cl", 0, type=int)
+    selected_spells = request.args.getlist("spells")
+
+    applicable_bonuses = spell_models.NumericalBonus.get_applicable_as_dict(caster_level, selected_spells)
+
+    response = dict(content=applicable_bonuses, status=200, message="OK")
+
+    return jsonify(response)
+
+@app.route("/api/bufftracker/statistics/")
+def buff_tracker_statistics():
+    data = spell_models.Statistic.get_all_as_dict()
+    response = dict(content=data, status=200, message="OK")
+
+    return jsonify(response)
+
+@app.route("/api/bufftracker/modifiers/")
+def buff_tracker_modifiers():
+    data = spell_models.ModifierType.get_all_as_dict()
+    response = dict(content=data, status=200, message="OK")
+
+    return jsonify(response)

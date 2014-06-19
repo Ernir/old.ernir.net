@@ -1,9 +1,12 @@
+from reportlab.graphics.charts.piecharts import theta0
+
 __author__ = 'ernir'
 
 from ernirnet import db
+from sqlalchemy import func
 
 
-class Spells(db.Model):
+class Spell(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -12,14 +15,17 @@ class Spells(db.Model):
     def __init__(self, name):
         self.name = name
 
-    def __repr__(self):
-        return "<Spell %r>" % self.name
 
-    def serialize(self):
-        return dict(id=self.id, name=self.name)
+    @classmethod
+    def get_all_as_list(cls):
+        all_spells = cls.query.order_by(cls.name).all()
+
+        return_list =[dict(id=spell.id,name=spell.name) for spell in all_spells]
+
+        return return_list
 
 
-class ModifierTypes(db.Model):
+class ModifierType(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -28,14 +34,18 @@ class ModifierTypes(db.Model):
     def __init__(self, name):
         self.name = name
 
-    def __repr__(self):
-        return "<ModifierType %r>" % self.name
+    @classmethod
+    def get_all_as_dict(cls):
+        all_modifiers = cls.query.all()
 
-    def serialize(self):
-        return dict(id=self.id, name=self.name)
+        return_dict = dict()
+        for modifier in all_modifiers:
+            return_dict[modifier.id] = modifier.name
+
+        return return_dict
 
 
-class Statistics(db.Model):
+class Statistic(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -44,50 +54,70 @@ class Statistics(db.Model):
     def __init__(self, name):
         self.name = name
 
-    def __repr__(self):
-        return "<Statistic %r>" % self.name
+    @classmethod
+    def get_all_as_dict(cls):
+        all_statistics = cls.query.all()
 
-    def serialize(self):
-        return dict(id=self.id, name=self.name)
+        return_dict = dict()
+        for stat in all_statistics:
+            return_dict[stat.id] = stat.name
+
+        return return_dict
 
 
-class NumericalBonuses(db.Model):
+class NumericalBonus(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
-    bonus = db.Column(db.String(120))
-    associated_spell_id = db.Column(db.Integer, db.ForeignKey("spells.id"))
-    associated_spell = db.relationship("Spells", backref=db.backref("numerical_benefits", lazy="dynamic"))
-    modifier_type_id = db.Column(db.Integer, db.ForeignKey("modifier_types.id"))
-    modifier_type = db.relationship("ModifierTypes")
-    applicable_to_id = db.Column(db.Integer, db.ForeignKey("statistics.id"))
-    applicable_to = db.relationship("Statistics")
+    bonus = db.Column(db.Integer)
+    min_level = db.Column(db.Float)
+    max_level = db.Column(db.Float)
 
-    def __init__(self, spell, bonus, type, applies_to):
+    associated_spell_id = db.Column(db.Integer, db.ForeignKey("spell.id"))
+    associated_spell = db.relationship("Spell", backref=db.backref("numerical_benefits", lazy="dynamic"))
+    modifier_type_id = db.Column(db.Integer, db.ForeignKey("modifier_type.id"))
+    modifier_type = db.relationship("ModifierType")
+    applicable_to_id = db.Column(db.Integer, db.ForeignKey("statistic.id"))
+    applicable_to = db.relationship("Statistic")
+
+    def __init__(self, spell, bonus, applicable_range, modifier_type, applies_to):
+
+        if len(applicable_range) == 2 and applicable_range[1] >= applicable_range[0]:
+            self.min_level = applicable_range[0]
+            self.max_level = applicable_range[1]
+
         self.bonus = bonus
         self.associated_spell = spell
-        self.modifier_type = type
+        self.modifier_type = modifier_type
         self.applicable_to = applies_to
 
-    def __repr__(self):
-        return "<Numerical spell bonus described by the function %r>" % self.bonus
+    @classmethod
+    def get_applicable_as_dict(cls, level, spell_ids):
 
-    def serialize(self):
-        return dict(id=self.id, bonus=self.bonus, associatedSpell=self.associated_spell_id,
-                    modifier=self.modifier_type_id, applicableTo=self.applicable_to_id)
+        result = dict()
+
+        statistics = Statistic.query.with_entities(Statistic.id, Statistic.name).all()
+
+        for statistic in statistics:
+            columns = Spell.query.join(cls).with_entities(func.max(cls.bonus).label("highest"))
+            selected_spells = columns.filter(Spell.id.in_(spell_ids))
+            bonuses_in_range = selected_spells.filter(cls.min_level <= level, cls.max_level >= level)
+            applicable_to_current_statistic = bonuses_in_range.filter(cls.applicable_to_id == statistic.id)
+            collapsed_by_modifier = applicable_to_current_statistic.group_by(cls.modifier_type_id)
+
+            result[statistic.id] = db.session.query(func.sum(collapsed_by_modifier.subquery().columns.highest)).scalar()
+
+        return result
 
 
-class MiscBonuses(db.Model):
+class MiscBonus(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
     bonus_description = db.Column(db.String(120))
-    associated_spell_id = db.Column(db.Integer, db.ForeignKey("spells.id"))
-    associated_spell = db.relationship("Spells", backref=db.backref("misc_benefits", lazy="dynamic"))
+    associated_spell_id = db.Column(db.Integer, db.ForeignKey("spell.id"))
+    associated_spell = db.relationship("Spell", backref=db.backref("misc_benefits", lazy="dynamic"))
 
     def __init__(self, spell, description):
         self.bonus_description = description
         self.associated_spell = spell
-
-    def __repr__(self):
-        return "<Misc Bonus %r>" % self.bonus_description
