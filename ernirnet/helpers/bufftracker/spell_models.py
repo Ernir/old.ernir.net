@@ -11,16 +11,19 @@ class Spell(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
+    source = db.Column(db.String(3))
+    real_spell = db.Column(db.Boolean)
 
-    def __init__(self, name):
+    def __init__(self, name, source="SRD", real_spell=True):
         self.name = name
-
+        self.source = source
+        self.real_spell = real_spell
 
     @classmethod
     def get_all_as_list(cls):
         all_spells = cls.query.order_by(cls.name).all()
 
-        return_list =[dict(id=spell.id,name=spell.name) for spell in all_spells]
+        return_list = [dict(id=spell.id, name=spell.name, source=spell.source) for spell in all_spells]
 
         return return_list
 

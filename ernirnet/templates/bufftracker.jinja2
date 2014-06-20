@@ -20,10 +20,19 @@
 
         <div id="srd-container">
             {% for spell in spell_list %}
-                <span><input type="checkbox" id="spell-{{ spell['id'] }}"/> {{ spell['name'] }}</span></br>
+                {% if spell['source'] == "SRD" %}
+                    <span><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span></br>
+                {% endif %}
             {% endfor %}
         </div>
         <h2>Spell Compendium Buff Spells</h2>
+        <div id="spc-container">
+            {% for spell in spell_list %}
+                {% if spell['source'] == "SPC" %}
+                    <span><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span></br>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
     <div class="row col-md-4">
         <h2>Results</h2>
@@ -33,6 +42,7 @@
     </div>
     <div class="row col-md-4">
         <h2>Your Character</h2>
+
         <div id="character-container" class="row col-md-12">
             <span class="col-md-8">Myth-Weavers sheet id: </span>
             <input type="text" id="mw-url-input" class="col-md-4">
