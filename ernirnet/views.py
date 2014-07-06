@@ -176,9 +176,12 @@ def buff_tracker_bonuses_calculation():
     caster_level = request.args.get("cl", 0, type=int)
     selected_spells = request.args.getlist("spells")
 
-    applicable_bonuses = spell_models.NumericalBonus.get_applicable_as_dict(caster_level, selected_spells)
+    numerical_bonuses = spell_models.NumericalBonus.get_applicable_as_dict(caster_level, selected_spells)
+    misc_bonuses = spell_models.MiscBonus.get_applicable_as_list(selected_spells)
 
-    response = dict(content=applicable_bonuses, status=200, message="OK")
+    content = dict(numerical=numerical_bonuses, misc=misc_bonuses)
+
+    response = dict(content=content, status=200, message="OK")
 
     return jsonify(response)
 

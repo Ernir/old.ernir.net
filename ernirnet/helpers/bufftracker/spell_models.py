@@ -121,6 +121,21 @@ class MiscBonus(db.Model):
     associated_spell_id = db.Column(db.Integer, db.ForeignKey("spell.id"))
     associated_spell = db.relationship("Spell", backref=db.backref("misc_benefits", lazy="dynamic"))
 
+    @classmethod
+    def get_applicable_as_list(cls, spell_ids):
+
+        result = []
+
+        columns = Spell.query.with_entities(Spell.id, MiscBonus.bonus_description)
+        selected_spells = columns.filter(Spell.id.in_(spell_ids)).join(MiscBonus)
+        all_bonuses = selected_spells.join(MiscBonus)
+        unique_bonuses = all_bonuses.group_by(MiscBonus.bonus_description).all()
+
+        for bonus in unique_bonuses:
+            result.append(bonus[1])
+
+        return result
+
     def __init__(self, spell, description):
         self.bonus_description = description
         self.associated_spell = spell

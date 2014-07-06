@@ -21,7 +21,7 @@ function getBonuses(CL) {
 
     $.getJSON("/api/bufftracker/bonuses/" + parameters, function (data) {
         if (data.status === 200) {
-            bonuses = data.content;
+            bonuses = data.content.numerical;
         }
         displayResults(bonuses)
     });
