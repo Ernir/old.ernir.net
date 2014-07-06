@@ -4,7 +4,6 @@
  */
 var selectedSpellIDs = [];
 
-var calculatedBonuses;
 var statistics;
 var modifierTypes;
 var CL; //Caster Level
