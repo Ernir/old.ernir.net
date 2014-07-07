@@ -21,7 +21,12 @@
         <div id="srd-container">
             {% for spell in spell_list %}
                 {% if spell['source'] == "SRD" %}
-                    <span><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span></br>
+                    {% if spell['variable'] %}
+                        <span class="col-xs-7"><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span>
+                        <input type="number" id="caster-level-{{ spell["id"] }}" class="col-xs-3 cl-detail" value="1" min="1" max="100">
+                    {% else %}
+                        <span class="col-xs-12"><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </div>
@@ -29,7 +34,12 @@
         <div id="spc-container">
             {% for spell in spell_list %}
                 {% if spell['source'] == "SPC" %}
-                    <span><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span></br>
+                    {% if spell['variable'] %}
+                        <span class="col-xs-7"><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span>
+                        <input type="number" id="caster-level-{{ spell["id"] }}" class="col-xs-3 cl-detail" value="1" min="1" max="100">
+                    {% else %}
+                        <span class="col-xs-12"><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </div>
@@ -47,7 +57,7 @@
             <span class="col-md-8">Myth-Weavers sheet id: </span>
             <input type="text" id="mw-url-input" class="col-md-4">
 
-            <span class="col-md-8">Caster Level:</span>
+            <span class="col-md-8">Default caster Level:</span>
             <input type="number" id="caster-level" class="col-md-4" value="1" min="1" max="100">
         </div>
     </div>

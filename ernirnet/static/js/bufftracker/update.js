@@ -1,12 +1,21 @@
+function updateCL() {
+    if ($("#caster-level").val() < 1) {
+        $("#caster-level").val(1);
+    } else if ($("#caster-level").val() > 100) {
+        $("#caster-level").val(100);
+    }
+    updateResults();
+}
+
 function updateResults() {
 
-    CL = $("#caster-level").val();
+    defaultCL = $("#caster-level").val();
 
 //    var inEffect = bonusesInEffect(selectedSpellIDs, numericalBonuses);
 //    var applicable = bonusesThatApply(inEffect, statistics, modifierTypes, 5);
 //    var combined = combineBonuses(applicable, statistics);
 
-    getBonuses(CL);
+    getBonuses(defaultCL);
 }
 
 function getBonuses(CL) {

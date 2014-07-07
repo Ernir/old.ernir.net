@@ -6,7 +6,7 @@ var selectedSpellIDs = [];
 
 var statistics;
 var modifierTypes;
-var CL; //Caster Level
+var defaultCL;
 
 $(function () {
     $.getJSON("/api/bufftracker/statistics/", function (data) {
