@@ -1,14 +1,7 @@
 function setListeners() {
-    $("input[type=checkbox]").change(function () {
-        var currentSpellId = parseInt(this.id.replace("spell-", ""));
-        if (this.checked) {
-            selectedSpellIDs.push(currentSpellId);
-        }
-        else {
-            selectedSpellIDs.splice(selectedSpellIDs.indexOf(currentSpellId), 1);
-        }
-        updateResults();
-    });
+    $("input[type=checkbox]").change(updateSelectedSpells);
 
-    $("#caster-level").change(updateCL);
+    $("#caster-level").change(updateGlobalCL);
+
+    $(".cl-detail").change(updateResults);
 }

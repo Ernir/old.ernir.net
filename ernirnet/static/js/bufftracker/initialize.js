@@ -1,12 +1,12 @@
 /*
- Global variables
+ Global variables.
  (Hey, it's JS. Did you expect there wouldn't be any?
  */
-var selectedSpellIDs = [];
-
+var selectedSpellIDs;
 var statistics;
 var modifierTypes;
-var defaultCL;
+
+var $detailedCLInputs;
 
 $(function () {
     $.getJSON("/api/bufftracker/statistics/", function (data) {
@@ -21,4 +21,6 @@ $(function () {
         }
     });
     setListeners();
+
+    selectedSpellIDs = [];
 });

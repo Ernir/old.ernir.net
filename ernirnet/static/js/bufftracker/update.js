@@ -1,27 +1,52 @@
-function updateCL() {
-    if ($("#caster-level").val() < 1) {
-        $("#caster-level").val(1);
-    } else if ($("#caster-level").val() > 100) {
-        $("#caster-level").val(100);
+function updateSelectedSpells() {
+    var currentSpellId = parseInt(this.id.replace("spell-", ""));
+    if (this.checked) {
+        selectedSpellIDs.push(currentSpellId);
+    }
+    else {
+        selectedSpellIDs.splice(selectedSpellIDs.indexOf(currentSpellId), 1);
     }
     updateResults();
 }
 
-function updateResults() {
+function updateGlobalCL() {
+    var globalCL = $("#caster-level").val();
+    $(".cl-detail").val(globalCL);
 
-    defaultCL = $("#caster-level").val();
-
-//    var inEffect = bonusesInEffect(selectedSpellIDs, numericalBonuses);
-//    var applicable = bonusesThatApply(inEffect, statistics, modifierTypes, 5);
-//    var combined = combineBonuses(applicable, statistics);
-
-    getBonuses(defaultCL);
+    updateResults();
 }
 
+function updateResults() {
+    var CL = $("#caster-level").val()
+
+    //constructMessage(CL);
+    getBonuses(CL);
+}
+
+/*
+    Returns a JS object consisting of spell IDs as keys and the CL of the respective spells as values.
+ */
+function constructMessage(CL){
+    var message = Object();
+    for (var i = 0; i < selectedSpellIDs.length; i++ ){
+        var currentID = selectedSpellIDs[i];
+        var $currentDetailedCL = $("#caster-level-" + currentID);
+        if($currentDetailedCL.length > 0){
+            message[currentID] = $currentDetailedCL.val();
+        } else {
+            message[currentID] = CL;
+        }
+    }
+    return message;
+}
+
+/*
+    TODO: Replace with a function that uses constructMessage.
+ */
 function getBonuses(CL) {
     var parameters = "?cl=" + CL;
 
-    for (var i = 0; i < selectedSpellIDs.length; i++){
+    for (var i = 0; i < selectedSpellIDs.length; i++) {
         parameters += ("&spells=" + selectedSpellIDs[i]);
     }
 
@@ -37,6 +62,8 @@ function getBonuses(CL) {
     });
 
 }
+
+
 
 function displayResults(numericalBonuses, miscBonuses) {
 
