@@ -1,5 +1,3 @@
-from reportlab.graphics.charts.piecharts import theta0
-
 __author__ = 'ernir'
 
 from ernirnet import db
@@ -25,7 +23,10 @@ class Spell(db.Model):
     def get_all_as_list(cls):
         all_spells = cls.query.order_by(cls.name).all()
 
-        return_list = [dict(id=spell.id, name=spell.name, source=spell.source, variable=spell.variable) for spell in all_spells]
+        return_list = [dict(id=spell.id,
+                            name=spell.name,
+                            source=spell.source,
+                            variable=spell.variable) for spell in all_spells]
 
         return return_list
 
@@ -96,6 +97,17 @@ class NumericalBonus(db.Model):
         self.modifier_type = modifier_type
         self.applicable_to = applies_to
 
+    def __str__(self):
+        return str.format("<NumericalBonus {0}. Spell: {1}. Applies {2} {3} bonus to {4}>",
+                          self.id,
+                          self.associated_spell.name,
+                          self.bonus,
+                          self.modifier_type.name,
+                          self.applicable_to.name)
+
+    def __repr__(self):
+        return self.__str__()
+
     @classmethod
     def get_applicable_as_dict(cls, level, spell_ids):
 
@@ -111,6 +123,31 @@ class NumericalBonus(db.Model):
             collapsed_by_modifier = applicable_to_current_statistic.group_by(cls.modifier_type_id)
 
             result[statistic.id] = db.session.query(func.sum(collapsed_by_modifier.subquery().columns.highest)).scalar()
+
+        return result
+
+    @classmethod
+    def get_applicable_as_dict_detailed(cls, cl_dictionary):
+
+        result = {}
+
+        selected_spell_ids = [key for key in cl_dictionary]
+
+        statistics = Statistic.query.with_entities(Statistic.id, Statistic.name).all()
+
+        for statistic in statistics:
+
+            bonuses = NumericalBonus.query.filter(False)
+            for spell_id in selected_spell_ids:
+                in_range = NumericalBonus.query.filter(cls.min_level <= cl_dictionary[spell_id],
+                                                       cls.max_level >= cl_dictionary[spell_id],
+                                                       cls.applicable_to_id == statistic.id,
+                                                       cls.associated_spell_id == spell_id)
+                bonuses = bonuses.union(in_range)
+
+            collapsed = bonuses.group_by(cls.modifier_type_id).with_entities(func.max(cls.bonus).label("highest"))
+
+            result[statistic.id] = db.session.query(func.sum(collapsed.subquery().columns.highest)).scalar()
 
         return result
 

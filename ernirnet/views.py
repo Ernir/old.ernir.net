@@ -170,20 +170,21 @@ def mw_parse_api():
         raise InvalidUsage("No Myth-Weavers sheet with the given ID was found", status_code=400)
     return jsonify(data)
 
+@app.route("/api/bufftracker/bonuses/", methods=["POST"])
+def buff_tracker_new_bonuses_calculation():
 
-@app.route("/api/bufftracker/bonuses/")
-def buff_tracker_bonuses_calculation():
-    caster_level = request.args.get("cl", 0, type=int)
-    selected_spells = request.args.getlist("spells")
+    if request.method == "POST":
+        cl_dictionary = request.get_json(force=True)
 
-    numerical_bonuses = spell_models.NumericalBonus.get_applicable_as_dict(caster_level, selected_spells)
-    misc_bonuses = spell_models.MiscBonus.get_applicable_as_list(selected_spells)
+        numerical_bonuses = spell_models.NumericalBonus.get_applicable_as_dict_detailed(cl_dictionary)
 
-    content = dict(numerical=numerical_bonuses, misc=misc_bonuses)
+        selected_spell_ids = [key for key in cl_dictionary]
+        misc_bonuses = spell_models.MiscBonus.get_applicable_as_list(selected_spell_ids)
 
-    response = dict(content=content, status=200, message="OK")
+        content = dict(numerical=numerical_bonuses, misc=misc_bonuses)
+        response = dict(content=content, status=200, message="OK")
 
-    return jsonify(response)
+        return jsonify(response)
 
 @app.route("/api/bufftracker/statistics/")
 def buff_tracker_statistics():
