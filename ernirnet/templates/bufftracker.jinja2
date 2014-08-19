@@ -3,62 +3,102 @@
 {% block head %}
     {% include "includes/meta.jinja2" %}
     {% include "includes/css.jinja2" %}
-    {% include "includes/js.jinja2" %}
-    <script src="{{ url_for('static', filename='js/bufftracker/listeners.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bufftracker/update.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bufftracker/initialize.js') }}"></script>
+
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bufftracker.css') }}">
 
     <title>Ernir.net - {{ sitename }}</title>
 
 {% endblock head %}
 
 {% block content %}
-    <h1>Dungeons and Dragons 3.5 Buff Tracker</h1>
+    <div class="page-header">
+        <h1>Dungeons and Dragons 3.5 Buff Tracker</h1>
+    </div>
 
-    <div class="row col-md-4">
+    <div class="col-md-12">
+    <div class="col-md-4">
         <h2>d20 SRD Buff Spells</h2>
-
         <div id="srd-container">
             {% for spell in spell_list %}
                 {% if spell['source'] == "SRD" %}
                     {% if spell['variable'] %}
-                        <span class="col-xs-7"><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span>
-                        <input type="number" id="caster-level-{{ spell["id"] }}" class="col-xs-3 cl-detail" value="1" min="1" max="100">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="spell-{{ spell["id"] }}">
+                                {{ spell["name"] }}
+                                <input type="number" id="caster-level-{{ spell["id"] }}" class="cl-detail" value="1" min="1" max="100">
+                            </label>
+                        </div>
                     {% else %}
-                        <span class="col-xs-12"><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="spell-{{ spell["id"] }}">
+                                {{ spell["name"] }}
+                            </label>
+                        </div>
                     {% endif %}
                 {% endif %}
             {% endfor %}
         </div>
         <h2>Spell Compendium Buff Spells</h2>
+
         <div id="spc-container">
             {% for spell in spell_list %}
                 {% if spell['source'] == "SPC" %}
                     {% if spell['variable'] %}
-                        <span class="col-xs-7"><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span>
-                        <input type="number" id="caster-level-{{ spell["id"] }}" class="col-xs-3 cl-detail" value="1" min="1" max="100">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="spell-{{ spell["id"] }}">
+                                {{ spell["name"] }}
+                                <input type="number" id="caster-level-{{ spell["id"] }}" class="cl-detail" value="1" min="1" max="100">
+                            </label>
+                        </div>
                     {% else %}
-                        <span class="col-xs-12"><input type="checkbox" id="spell-{{ spell["id"] }}"/> {{ spell["name"] }}</span>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="spell-{{ spell["id"] }}">
+                                {{ spell["name"] }}
+                            </label>
+                        </div>
                     {% endif %}
                 {% endif %}
             {% endfor %}
         </div>
     </div>
-    <div class="row col-md-4">
+    <div class="col-md-4">
         <h2>Results</h2>
 
         <div id="results-container">
         </div>
     </div>
-    <div class="row col-md-4">
+    <div class="col-md-4">
         <h2>Your Character</h2>
 
-        <div id="character-container" class="row col-md-12">
-            <span class="col-md-8">Myth-Weavers sheet id: </span>
-            <input type="text" id="mw-url-input" class="col-md-4">
+        <div id="character-container" class="form-inline">
+{#TODO: include MW-parsing#}
+{#            <div class="form-group">#}
+{#                <label for="mw-url-input" class="col-sm-6 control-label">Myth-Weavers sheet id: </label>#}
+{##}
+{#                <div class="col-sm-6">#}
+{#                    <input type="text" id="mw-url-input" class="form-control">#}
+{#                </div>#}
+{#            </div>#}
+            <div class="form-group">
+                <label for="caster-level" class="col-sm-6 control-label">Set global Caster Level: </label>
 
-            <span class="col-md-8">Set global caster Level:</span>
-            <input type="number" id="caster-level" class="col-md-4" value="1" min="1" max="100">
+                <div class="col-sm-6">
+                    <input type="number" id="caster-level" class="form-control" value="1" min="1" max="100">
+                </div>
+            </div>
         </div>
     </div>
+    </div>
 {% endblock content %}
+
+{% block footer %}
+    {% include "includes/footer.jinja2" %}
+    {% include "includes/js.jinja2" %}
+    <script src="{{ url_for('static', filename='js/bufftracker/listeners.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bufftracker/update.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bufftracker/initialize.js') }}"></script>
+{% endblock footer %}
