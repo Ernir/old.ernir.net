@@ -4,6 +4,7 @@ from datetime import date, datetime
 
 role_user = 0
 role_admin = 1
+role_spell_contributor = 2
 
 tag_association = db.Table("tag_assignments",
                            db.Column("tag_id", db.Integer, db.ForeignKey("tag.id")),

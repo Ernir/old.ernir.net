@@ -4,8 +4,6 @@ from flask_login import LoginManager
 from flask_openid import OpenID
 import os
 
-from ernirnet.helpers.bufftracker.xml_parse import Parser
-
 from ernirnet.helpers.errors import InvalidUsage
 
 
@@ -18,7 +16,7 @@ lm.init_app(app)
 oid = OpenID(app, os.path.join(os.path.abspath(os.path.dirname(__file__)), "tmp"))
 
 from ernirnet import views
-import ernirnet.helpers.bufftracker.spell_models
+from ernirnet import admin_panel
 
 '''
 Error handlers

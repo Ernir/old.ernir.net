@@ -74,7 +74,7 @@ Admin and login
 '''
 
 
-@app.route("/admin/")
+@app.route("/oldadmin/")
 @login_required
 def admin():
     if g.user.role == 1:

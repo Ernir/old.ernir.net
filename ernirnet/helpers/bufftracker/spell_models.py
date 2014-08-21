@@ -30,6 +30,12 @@ class Spell(db.Model):
 
         return return_list
 
+    def __str__(self):
+        return str.format("<{}>", self.name)
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class ModifierType(db.Model):
     __bind_key__ = "spells"
@@ -50,6 +56,12 @@ class ModifierType(db.Model):
 
         return return_dict
 
+    def __str__(self):
+        return str.format("<{}>", self.name)
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class Statistic(db.Model):
     __bind_key__ = "spells"
@@ -69,6 +81,12 @@ class Statistic(db.Model):
             return_dict[stat.id] = stat.name
 
         return return_dict
+
+    def __str__(self):
+        return str.format("<{}>", self.name)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class NumericalBonus(db.Model):
@@ -98,16 +116,15 @@ class NumericalBonus(db.Model):
         self.applicable_to = applies_to
 
     def __str__(self):
-        return str.format("<NumericalBonus {0}. Spell: {1}. Applies {2} {3} bonus to {4}>",
-                          self.id,
-                          self.associated_spell.name,
+        return str.format("<Applies {0} {1} bonus to {2} at levels {3} to {4}>",
                           self.bonus,
                           self.modifier_type.name,
-                          self.applicable_to.name)
+                          self.applicable_to.name,
+                          self.min_level,
+                          self.max_level)
 
     def __repr__(self):
-        return self.__str__()
-
+        return str.format("<NumericalBonus {0}>", self.id)
     @classmethod
     def get_applicable_as_dict(cls, level, spell_ids):
 
@@ -178,3 +195,9 @@ class MiscBonus(db.Model):
     def __init__(self, spell, description):
         self.bonus_description = description
         self.associated_spell = spell
+
+    def __str__(self):
+        return str.format("<{}>", self.bonus_description)
+
+    def __repr__(self):
+        return str.format("<MiscBonus object {0}. Effect: {1}>", self.id, self.bonus_description)
