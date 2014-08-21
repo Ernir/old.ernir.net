@@ -54,6 +54,17 @@ class NumericalBonusView(ModelView):
         super(NumericalBonusView, self).__init__(NumericalBonus, session, **kwargs)
 
 
+class MiscBonusView(ModelView):
+
+    def is_accessible(self):
+        if login.current_user.is_authenticated():
+            if login.current_user.role == 1 or login.current_user.role == 2:
+                return True
+        return False
+
+    def __init__(self, session, **kwargs):
+        super(MiscBonusView, self).__init__(MiscBonus, session, **kwargs)
+
 class SpellView(ModelView):
 
     column_exclude_list = ['real_spell']
@@ -97,5 +108,6 @@ admin.add_view(UserView(db.session))
 admin.add_view(TagView(db.session))
 admin.add_view(CommentView(db.session))
 admin.add_view(NumericalBonusView(db.session))
+admin.add_view(MiscBonusView(db.session))
 admin.add_view(SpellView(db.session))
 admin.add_view(StatisticView(db.session))

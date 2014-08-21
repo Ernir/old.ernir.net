@@ -13,7 +13,10 @@ class Spell(db.Model):
     real_spell = db.Column(db.Boolean, default=True)
     variable = db.Column(db.Boolean, default=False)
 
-    def __init__(self, name, source="SRD", real_spell=True, variable=False):
+    def __init__(self):
+        pass
+
+    def __init__(self, name=None, source="SRD", real_spell=True, variable=False):
         self.name = name
         self.source = source
         self.real_spell = real_spell
@@ -43,6 +46,9 @@ class ModifierType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
 
+    def __init__(self):
+        pass
+
     def __init__(self, name):
         self.name = name
 
@@ -69,7 +75,10 @@ class Statistic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
 
-    def __init__(self, name):
+    def __init__(self):
+        pass
+
+    def __init__(self, name="No Name"):
         self.name = name
 
     @classmethod
@@ -104,7 +113,15 @@ class NumericalBonus(db.Model):
     applicable_to_id = db.Column(db.Integer, db.ForeignKey("statistic.id"))
     applicable_to = db.relationship("Statistic")
 
-    def __init__(self, spell, bonus, applicable_range, modifier_type, applies_to):
+    def __init__(self):
+        pass
+
+    def __init__(self,
+                 spell=None,
+                 bonus=None,
+                 applicable_range=[float("-inf"), float("inf")],
+                 modifier_type=None,
+                 applies_to=None):
 
         if len(applicable_range) == 2 and applicable_range[1] >= applicable_range[0]:
             self.min_level = applicable_range[0]
@@ -125,6 +142,7 @@ class NumericalBonus(db.Model):
 
     def __repr__(self):
         return str.format("<NumericalBonus {0}>", self.id)
+
     @classmethod
     def get_applicable_as_dict(cls, level, spell_ids):
 
@@ -192,7 +210,10 @@ class MiscBonus(db.Model):
 
         return result
 
-    def __init__(self, spell, description):
+    def __init__(self):
+        pass
+
+    def __init__(self, spell=None, description=None):
         self.bonus_description = description
         self.associated_spell = spell
 
