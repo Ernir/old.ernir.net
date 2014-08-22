@@ -19,12 +19,10 @@ class Source(db.Model):
 
 
     @classmethod
-    def get_all_as_list(cls):
-        all_sources = cls.query.order_by(cls.priority).all()
+    def get_all(cls):
+        all_sources = cls.query.with_entities(cls.id, cls.short, cls.name).order_by(cls.priority).all()
 
-        return_list = [dict(name=source.name, short=source.short) for source in all_sources]
-
-        return return_list
+        return all_sources
 
     def __str__(self):
         return str.format("<{}>", self.short)
@@ -50,15 +48,14 @@ class Spell(db.Model):
         self.real_spell = real_spell
 
     @classmethod
-    def get_all_as_list(cls):
-        all_spells = cls.query.order_by(cls.name).all()
+    def get_all(cls):
+        all_spells = cls.query.with_entities(cls.id,
+                                             cls.name,
+                                             cls.source_id,
+                                             cls.variable).order_by(cls.name).all()
 
-        return_list = [dict(id=spell.id,
-                            name=spell.name,
-                            source=spell.source.short,
-                            variable=spell.variable) for spell in all_spells]
 
-        return return_list
+        return all_spells
 
     def __str__(self):
         return str.format("<{}>", self.name)

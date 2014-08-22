@@ -150,8 +150,10 @@ def vtp():
 
 @app.route("/bufftracker/")
 def buff_tracker():
-    spell_list = spell_models.Spell.get_all_as_list()
-    source_list = spell_models.Source.get_all_as_list()
+    spell_list = spell_models.Spell.get_all()
+    source_list = spell_models.Source.get_all()
+
+    print(spell_list)
 
     return render_template("bufftracker.jinja2",
                            spell_list=spell_list,

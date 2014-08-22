@@ -17,60 +17,60 @@
     </div>
 
     <div class="col-md-12">
-    <div class="col-md-4">
-        <div id="srd-container">
-            {% for source in source_list %}
-                <h2>{{ source['name'] }} Buff Spells</h2>
-                {% for spell in spell_list %}
-                    {% if spell['source'] == source['short'] %}
-                        {% if spell['variable'] %}
+        <div class="col-md-4">
+            <div id="srd-container">
+                {% for source in source_list %}
+                    <h2>{{ source.name }} Buff Spells</h2>
+                    {% for spell in spell_list %}
+                        {% if spell.source_id == source.id %}
                             <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id="spell-{{ spell["id"] }}">
-                                    {{ spell["name"] }}
-                                    <input type="number" id="caster-level-{{ spell["id"] }}" class="cl-detail" value="1" min="1" max="100">
-                                </label>
-                            </div>
-                        {% else %}
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id="spell-{{ spell["id"] }}">
-                                    {{ spell["name"] }}
-                                </label>
+                                {% if spell.variable %}
+                                    <label>
+                                        <input type="checkbox" id="spell-{{ spell.id }}">
+                                        {{ spell.name }}
+                                        <input type="number" id="caster-level-{{ spell.id }}" class="cl-detail"
+                                               value="1" min="1" max="100">
+                                    </label>
+                                {% else %}
+                                    <label>
+                                        <input type="checkbox" id="spell-{{ spell.id }}">
+                                        {{ spell.name }}
+                                    </label>
+
+                                {% endif %}
                             </div>
                         {% endif %}
-                    {% endif %}
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <h2>Results</h2>
+        <div class="col-md-4">
+            <h2>Results</h2>
 
-        <div id="results-container">
+            <div id="results-container">
+            </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <h2>Your Character</h2>
+        <div class="col-md-4">
+            <h2>Your Character</h2>
 
-        <div id="character-container" class="form-inline">
-{#TODO: include MW-parsing#}
-{#            <div class="form-group">#}
-{#                <label for="mw-url-input" class="col-sm-6 control-label">Myth-Weavers sheet id: </label>#}
-{##}
-{#                <div class="col-sm-6">#}
-{#                    <input type="text" id="mw-url-input" class="form-control">#}
-{#                </div>#}
-{#            </div>#}
-            <div class="form-group">
-                <label for="caster-level" class="col-sm-6 control-label">Set global Caster Level: </label>
+            <div id="character-container" class="form-inline">
+                {#TODO: include MW-parsing#}
+                {#            <div class="form-group">#}
+                {#                <label for="mw-url-input" class="col-sm-6 control-label">Myth-Weavers sheet id: </label>#}
+                {##}
+                {#                <div class="col-sm-6">#}
+                {#                    <input type="text" id="mw-url-input" class="form-control">#}
+                {#                </div>#}
+                {#            </div>#}
+                <div class="form-group">
+                    <label for="caster-level" class="col-sm-6 control-label">Set global Caster Level: </label>
 
-                <div class="col-sm-6">
-                    <input type="number" id="caster-level" class="form-control" value="1" min="1" max="100">
+                    <div class="col-sm-6">
+                        <input type="number" id="caster-level" class="form-control" value="1" min="1" max="100">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock content %}
 
