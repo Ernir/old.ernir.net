@@ -59,30 +59,9 @@ def tagged_blogs(tag_name):
 
     return render_template("blog.jinja2", sitename=u"Blog", posts=blogs, tags=tags)
 
-
-@app.route("/admin/delete/comment/", methods=["POST"])
-@login_required
-def delete_comment():
-    if g.user.role == 1:
-        Comment.delete(request.form["id"])
-        return jsonify(status="OK")
-    else:
-        pass  # TODO: Handle unauthorized deletions
-
 '''
 Admin and login
 '''
-
-
-@app.route("/oldadmin/")
-@login_required
-def admin():
-    if g.user.role == 1:
-        comments = Comment.get_by_date()
-        return render_template("admin.jinja2", sitename=u"Admin", comments=comments)
-    else:
-        return redirect(url_for("login"))
-
 
 @lm.unauthorized_handler
 def unauthorized():
@@ -152,8 +131,6 @@ def vtp():
 def buff_tracker():
     spell_list = spell_models.Spell.get_all()
     source_list = spell_models.Source.get_all()
-
-    print(spell_list)
 
     return render_template("bufftracker.jinja2",
                            spell_list=spell_list,
