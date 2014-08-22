@@ -4,23 +4,39 @@ from ernirnet import db
 from sqlalchemy import func
 
 
+class Source(db.Model):
+    __bind_key__ = "spells"
+
+    id = db.Column(db.Integer, primary_key=True)
+    short = db.Column(db.String(4))
+    name = db.Column(db.String(80))
+
+    def __init__(self, name=None, short=None):
+        self.name = name
+        self.short = short
+
+    def __str__(self):
+        return str.format("<{}>", self.short)
+
+    def __repr__(self):
+        return self.__str__()
+
+
 class Spell(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
-    source = db.Column(db.String(3), default="SRD")
+    source_id = db.Column(db.Integer, db.ForeignKey("source.id"))
+    source = db.relationship("Source")
     real_spell = db.Column(db.Boolean, default=True)
     variable = db.Column(db.Boolean, default=False)
 
-    def __init__(self):
-        pass
-
-    def __init__(self, name=None, source="SRD", real_spell=True, variable=False):
+    def __init__(self, name=None, source=None, variable=False, real_spell=True):
         self.name = name
         self.source = source
-        self.real_spell = real_spell
         self.variable = variable
+        self.real_spell = real_spell
 
     @classmethod
     def get_all_as_list(cls):
@@ -46,10 +62,7 @@ class ModifierType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
 
-    def __init__(self):
-        pass
-
-    def __init__(self, name):
+    def __init__(self, name=None):
         self.name = name
 
     @classmethod
@@ -75,10 +88,7 @@ class Statistic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
 
-    def __init__(self):
-        pass
-
-    def __init__(self, name="No Name"):
+    def __init__(self, name=None):
         self.name = name
 
     @classmethod
@@ -112,9 +122,6 @@ class NumericalBonus(db.Model):
     modifier_type = db.relationship("ModifierType")
     applicable_to_id = db.Column(db.Integer, db.ForeignKey("statistic.id"))
     applicable_to = db.relationship("Statistic")
-
-    def __init__(self):
-        pass
 
     def __init__(self,
                  spell=None,
@@ -209,9 +216,6 @@ class MiscBonus(db.Model):
             result.append(bonus[1])
 
         return result
-
-    def __init__(self):
-        pass
 
     def __init__(self, spell=None, description=None):
         self.bonus_description = description
