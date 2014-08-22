@@ -18,51 +18,29 @@
 
     <div class="col-md-12">
     <div class="col-md-4">
-        <h2>d20 SRD Buff Spells</h2>
         <div id="srd-container">
-            {% for spell in spell_list %}
-                {% if spell['source'] == "SRD" %}
-                    {% if spell['variable'] %}
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="spell-{{ spell["id"] }}">
-                                {{ spell["name"] }}
-                                <input type="number" id="caster-level-{{ spell["id"] }}" class="cl-detail" value="1" min="1" max="100">
-                            </label>
-                        </div>
-                    {% else %}
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="spell-{{ spell["id"] }}">
-                                {{ spell["name"] }}
-                            </label>
-                        </div>
+            {% for source in source_list %}
+                <h2>{{ source['name'] }} Buff Spells</h2>
+                {% for spell in spell_list %}
+                    {% if spell['source'] == source['short'] %}
+                        {% if spell['variable'] %}
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="spell-{{ spell["id"] }}">
+                                    {{ spell["name"] }}
+                                    <input type="number" id="caster-level-{{ spell["id"] }}" class="cl-detail" value="1" min="1" max="100">
+                                </label>
+                            </div>
+                        {% else %}
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="spell-{{ spell["id"] }}">
+                                    {{ spell["name"] }}
+                                </label>
+                            </div>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-            {% endfor %}
-        </div>
-        <h2>Spell Compendium Buff Spells</h2>
-
-        <div id="spc-container">
-            {% for spell in spell_list %}
-                {% if spell['source'] == "SPC" %}
-                    {% if spell['variable'] %}
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="spell-{{ spell["id"] }}">
-                                {{ spell["name"] }}
-                                <input type="number" id="caster-level-{{ spell["id"] }}" class="cl-detail" value="1" min="1" max="100">
-                            </label>
-                        </div>
-                    {% else %}
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="spell-{{ spell["id"] }}">
-                                {{ spell["name"] }}
-                            </label>
-                        </div>
-                    {% endif %}
-                {% endif %}
+                {% endfor %}
             {% endfor %}
         </div>
     </div>

@@ -10,10 +10,21 @@ class Source(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     short = db.Column(db.String(4))
     name = db.Column(db.String(80))
+    priority = db.Column(db.Integer)
 
-    def __init__(self, name=None, short=None):
+    def __init__(self, name=None, short=None, priority=100):
         self.name = name
         self.short = short
+        self.priority = priority
+
+
+    @classmethod
+    def get_all_as_list(cls):
+        all_sources = cls.query.order_by(cls.priority).all()
+
+        return_list = [dict(name=source.name, short=source.short) for source in all_sources]
+
+        return return_list
 
     def __str__(self):
         return str.format("<{}>", self.short)
@@ -44,7 +55,7 @@ class Spell(db.Model):
 
         return_list = [dict(id=spell.id,
                             name=spell.name,
-                            source=spell.source,
+                            source=spell.source.short,
                             variable=spell.variable) for spell in all_spells]
 
         return return_list

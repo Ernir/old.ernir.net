@@ -151,8 +151,12 @@ def vtp():
 @app.route("/bufftracker/")
 def buff_tracker():
     spell_list = spell_models.Spell.get_all_as_list()
+    source_list = spell_models.Source.get_all_as_list()
 
-    return render_template("bufftracker.jinja2", spell_list=spell_list, sitename=u"D&D 3.5 Buff Tracker")
+    return render_template("bufftracker.jinja2",
+                           spell_list=spell_list,
+                           source_list=source_list,
+                           sitename=u"D&D 3.5 Buff Tracker")
 
 
 '''
