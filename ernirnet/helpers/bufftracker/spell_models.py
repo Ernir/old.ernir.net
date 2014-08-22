@@ -209,25 +209,36 @@ class MiscBonus(db.Model):
     bonus_description = db.Column(db.String(120))
     associated_spell_id = db.Column(db.Integer, db.ForeignKey("spell.id"))
     associated_spell = db.relationship("Spell", backref=db.backref("misc_benefits", lazy="dynamic"))
+    is_temp_hp_bonus = db.Column(db.Boolean)
 
     @classmethod
     def get_applicable_as_list(cls, spell_ids):
 
         result = []
 
+        # Returns all distinct Misc. bonuses associated with spells of the given ids.
+        # Temp HP bonus duplication allowed.
         columns = Spell.query.with_entities(Spell.id, MiscBonus.bonus_description)
         selected_spells = columns.filter(Spell.id.in_(spell_ids)).join(MiscBonus)
-        all_bonuses = selected_spells.join(MiscBonus)
-        unique_bonuses = all_bonuses.group_by(MiscBonus.bonus_description).all()
+
+        exclude_temp_hp = selected_spells.filter(cls.is_temp_hp_bonus == False)
+        include_temp_hp = selected_spells.filter(cls.is_temp_hp_bonus)
+
+        unique_bonuses = exclude_temp_hp.group_by(MiscBonus.bonus_description).all()
+        temp_hp_bonuses = include_temp_hp.all()
 
         for bonus in unique_bonuses:
             result.append(bonus[1])
 
+        for temp_hp_bonus in temp_hp_bonuses:
+            result.append(temp_hp_bonus[1])
+
         return result
 
-    def __init__(self, spell=None, description=None):
+    def __init__(self, spell=None, description=None, is_temp_hp_bonus = False):
         self.bonus_description = description
         self.associated_spell = spell
+        self.is_temp_hp_bonus = is_temp_hp_bonus
 
     def __str__(self):
         return str.format("<{}>", self.bonus_description)
