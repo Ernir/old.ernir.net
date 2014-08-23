@@ -1,3 +1,6 @@
+/*
+ Pushes/removes the corresponding elements from selectedSpellIDs when a checkbox is marked.
+ */
 function updateSelectedSpells() {
     var currentSpellId = parseInt(this.id.replace("spell-", ""));
     if (this.checked) {
@@ -10,7 +13,46 @@ function updateSelectedSpells() {
 }
 
 /*
+ As updateSelectedSpells(), but for radio buttons.
+ Also contains hacks to make radio buttons de-selectable.
+ */
+function radioButtonClicked() {
+    var previousValue = $(this).prop('previousValue');
+    var name = $(this).prop('name');
 
+    if (previousValue == 'checked') {
+        $(this).removeAttr('checked');
+        $(this).prop('previousValue', false);
+    }
+    else {
+        $("input[name=" + name + "]:radio").prop('previousValue', false);
+        $(this).prop('previousValue', 'checked');
+    }
+
+    var currentSpellId = parseInt(this.id.replace("spell-", ""));
+
+    if (this.checked) {
+        selectedSpellIDs.push(currentSpellId);
+    }
+    else {
+        selectedSpellIDs.splice(selectedSpellIDs.indexOf(currentSpellId), 1);
+    }
+
+    var clickedElement = this;
+    $.each($("input[type=radio]"), function (index, element) {
+        if (element.id !== clickedElement.id) {
+            var spellToRemove = parseInt(element.id.replace("spell-", ""));
+            var position = selectedSpellIDs.indexOf(spellToRemove);
+            if (position != -1) {
+                selectedSpellIDs.splice(position, 1);
+            }
+        }
+    })
+    updateResults();
+}
+
+/*
+ Duh.
  */
 function updateGlobalCL() {
     var globalCL = $("#caster-level").val();
@@ -57,15 +99,18 @@ function constructMessage(CL) {
     return message;
 }
 
-
+/*
+ Loops over the statisticsGroups object to display bonuses.
+ This is the function that actually updates the page.
+ */
 function displayResults(numericalBonuses, miscBonuses) {
 
     $("#results-container").empty();
     $.each(statisticsGroups, function (i, group) {
         $.each(group, function (j, statistics) {
             if (numericalBonuses[j] !== null && numericalBonuses[j] !== 0) {
-                // The Ternary thing is to add an appropriate sign to the displayed bonus
-                var resultSpan = "<span class='row'>" + group[j] + ": " + (numericalBonuses[j] > 0 ? "+" :"") + numericalBonuses[j] + "</span>";
+                // The ternary thing is to add an appropriate sign to the displayed bonus
+                var resultSpan = "<span class='row'>" + group[j] + ": " + (numericalBonuses[j] > 0 ? "+" : "") + numericalBonuses[j] + "</span>";
                 $("#results-container").append(resultSpan);
             }
         })

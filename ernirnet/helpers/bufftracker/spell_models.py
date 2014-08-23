@@ -40,19 +40,22 @@ class Spell(db.Model):
     source = db.relationship("Source")
     real_spell = db.Column(db.Boolean, default=True)
     variable = db.Column(db.Boolean, default=False)
+    size_modifying = db.Column(db.Boolean, default=False)
 
-    def __init__(self, name=None, source=None, variable=False, real_spell=True):
+    def __init__(self, name=None, source=None, variable=False, real_spell=True, size_modifying=False):
         self.name = name
         self.source = source
         self.variable = variable
         self.real_spell = real_spell
+        self.size_modifying = size_modifying
 
     @classmethod
     def get_all(cls):
         all_spells = cls.query.with_entities(cls.id,
                                              cls.name,
                                              cls.source_id,
-                                             cls.variable).order_by(cls.name).all()
+                                             cls.variable,
+                                             cls.size_modifying).order_by(cls.name).all()
 
 
         return all_spells
