@@ -63,7 +63,8 @@ function displayResults(numericalBonuses, miscBonuses) {
     $("#results-container").empty();
     $.each(statisticsGroups, function (i, group) {
         $.each(group, function (j, statistics) {
-            if (numericalBonuses[j] !== null) {
+            if (numericalBonuses[j] !== null && numericalBonuses[j] !== 0) {
+                // The Ternary thing is to add an appropriate sign to the displayed bonus
                 var resultSpan = "<span class='row'>" + group[j] + ": " + (numericalBonuses[j] > 0 ? "+" :"") + numericalBonuses[j] + "</span>";
                 $("#results-container").append(resultSpan);
             }
