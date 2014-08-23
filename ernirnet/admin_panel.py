@@ -95,7 +95,7 @@ class StatisticView(ModelView):
 
     def is_accessible(self):
         if login.current_user.is_authenticated():
-            if login.current_user.role == 1:
+            if login.current_user.role == 1 or login.current_user.role == 2:
                 return True
         return False
 
