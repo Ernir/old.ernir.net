@@ -3,7 +3,7 @@
  (Hey, it's JS. Did you expect there wouldn't be any?
  */
 var selectedSpellIDs;
-var statistics;
+var statisticsGroups;
 var modifierTypes;
 
 var $detailedCLInputs;
@@ -11,7 +11,7 @@ var $detailedCLInputs;
 $(function () {
     $.getJSON("/api/bufftracker/statistics/", function (data) {
         if (data.status === 200) {
-            statistics = data.content;
+            statisticsGroups = data.content;
         }
     });
 

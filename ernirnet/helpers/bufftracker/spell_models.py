@@ -10,7 +10,7 @@ class Source(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     short = db.Column(db.String(4))
     name = db.Column(db.String(80))
-    priority = db.Column(db.Integer)
+    priority = db.Column(db.Integer)  # Sources with a lower priority number are printed first.
 
     def __init__(self, name=None, short=None, priority=100):
         self.name = name
@@ -95,19 +95,47 @@ class Statistic(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
+    group_id = db.Column(db.Integer, db.ForeignKey("statistics_group.id"))
+    group = db.relationship("StatisticsGroup")
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, group=None):
         self.name = name
+        self.group = group
 
     @classmethod
     def get_all_as_dict(cls):
-        all_statistics = cls.query.all()
+        all_statistics = cls.query.join(StatisticsGroup).order_by(StatisticsGroup.priority).all()
 
-        return_dict = dict()
-        for stat in all_statistics:
-            return_dict[stat.id] = stat.name
+        all_groups = StatisticsGroup.query.order_by(StatisticsGroup.priority).all()
+
+        return_dict = {}
+
+        for group in all_groups:
+            associated_statistics = cls.query.filter(cls.group_id == group.id)
+            group_dict = {}
+            for stat in associated_statistics:
+                group_dict[stat.id] = stat.name
+            return_dict[group.priority] = group_dict
 
         return return_dict
+
+    def __str__(self):
+        return str.format("<{}>", self.name)
+
+    def __repr__(self):
+        return self.__str__()
+
+
+class StatisticsGroup(db.Model):
+    __bind_key__ = "spells"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    priority = db.Column(db.Integer)  # Groups with lower priority are printed first
+
+    def __init__(self, name=None, priority=0):
+        self.name = name
+        self.priority = priority
 
     def __str__(self):
         return str.format("<{}>", self.name)

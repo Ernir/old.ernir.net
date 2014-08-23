@@ -61,11 +61,13 @@ function constructMessage(CL) {
 function displayResults(numericalBonuses, miscBonuses) {
 
     $("#results-container").empty();
-    $.each(statistics, function (index, name) {
-        if (numericalBonuses[index] !== null) {
-            var resultSpan = "<span class='row'>" + statistics[index] + ": +" + numericalBonuses[index] + "</span>";
-            $("#results-container").append(resultSpan);
-        }
+    $.each(statisticsGroups, function (i, group) {
+        $.each(group, function (j, statistics) {
+            if (numericalBonuses[j] !== null) {
+                var resultSpan = "<span class='row'>" + group[j] + ": +" + numericalBonuses[j] + "</span>";
+                $("#results-container").append(resultSpan);
+            }
+        })
     });
     for (var index = 0; index < miscBonuses.length; index++) {
         $("#results-container").append("<span class='row'>" + miscBonuses[index] + "</span>");
