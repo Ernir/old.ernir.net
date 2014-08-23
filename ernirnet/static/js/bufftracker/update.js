@@ -64,7 +64,7 @@ function displayResults(numericalBonuses, miscBonuses) {
     $.each(statisticsGroups, function (i, group) {
         $.each(group, function (j, statistics) {
             if (numericalBonuses[j] !== null) {
-                var resultSpan = "<span class='row'>" + group[j] + ": +" + numericalBonuses[j] + "</span>";
+                var resultSpan = "<span class='row'>" + group[j] + ": " + (numericalBonuses[j] > 0 ? "+" :"") + numericalBonuses[j] + "</span>";
                 $("#results-container").append(resultSpan);
             }
         })
