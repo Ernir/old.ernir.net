@@ -159,7 +159,7 @@ def buff_tracker_new_bonuses_calculation():
     if request.method == "POST":
         cl_dictionary = request.get_json(force=True)
 
-        numerical_bonuses = spell_models.NumericalBonus.get_applicable_as_dict_detailed(cl_dictionary)
+        numerical_bonuses = spell_models.NumericalBonus.get_applicable_as_dict(cl_dictionary)
 
         selected_spell_ids = [key for key in cl_dictionary]
         misc_bonuses = spell_models.MiscBonus.get_applicable_as_list(selected_spell_ids)

@@ -8,15 +8,14 @@ class Source(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
-    short = db.Column(db.String(4))
-    name = db.Column(db.String(80))
+    short = db.Column(db.String(4))  # Example values: "SRD", "SPC"
+    name = db.Column(db.String(80))  # Example values: "d20 SRD", "Spell Compendium"
     priority = db.Column(db.Integer)  # Sources with a lower priority number are printed first.
 
     def __init__(self, name=None, short=None, priority=100):
         self.name = name
         self.short = short
         self.priority = priority
-
 
     @classmethod
     def get_all(cls):
@@ -35,12 +34,12 @@ class Spell(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120))
+    name = db.Column(db.String(120))  # Example values: "Aid", "Barkskin"
     source_id = db.Column(db.Integer, db.ForeignKey("source.id"))
     source = db.relationship("Source")
-    real_spell = db.Column(db.Boolean, default=True)
-    variable = db.Column(db.Boolean, default=False)
-    size_modifying = db.Column(db.Boolean, default=False)
+    real_spell = db.Column(db.Boolean, default=True)  # Bonuses resulting from magic items also appear in this table.
+    variable = db.Column(db.Boolean, default=False)  # A spell that varies by CL needs special UI elements.
+    size_modifying = db.Column(db.Boolean, default=False)  # Size-modifying spells can not stack.
 
     def __init__(self, name=None, source=None, variable=False, real_spell=True, size_modifying=False):
         self.name = name
@@ -57,7 +56,6 @@ class Spell(db.Model):
                                              cls.variable,
                                              cls.size_modifying).order_by(cls.name).all()
 
-
         return all_spells
 
     def __str__(self):
@@ -71,16 +69,20 @@ class ModifierType(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
+    name = db.Column(db.String(80))  # Example values: "deflection", "dodge", "enhancement"...
 
     def __init__(self, name=None):
         self.name = name
 
     @classmethod
-    def get_all_as_dict(cls):
-        all_modifiers = cls.query.all()
+    def get_all(cls):
+        return cls.query.all()
 
-        return_dict = dict()
+    @classmethod
+    def get_all_as_dict(cls):
+        all_modifiers = cls.get_all()
+
+        return_dict = {}
         for modifier in all_modifiers:
             return_dict[modifier.id] = modifier.name
 
@@ -97,7 +99,7 @@ class Statistic(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
+    name = db.Column(db.String(80))  # Example values: "Attack bonus", "Damage", "Saves vs. fear"
     group_id = db.Column(db.Integer, db.ForeignKey("statistics_group.id"))
     group = db.relationship("StatisticsGroup")
 
@@ -107,13 +109,11 @@ class Statistic(db.Model):
 
     @classmethod
     def get_all_as_dict(cls):
-        all_statistics = cls.query.join(StatisticsGroup).order_by(StatisticsGroup.priority).all()
-
-        all_groups = StatisticsGroup.query.order_by(StatisticsGroup.priority).all()
+        all_stat_groups = StatisticsGroup.get_all()
 
         return_dict = {}
 
-        for group in all_groups:
+        for group in all_stat_groups:
             associated_statistics = cls.query.filter(cls.group_id == group.id)
             group_dict = {}
             for stat in associated_statistics:
@@ -133,12 +133,16 @@ class StatisticsGroup(db.Model):
     __bind_key__ = "spells"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
+    name = db.Column(db.String(80))  # Example values: "Ability Scores", "Saves"
     priority = db.Column(db.Integer)  # Groups with lower priority are printed first
 
     def __init__(self, name=None, priority=0):
         self.name = name
         self.priority = priority
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.order_by(StatisticsGroup.priority).all()
 
     def __str__(self):
         return str.format("<{}>", self.name)
@@ -152,8 +156,8 @@ class NumericalBonus(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     bonus = db.Column(db.Integer)
-    min_level = db.Column(db.Float)
-    max_level = db.Column(db.Float)
+    min_level = db.Column(db.Float)  # Each NumericalBonus entry applies in a fixed level range. Multiple entries
+    max_level = db.Column(db.Float)  # are needed to represent values that vary by level.
 
     associated_spell_id = db.Column(db.Integer, db.ForeignKey("spell.id"))
     associated_spell = db.relationship("Spell", backref=db.backref("numerical_benefits", lazy="dynamic"))
@@ -165,7 +169,7 @@ class NumericalBonus(db.Model):
     def __init__(self,
                  spell=None,
                  bonus=None,
-                 applicable_range=[float("-inf"), float("inf")],
+                 applicable_range=(float("-inf"), float("inf")),
                  modifier_type=None,
                  applies_to=None):
 
@@ -190,25 +194,12 @@ class NumericalBonus(db.Model):
         return str.format("<NumericalBonus {0}>", self.id)
 
     @classmethod
-    def get_applicable_as_dict(cls, level, spell_ids):
+    def get_applicable_as_dict(cls, cl_dictionary):
+        """ Calculates the total bonuses given by all selected spells, accounting for stacking rules.
 
-        result = dict()
+        cl_dictionary: A dictionary with spell IDs as keys, and the CLs of each spell as values.
 
-        statistics = Statistic.query.with_entities(Statistic.id, Statistic.name).all()
-
-        for statistic in statistics:
-            columns = Spell.query.join(cls).with_entities(func.max(cls.bonus).label("highest"))
-            selected_spells = columns.filter(Spell.id.in_(spell_ids))
-            bonuses_in_range = selected_spells.filter(cls.min_level <= level, cls.max_level >= level)
-            applicable_to_current_statistic = bonuses_in_range.filter(cls.applicable_to_id == statistic.id)
-            collapsed_by_modifier = applicable_to_current_statistic.group_by(cls.modifier_type_id)
-
-            result[statistic.id] = db.session.query(func.sum(collapsed_by_modifier.subquery().columns.highest)).scalar()
-
-        return result
-
-    @classmethod
-    def get_applicable_as_dict_detailed(cls, cl_dictionary):
+        returns: A dictionary with statistic IDs as keys, and the calculated bonuses as values."""
 
         result = {}
 
@@ -218,16 +209,18 @@ class NumericalBonus(db.Model):
 
         for statistic in statistics:
 
+            # We start with an empty query
             bonuses = NumericalBonus.query.filter(False)
             for spell_id in selected_spell_ids:
+                # Iterate over spells, adding associated bonuses whose CLs matches the cl_dictionary value.
                 in_range = NumericalBonus.query.filter(cls.min_level <= cl_dictionary[spell_id],
                                                        cls.max_level >= cl_dictionary[spell_id],
                                                        cls.applicable_to_id == statistic.id,
                                                        cls.associated_spell_id == spell_id)
                 bonuses = bonuses.union(in_range)
 
+            # Grouping and calculating.
             collapsed = bonuses.group_by(cls.modifier_type_id).with_entities(func.max(cls.bonus).label("highest"))
-
             result[statistic.id] = db.session.query(func.sum(collapsed.subquery().columns.highest)).scalar()
 
         return result
@@ -242,6 +235,11 @@ class MiscBonus(db.Model):
     associated_spell = db.relationship("Spell", backref=db.backref("misc_benefits", lazy="dynamic"))
     is_temp_hp_bonus = db.Column(db.Boolean)
 
+    def __init__(self, spell=None, description=None, is_temp_hp_bonus=False):
+        self.bonus_description = description
+        self.associated_spell = spell
+        self.is_temp_hp_bonus = is_temp_hp_bonus
+
     @classmethod
     def get_applicable_as_list(cls, spell_ids):
 
@@ -252,7 +250,7 @@ class MiscBonus(db.Model):
         columns = Spell.query.with_entities(Spell.id, MiscBonus.bonus_description)
         selected_spells = columns.filter(Spell.id.in_(spell_ids)).join(MiscBonus)
 
-        exclude_temp_hp = selected_spells.filter(cls.is_temp_hp_bonus == False)
+        exclude_temp_hp = selected_spells.filter(cls.is_temp_hp_bonus == False)  # PEP8 comparison no work? TODO: check
         include_temp_hp = selected_spells.filter(cls.is_temp_hp_bonus)
 
         unique_bonuses = exclude_temp_hp.group_by(MiscBonus.bonus_description).all()
@@ -265,11 +263,6 @@ class MiscBonus(db.Model):
             result.append(temp_hp_bonus[1])
 
         return result
-
-    def __init__(self, spell=None, description=None, is_temp_hp_bonus = False):
-        self.bonus_description = description
-        self.associated_spell = spell
-        self.is_temp_hp_bonus = is_temp_hp_bonus
 
     def __str__(self):
         return str.format("<{}>", self.bonus_description)
