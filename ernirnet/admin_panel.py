@@ -1,7 +1,8 @@
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask.ext import login
-from ernirnet.helpers.blog.blog_models import User, Tag, Comment
+from ernirnet.helpers.blog.blog_models import User, Tag, Comment, Blog
+from ernirnet.helpers.blog.forms import CKTextAreaField
 from ernirnet.helpers.bufftracker.spell_models import NumericalBonus, Spell, ModifierType, Statistic, NumericalBonus, MiscBonus, Source, StatisticsGroup
 from ernirnet import app, db
 
@@ -17,6 +18,21 @@ class UserView(ModelView):
     def __init__(self, session, **kwargs):
         super(UserView, self).__init__(User, session, **kwargs)
 
+
+class BlogView(ModelView):
+
+    def is_accessible(self):
+        if login.current_user.is_authenticated():
+            if login.current_user.role == 1:
+                return True
+        return False
+
+    create_template = "admin/edit.html"
+    edit_template = "admin/edit.html"
+    form_overrides = dict(body=CKTextAreaField)
+
+    def __init__(self, session, **kwargs):
+        super(BlogView, self).__init__(Blog, session, **kwargs)
 
 class TagView(ModelView):
 
@@ -129,6 +145,7 @@ class StatisticsGroupView(ModelView):
 admin = Admin(app)
 
 admin.add_view(UserView(db.session))
+admin.add_view(BlogView(db.session))
 admin.add_view(TagView(db.session))
 admin.add_view(CommentView(db.session))
 admin.add_view(NumericalBonusView(db.session))
