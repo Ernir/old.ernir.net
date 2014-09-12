@@ -73,6 +73,9 @@ class Blog(db.Model):
         blog.tags = [Tag("Whoops")]
         return blog
 
+    def __repr__(self):
+        return str.format("<Blog {0}>", self.title)
+
 
 class Tag(db.Model):
     __bind_key__ = "blog"
@@ -88,6 +91,9 @@ class Tag(db.Model):
         return cls.query.with_entities(cls.name, func.count(cls.id).label("frequency")).join(tag_association).join(
             Blog).group_by(cls.id).order_by("frequency DESC").all()
 
+    def __repr__(self):
+        return str.format("<Tag {0}>", self.name)
+
 
 class Comment(db.Model):
     __bind_key__ = "blog"
@@ -101,7 +107,6 @@ class Comment(db.Model):
     def __init__(self, content, date):
         self.content = content
         self.date = date
-
 
     @classmethod
     def get_by_date(cls):
@@ -121,6 +126,9 @@ class Comment(db.Model):
         comment = cls.query.filter_by(id=comment_id).first()
         db.session.delete(comment)
         db.session.commit()
+
+    def __repr__(self):
+        return str.format("<Comment {0} on {1}>", self.id, self.date)
 
 
 class User(db.Model):
@@ -145,4 +153,4 @@ class User(db.Model):
         return unicode(self.id)
 
     def __repr__(self):
-        return '<User %r>' % (self.nickname)
+        return str.format("<User {0}>", self.nickname)
