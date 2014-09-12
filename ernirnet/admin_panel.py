@@ -144,14 +144,18 @@ class StatisticsGroupView(ModelView):
 
 admin = Admin(app)
 
-admin.add_view(UserView(db.session))
-admin.add_view(BlogView(db.session))
-admin.add_view(TagView(db.session))
-admin.add_view(CommentView(db.session))
-admin.add_view(NumericalBonusView(db.session))
-admin.add_view(MiscBonusView(db.session))
-admin.add_view(SpellView(db.session))
-admin.add_view(StatisticView(db.session))
-admin.add_view(ModifierTypeView(db.session))
-admin.add_view(StatisticsGroupView(db.session))
-admin.add_view(SourceView(db.session))
+admin.add_view(UserView(db.session, endpoint="user"))
+
+admin.add_view(BlogView(db.session, endpoint="blog", category="Blog"))
+admin.add_view(TagView(db.session, endpoint="tag", category="Blog"))
+admin.add_view(CommentView(db.session, endpoint="comment", category="Blog"))
+
+admin.add_view(SpellView(db.session, endpoint="spell"))
+
+admin.add_view(NumericalBonusView(db.session, endpoint="numerical-bonus", category="Bonus"))
+admin.add_view(MiscBonusView(db.session, endpoint="misc-bonus", category="Bonus"))
+
+admin.add_view(StatisticView(db.session, endpoint="statistic", category="Other"))
+admin.add_view(ModifierTypeView(db.session, endpoint="modifer-type", category="Other"))
+admin.add_view(StatisticsGroupView(db.session, endpoint="statistic-group", category="Other"))
+admin.add_view(SourceView(db.session, endpoint="source", category="Other"))
