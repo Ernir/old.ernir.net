@@ -73,6 +73,8 @@
                                         <p><input type="hidden" name="blog-id" value="{{ post.id }}"></p>
                                         <p><input type="submit" value="Add comment" class="btn btn-default"></p>
                                     </form>
+                                {% else %}
+                                    <a href="/login">Log in</a> to comment.
                                 {% endif %}
                             </div>
                         </div> <!-- /.blog-post -->
@@ -102,7 +104,6 @@
                 </div>
                 <!-- /.blog-sidebar -->
             </div>
-
         </div>
     </div>
 {% endblock wrapper %}
