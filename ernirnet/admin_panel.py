@@ -30,9 +30,11 @@ class BlogView(ModelView):
     create_template = "admin/edit.html"
     edit_template = "admin/edit.html"
     form_overrides = dict(body=CKTextAreaField)
+    column_exclude_list = ['url']
 
     def __init__(self, session, **kwargs):
         super(BlogView, self).__init__(Blog, session, **kwargs)
+
 
 class TagView(ModelView):
 
@@ -62,7 +64,7 @@ class NumericalBonusView(ModelView):
 
     def is_accessible(self):
         if login.current_user.is_authenticated():
-            if login.current_user.role == 1 or login.current_user.role == 2:
+            if login.current_user.role in (1, 2):
                 return True
         return False
 
@@ -74,12 +76,13 @@ class MiscBonusView(ModelView):
 
     def is_accessible(self):
         if login.current_user.is_authenticated():
-            if login.current_user.role == 1 or login.current_user.role == 2:
+            if login.current_user.role in (1, 2):
                 return True
         return False
 
     def __init__(self, session, **kwargs):
         super(MiscBonusView, self).__init__(MiscBonus, session, **kwargs)
+
 
 class SpellView(ModelView):
 
@@ -87,7 +90,7 @@ class SpellView(ModelView):
 
     def is_accessible(self):
         if login.current_user.is_authenticated():
-            if login.current_user.role == 1 or login.current_user.role == 2:
+            if login.current_user.role in (1, 2):
                 return True
         return False
 
@@ -99,7 +102,7 @@ class ModifierTypeView(ModelView):
 
     def is_accessible(self):
         if login.current_user.is_authenticated():
-            if login.current_user.role == 1 or login.current_user.role == 2:
+            if login.current_user.role in (1, 2):
                 return True
         return False
 
@@ -111,7 +114,7 @@ class StatisticView(ModelView):
 
     def is_accessible(self):
         if login.current_user.is_authenticated():
-            if login.current_user.role == 1 or login.current_user.role == 2:
+            if login.current_user.role in (1, 2):
                 return True
         return False
 
@@ -123,7 +126,7 @@ class SourceView(ModelView):
 
     def is_accessible(self):
         if login.current_user.is_authenticated():
-            if login.current_user.role == 1 or login.current_user.role == 2:
+            if login.current_user.role in (1, 2):
                 return True
         return False
 
@@ -135,7 +138,7 @@ class StatisticsGroupView(ModelView):
 
     def is_accessible(self):
         if login.current_user.is_authenticated():
-            if login.current_user.role == 1 or login.current_user.role == 2:
+            if login.current_user.role in (1, 2):
                 return True
         return False
 
