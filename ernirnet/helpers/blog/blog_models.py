@@ -20,14 +20,16 @@ class Blog(db.Model):
     body = db.Column(db.Text())
     date = db.Column(db.Date())
     url = db.Column(db.Text(), unique=True)
+    excerpt = db.Column(db.Text())
     tags = db.relationship("Tag", secondary=tag_association, backref=db.backref("blogs", lazy="dynamic"))
     comments = db.relationship("Comment", backref="blog", order_by="Comment.date")
 
-    def __init__(self, title, body, date):
+    def __init__(self, title, body, date, excerpt=""):
         self.title = title
         self.url = Blog._url_from_title(title)
         self.body = body
         self.date = date
+        self.excerpt = excerpt
 
     @staticmethod
     def _url_from_title(title):
@@ -63,7 +65,7 @@ class Blog(db.Model):
         if blog is None:
             blog = cls.get_empty()
 
-        return [blog]
+        return blog
 
     @classmethod
     def get_empty(cls):

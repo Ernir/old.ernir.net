@@ -35,7 +35,7 @@ def blog():
     posts = Blog.get_by_date()
     tags = Tag.get_by_usage()
 
-    return render_template("blog.jinja2", sitename=u"Blog", posts=posts, tags=tags)
+    return render_template("blog_list.jinja2", sitename=u"Blog", posts=posts, tags=tags)
 
 
 @app.route("/blog/<blog_url>/", methods=["GET", "POST"])
@@ -49,7 +49,7 @@ def individual_blog(blog_url):
     if request.method == "POST":
         Comment.commit(int(request.form["blog-id"]), request.form["text"], g.user)
 
-    return render_template("blog.jinja2", sitename=u"Blog", posts=blog, tags=tags, logged_in=logged_in, form=form)
+    return render_template("individual_blog.jinja2", sitename=u"Blog", blog=blog, tags=tags, logged_in=logged_in, form=form)
 
 
 @app.route("/blog/tags/<tag_name>/")
@@ -57,10 +57,10 @@ def tagged_blogs(tag_name):
     blogs = Blog.get_by_tag(tag_name)
     tags = Tag.get_by_usage()
 
-    return render_template("blog.jinja2", sitename=u"Blog", posts=blogs, tags=tags)
+    return render_template("blog_list.jinja2", sitename=u"Blog", posts=blogs, tags=tags)
 
 '''
-Admin and login
+Login
 '''
 
 @lm.unauthorized_handler
