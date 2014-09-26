@@ -24,7 +24,8 @@ class Blog(db.Model):
     tags = db.relationship("Tag", secondary=tag_association, backref=db.backref("blogs", lazy="dynamic"))
     comments = db.relationship("Comment", backref="blog", order_by="Comment.date")
 
-    def __init__(self, title, body, date, excerpt=""):
+    def __init__(self, title="", body="", date=datetime.today(), excerpt=""):
+        print("this was called with arguments:" + title + ", " + body + ", " + str(date) + ", " + excerpt)
         self.title = title
         self.url = Blog._url_from_title(title)
         self.body = body

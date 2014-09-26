@@ -21,6 +21,9 @@ class UserView(ModelView):
 
 class BlogView(ModelView):
 
+    column_exclude_list = ["url"]
+    form_excluded_columns = ["url"]
+
     def is_accessible(self):
         if login.current_user.is_authenticated():
             if login.current_user.role == 1:
@@ -30,7 +33,27 @@ class BlogView(ModelView):
     create_template = "admin/edit.html"
     edit_template = "admin/edit.html"
     form_overrides = dict(body=CKTextAreaField)
-    column_exclude_list = ['url']
+
+    # Overrides method from parent class
+    def create_model(self, form):
+
+        try:
+            model = self.model(form.data["title"])
+            form.populate_obj(model)
+            self.session.add(model)
+            self._on_model_change(form, model, True)
+            self.session.commit()
+        except Exception as ex:
+            if self._debug:
+                raise
+
+            self.session.rollback()
+
+            return False
+        else:
+            self.after_model_change(form, model, True)
+
+        return True
 
     def __init__(self, session, **kwargs):
         super(BlogView, self).__init__(Blog, session, **kwargs)
