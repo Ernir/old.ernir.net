@@ -24,6 +24,7 @@
 
         <div class="comment-section">
             <div class="comment-list">
+            {% if blog.comments|length != 0 %}
                 {% for comment in blog.comments %}
                     <div class="comment">
                         <p>
@@ -32,6 +33,9 @@
                     </div>
                     <p>{{ comment.content }}</p>
                 {% endfor %}
+            {% else %}
+                <p>No comments yet.</p>
+            {% endif %}
             </div>
 
             {% if logged_in %}
