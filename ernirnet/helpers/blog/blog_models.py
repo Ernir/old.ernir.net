@@ -86,7 +86,7 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text(), unique=True)
 
-    def __init__(self, name):
+    def __init__(self, name="default-tag-title"):
         self.name = name
 
     @classmethod
