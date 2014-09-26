@@ -21,8 +21,8 @@ class UserView(ModelView):
 
 class BlogView(ModelView):
 
-    column_exclude_list = ["url"]
-    form_excluded_columns = ["url"]
+    column_exclude_list = ["url", "comments"]
+    form_excluded_columns = ["url", "comments"]
 
     def is_accessible(self):
         if login.current_user.is_authenticated():
