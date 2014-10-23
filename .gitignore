@@ -1,0 +1,14 @@
+
+.idea/
+lib/
+*.pyc
+*.wsgi
+ernirnet/db/
+tmp/
+venv/
+
+# Scripts for dummy data generation
+ernirnet/db_definition.py
+ernirnet/spell_definition.py
+ernirnet/blog_definition.py
+
