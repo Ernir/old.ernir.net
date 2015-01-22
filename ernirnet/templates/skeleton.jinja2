@@ -5,7 +5,8 @@
     {% block head %}
         {% include "includes/meta.jinja2" %}
         {% include "includes/css.jinja2" %}
-        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+        <link rel="shortcut icon"
+              href="{{ url_for('static', filename='img/favicon.ico') }}">
 
         <title>Ernir.net - {{ sitename }}</title>
     {% endblock head %}
@@ -13,23 +14,24 @@
 </head>
 
 {% block body %}
-<body>
+    <body>
 
-{% block wrapper %}
-<div id="wrap">
-    {% include "includes/nav.jinja2" %}
-    <div class="container">
-        {% block content %}
-            This is the placeholder content used by the site skeleton. You should not see this on a webpage.
-        {% endblock content %}
-    </div>
-</div>
-{% endblock wrapper %}
+    {% block wrapper %}
+        <div id="wrap">
+            {% include "includes/nav.jinja2" %}
+            <div class="container">
+                {% block content %}
+                    This is the placeholder content used by the site skeleton.
+                    You should not see this on a webpage.
+                {% endblock content %}
+            </div>
+        </div>
+    {% endblock wrapper %}
 
-{% block footer %}
-    {% include "includes/footer.jinja2" %}
-    {% include "includes/js.jinja2" %}
-{% endblock footer %}
-</body>
+    {% block footer %}
+        {% include "includes/footer.jinja2" %}
+        {% include "includes/js.jinja2" %}
+    {% endblock footer %}
+    </body>
 {% endblock body %}
 </html>
