@@ -1,5 +1,5 @@
 from xml.dom.minidom import parseString
-import urllib2
+from urllib.request import urlopen
 
 
 class Parser:
@@ -18,7 +18,7 @@ class Parser:
     def parse_mw_sheet(self, id):
         xml_path = "http://www.myth-weavers.com/sheetview.php?sheetid=" + str(id)
 
-        xml_response = urllib2.urlopen(xml_path)  # TODO: Error handling. Right.
+        xml_response = urlopen(xml_path)  # TODO: Error handling. Right.
         xml_string = xml_response.read()
 
         # Stripping away all XML not between the first instance of the defined strings (inclusive)
