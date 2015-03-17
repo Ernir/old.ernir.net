@@ -6,7 +6,6 @@ from ernirnet.helpers.blog.blog_models import role_user, Blog, Tag, Comment
 from ernirnet.helpers.blog.blog_models import User
 from ernirnet.helpers.blog.forms import LoginForm, CommentForm
 from ernirnet.helpers.bufftracker import spell_models
-from ernirnet.helpers.bufftracker.xml_parse import Parser
 from ernirnet.helpers.errors import InvalidUsage
 
 
@@ -146,11 +145,7 @@ API routes
 @app.route("/api/parseMW/")
 def mw_parse_api():
     sheet_id = request.args.get("id", 0, type=int)
-
-    try:
-        data = Parser().get_mw_data(sheet_id)
-    except:
-        raise InvalidUsage("No Myth-Weavers sheet with the given ID was found", status_code=400)
+    data = {"status": 501, "message": "This endpoint has been shuffled out due to MW changing their layout."}
     return jsonify(data)
 
 @app.route("/api/bufftracker/bonuses/", methods=["POST"])
