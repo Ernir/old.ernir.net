@@ -1,6 +1,7 @@
 {% extends 'blog_shared.html' %}
 
 {% block blog_main %}
+    <hr/>
     {% for entry in entries %}
         <h4>
             <a href="/blog/{{ entry.slug }}/">{{ entry.title }}</a>
@@ -25,7 +26,7 @@
 {#            {% endfor %}#}
         </span>
         </p>
-        <br/>
+        <hr/>
     {% endfor %}
 
 {% endblock %}
