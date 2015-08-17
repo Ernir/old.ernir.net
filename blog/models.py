@@ -15,3 +15,8 @@ class Comment(models.Model):
     content = models.TextField()
     published = models.DateTimeField()
     associated_with = models.ForeignKey(Entry)
+
+
+class Tag(models.Model):
+
+    name = models.CharField(max_length=200)
