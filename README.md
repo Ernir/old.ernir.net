@@ -1,5 +1,3 @@
-This is Eiríkur Ernir Þorsteinsson's personal webpage.
-
-It makes use of [Twitter Bootstrap](http://getbootstrap.com/) and [Flask](http://flask.pocoo.org/) + [Jinja2](http://jinja.pocoo.org/).
+This is Eiríkur Ernir Þorsteinsson's personal webpage, done in Django.
 
 A live version can be found at [eirikur.ernir.net](http://eirikur.ernir.net/), hosted with [DigitalOcean](https://www.digitalocean.com/).

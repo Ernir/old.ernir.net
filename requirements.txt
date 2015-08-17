@@ -1,6 +1,7 @@
-Flask==0.10
-Flask-SQLAlchemy==0.16
-Flask-OpenID==1.1.1
-Flask-Admin==1.0.8
-Flask-Login==0.2.9
-Flask-WTF==0.9.5
+Django==1.8.3
+dj-database-url==0.3.0
+dj-static==0.0.6
+django-toolbelt==0.0.1
+gunicorn==19.3.0
+psycopg2==2.6.1
+static3==0.6.1
