@@ -94,6 +94,9 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
+SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get("ERNIRNET_FB_APP_ID")
+SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get("ERNIRNET_FB_APP_SECRET")
+
 WSGI_APPLICATION = 'ernirnet.wsgi.application'
 
 # Internationalization
