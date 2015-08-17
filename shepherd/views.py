@@ -12,4 +12,4 @@ def home(request):
             'user': request.user
         }
     )
-    return render_to_response('index.html', context_instance=context)
+    return render_to_response('shepherd_index.html', context_instance=context)

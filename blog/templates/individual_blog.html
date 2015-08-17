@@ -1,0 +1,57 @@
+{% extends "blog_shared.html" %}
+
+{% block blog_main %}
+    <script src="//cdn.ckeditor.com/4.4.4/standard/ckeditor.js"></script>
+    <div class="blog-post">
+        <h2 class="blog-post-title"><a href="/blog/{{ entry.slug }}/">{{ entry.title }}</a></h2>
+
+        <div class="blog-post-body">{{ entry.body }}</div>
+        <br/>
+
+        <p class="blog-post-meta">
+            <b>Posted:</b> {{ entry.published }}
+        </p>
+
+        <p class="blog-post-meta">
+            <b>Tags:</b>
+{#            {% for tag in entry.tags %}#}
+{#                <a href="/blog/tags/{{ tag.name }}">{{ tag.name }}</a>#}
+{#                {%- if not loop.last %},{% endif %}#}
+{#            {% endfor %}#}
+        </p>
+
+        <h3>Comments</h3>
+
+        <div class="comment-section">
+            <div class="comment-list">
+            {% if entry.comments.count != 0 %}
+                {% for comment in entry.comments.all %}
+                    <div class="comment">
+                        <p>
+                            <b>On {{ comment.published }}, {{ comment.author.username }}
+                                said:</b></p>
+                    </div>
+                    <p>{{ comment.content }}</p>
+                {% endfor %}
+            {% else %}
+                <p>No comments yet.</p>
+            {% endif %}
+            </div>
+
+            {% if user and not user.is_anonymous %}
+                <p>You're logged in!</p>
+{#                <form action="" method="post" name="comment" class="comment-form">#}
+{#                    {{ form.hidden_tag() }}#}
+{#                    {{ form.text(cols="60", rows="5") }}#}
+{##}
+{#                    <p><input type="hidden" name="blog-id" value="{{ entry.id }}"></p>#}
+{##}
+{#                    <p><input type="submit" value="Add comment" class="btn btn-default"></p>#}
+{#                </form>#}
+{#                <script> CKEDITOR.replace("text"); </script>#}
+            {% else %}
+                <a href={% url "shepherd.views.home" %}>Log in</a> to comment.
+            {% endif %}
+        </div>
+    </div>
+{% endblock blog_main %}

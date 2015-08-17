@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="blog-header">
+        <h1 class="blog-title"><a href="{% url "blog.views.index" %}">Ernir's
+            Blog</a></h1>
+
+        <p class="lead blog-description">Programming, RPGs and other cool
+            things</p>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8 blog-main">
+            {% block blog_main %}
+                This is always overridden.
+            {% endblock blog_main %}
+
+        </div>
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+            <div class="sidebar-module">
+                <h4>About</h4>
+
+                <p>This looks an awful lot like a blog. It is more of a
+                    technical experiment, though.</p>
+            </div>
+            <div class="sidebar-module">
+                <h4>Tags</h4>
+                {#            {% for tag in tags %}#}
+                {#                <a href="/blog/tags/{{ tag[0] }}">{{ tag[0] }} ({{ tag[1] }})</a>#}
+                {#                {%- if not loop.last %},{% endif %}#}
+                {#            {% endfor %}#}
+            </div>
+        </div>
+        <!-- /.blog-sidebar -->
+    </div>
+
+{% endblock %}
