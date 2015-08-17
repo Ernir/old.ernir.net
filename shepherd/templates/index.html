@@ -2,18 +2,24 @@
 
 {% block content %}
     <div>
-        <h1>Third-party authentication demo</h1>
+        <h1>Third-party authentication page</h1>
 
-        <p>
-        <ul>
-            {% if user and not user.is_anonymous %}
-                <li>
-                    <a>Hello {{ user.username }}!</a>
-                </li>
+        {% if user and not user.is_anonymous %}
+            <p>
+                {% if user.get_full_name %}
+                    Hello {{ user.get_full_name }}!
+                {% else %}
+                    Hello {{ user.username }}
+                {% endif %}
+            </p>
+            <ul>
                 <li>
                     <a href="{% url 'auth:logout' %}?next={{ request.path }}">Logout</a>
                 </li>
-            {% else %}
+            </ul>
+        {% else %}
+            <p>Please select a login provider.</p>
+            <ul>
                 <li>
                     <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login
                         with Facebook</a>
@@ -26,8 +32,7 @@
                     <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login
                         with Twitter</a>
                 </li>
-            {% endif %}
-        </ul>
-        </p>
+            </ul>
+        {% endif %}
     </div>
 {% endblock %}
