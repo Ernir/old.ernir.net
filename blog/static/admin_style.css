@@ -1,0 +1,8 @@
+
+/* Fix for the CKEditor. */
+/* Source: http://mornie.org/blog/2012/12/22/how-fix-ckeditor-4-default-theme-django-admin/ */
+div>.cke_chrome {
+    width: 100%;
+    padding: 0!important;
+    clear: both;
+}
