@@ -1,24 +1,39 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
 
 <h1>Welcome to Ernir.net</h1>
-<p>This is Eiríkur Ernir Þorsteinsson's generic personal website. It has limited content and no interesting stylesheets.</p>
-<p>Things you can find here include...</p>
-
 <div class="row">
-<div class="col-sm-6">
-{% autoescape off %}
-{% for section in sections %}
-    <h2>{{ section.title }}</h2>
-    <div>{{ section.text }}</div>
-    {% for subsection in section.subsections.all %}
-        <h3>{{ subsection.title }}</h3>
-        <div>{{ subsection.text }}</div>
-    {% endfor %}
-{% endfor %}
-{% endautoescape %}
-</div>
+    <div class="col-sm-6">
+        <p>This is Eiríkur Ernir Þorsteinsson's generic personal website.
+            It has
+            limited content and no interesting stylesheets.</p>
+
+        <p>Things you can find here include...</p>
+
+        {% autoescape off %}
+        {% for section in sections %}
+            <h2>{{ section.title }}</h2>
+            <div>{{ section.text }}</div>
+            {% for subsection in section.subsections.all %}
+                <h3>{{ subsection.title }}</h3>
+                <div>{{ subsection.text }}</div>
+            {% endfor %}
+        {% endfor %}
+        {% endautoescape %}
+    </div>
+    <div class="col-sm-6">
+        <div class="text-center">
+            <canvas id="myCanvas" width="320" height="320">
+                Sorry, your browser does not support the HTML5 canvas tag.
+                You'd be watching an animation if it did.
+            </canvas>
+            <p>Pictured: <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's game of Life</a>, seeded with a random initial population.</p>
+        </div>
+        <script src="{% static "gameOfLife.js" %}"></script>
+    </div>
 </div>
 
 {% endblock %}
