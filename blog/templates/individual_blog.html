@@ -53,18 +53,9 @@
                 {{ comment_form.content }}
                 <input type="submit" value="Submit"/>
             </form>
-            {#                <form action="" method="post" name="comment" class="comment-form">#}
-            {#                    {{ form.hidden_tag() }}#}
-            {#                    {{ form.text(cols="60", rows="5") }}#}
-            {##}
-            {#                    <p><input type="hidden" name="blog-id" value="{{ entry.id }}"></p>#}
-            {##}
-            {#                    <p><input type="submit" value="Add comment" class="btn btn-default"></p>#}
-            {#                </form>#}
-            {#                <script> CKEDITOR.replace("text"); </script>#}
         {% else %}
-            <a href={% url "shepherd.views.home" %}>Log in</a> to
-            comment.
+            <a href="{% url "shepherd.views.home" %}" target="_blank">Log
+                in</a> to comment.
         {% endif %}
     </div>
 </div>
