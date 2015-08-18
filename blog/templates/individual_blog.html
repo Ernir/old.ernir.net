@@ -7,7 +7,7 @@
 
     <div class="blog-post-body">
         {% autoescape off %}
-            {{ entry.body }}
+        {{ entry.body }}
         {% endautoescape %}
     </div>
 
@@ -17,10 +17,10 @@
 
     <p class="blog-post-meta">
         <b>Tags:</b>
-        {#            {% for tag in entry.tags %}#}
-        {#                <a href="/blog/tags/{{ tag.name }}">{{ tag.name }}</a>#}
-        {#                {%- if not loop.last %},{% endif %}#}
-        {#            {% endfor %}#}
+        {% for tag in entry.tags.all %}
+            <a href="/blog/tag/{{ tag.slug }}/">{{ tag.name }}</a>
+            {% if not forloop.last %},{% endif %}
+        {% endfor %}
     </p>
 
     <h3>Comments</h3>
