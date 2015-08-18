@@ -37,10 +37,11 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'social.apps.django_app.default',
+    'django.contrib.staticfiles',
     "shepherd",
-    "blog"
+    "blog",
+    "indexpage"
 )
 
 MIDDLEWARE_CLASSES = (

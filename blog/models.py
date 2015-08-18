@@ -30,12 +30,12 @@ class Entry(models.Model):
     A blog entry.
     """
 
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=400)
     body = models.TextField()
     published = models.DateTimeField()
 
     slug = models.SlugField()
-    excerpt = models.CharField(max_length=100)
+    excerpt = models.CharField(max_length=400)
     tags = models.ManyToManyField(Tag, related_name="entries")
 
     def __str__(self):
