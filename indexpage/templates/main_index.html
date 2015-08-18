@@ -11,14 +11,14 @@
             It has
             limited content and no interesting stylesheets.</p>
 
-        <p>Things you can find here include...</p>
+        <p>Things Ernir has deemed fit to link to include...</p>
 
         {% autoescape off %}
         {% for section in sections %}
             <h2>{{ section.title }}</h2>
             <div>{{ section.text }}</div>
             {% for subsection in section.subsections.all %}
-                <h3>{{ subsection.title }}</h3>
+                <h4>{{ subsection.title }}</h4>
                 <div>{{ subsection.text }}</div>
             {% endfor %}
         {% endfor %}
@@ -30,7 +30,10 @@
                 Sorry, your browser does not support the HTML5 canvas tag.
                 You'd be watching an animation if it did.
             </canvas>
-            <p>Pictured: <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's game of Life</a>, seeded with a random initial population.</p>
+            <p>Pictured: <a
+                    href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's
+                game of Life</a>, seeded with a random initial population.
+            </p>
         </div>
         <script src="{% static "gameOfLife.js" %}"></script>
     </div>

@@ -12,7 +12,7 @@ class Section(models.Model):
     priority = models.IntegerField()
 
     def __str__(self):
-        return self.title
+        return self.title + " (priority:" + str(self.priority) + ")"
 
     class Meta:
         ordering = ("priority", )
@@ -31,7 +31,7 @@ class SubSection(models.Model):
     priority = models.IntegerField()
 
     def __str__(self):
-        return self.title
+        return self.title + " (priority:" + str(self.priority) + ")"
 
     class Meta:
-        ordering = ("priority", )
+        ordering = ("parent_section__priority", "priority", )
