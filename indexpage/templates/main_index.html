@@ -30,13 +30,20 @@
                 Sorry, your browser does not support the HTML5 canvas tag.
                 You'd be watching an animation if it did.
             </canvas>
-            <p>Pictured: <a
+            <p>Pictured: Not a QR code, but a <a
                     href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's
-                game of Life</a>, seeded with a random initial population.
+                game of Life</a> implementation seeded with a random
+                initial population.
             </p>
+            <button class="button" onclick="toggleSimulation(this);">Run
+                simulation
+            </button>
         </div>
-        <script src="{% static "gameOfLife.js" %}"></script>
     </div>
 </div>
 
+{% endblock %}
+
+{% block more_js %}
+    <script src="{% static "gameOfLife.js" %}"></script>
 {% endblock %}

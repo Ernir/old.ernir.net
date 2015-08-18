@@ -14,6 +14,7 @@
 // Globals relevant to rendering
 var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
+var g_cell_size = 5;
 
 // Game logic globals
 var g_cellMatrix;
@@ -30,6 +31,7 @@ var g_neighbourOffsets = [
 var g_colCount;
 var g_rowCount;
 var g_generations = 0;
+var g_isRunning = false; // The simulation starts out in pause mode
 
 /*
  CELLS
@@ -143,6 +145,7 @@ function initializeSimulation(cellSize, livingCells) {
             g_cellMatrix[livingCell[0]][livingCell[1]].isAlive = true;
         }
     }
+    renderSimulation(); // Starts out as paused, this performs initial draw.
 }
 
 function updateSimulation() {
@@ -173,16 +176,28 @@ function renderSimulation() {
     }
 }
 
+function toggleSimulation(button) {
+    g_isRunning = !g_isRunning;
+
+    if(g_isRunning) {
+        button.innerHTML = "Pause simulation"
+    } else {
+        button.innerHTML = "Run simulation"
+    }
+}
+
 /*
  Main loop. Iterates at a fixed interval.
  */
 
 function main() {
+    if (!g_isRunning) {
+        return;
+    }
     updateSimulation();
     renderSimulation(g_ctx);
 }
 window.setInterval(main, 100);
 
 // Kick it off!
-var g_cell_size = 5;
 initializeSimulation(g_cell_size, undefined);
