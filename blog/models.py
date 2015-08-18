@@ -4,6 +4,9 @@ from django.utils.text import slugify
 
 
 class Tag(models.Model):
+    """
+    A tag, grouping many entries together.
+    """
 
     name = models.CharField(max_length=200)
 
@@ -12,6 +15,9 @@ class Tag(models.Model):
 
 
 class Entry(models.Model):
+    """
+    A blog entry.
+    """
 
     title = models.CharField(max_length=200)
     body = models.TextField()
@@ -35,6 +41,9 @@ class Entry(models.Model):
 
 
 class Comment(models.Model):
+    """
+    A comment on a blog entry.
+    """
 
     content = models.TextField()
     published = models.DateTimeField()
