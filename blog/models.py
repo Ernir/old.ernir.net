@@ -1,3 +1,4 @@
+from blog.managers import TagByCountManager
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -5,17 +6,27 @@ from django.utils.text import slugify
 
 class Tag(models.Model):
     """
+
     A tag, grouping many entries together.
     """
 
     name = models.CharField(max_length=200)
+    slug = models.SlugField()
+
+    objects = models.Manager()
+    objects_by_entry_count = TagByCountManager()
 
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Tag, self).save(*args, **kwargs)
+
 
 class Entry(models.Model):
     """
+
     A blog entry.
     """
 
@@ -25,23 +36,23 @@ class Entry(models.Model):
 
     slug = models.SlugField()
     excerpt = models.CharField(max_length=100)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, related_name="entries")
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        self.excerpt = self.body[0:100]  # first 100 chars
         super(Entry, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "entries"
-        ordering = ("published", )
+        ordering = ("-published", )
 
 
 class Comment(models.Model):
     """
+
     A comment on a blog entry.
     """
 

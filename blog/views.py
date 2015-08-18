@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 
-from blog.models import Entry, Comment
+from blog.models import Entry, Comment, Tag
 from blog.forms import CommentForm
 from datetime import datetime
 
@@ -12,8 +12,12 @@ def index(request):
     """
 
     entries = Entry.objects.all()
+    tags = Tag.objects_by_entry_count.all()
 
-    return render(request, "blog_list.html", {"entries": entries})
+    return render(request, "blog_list.html", {
+        "entries": entries,
+        "tags": tags
+    })
 
 
 def entry(request, blog_slug):
@@ -24,6 +28,7 @@ def entry(request, blog_slug):
     """
 
     the_entry = get_object_or_404(Entry, slug=blog_slug)
+    tags = Tag.objects_by_entry_count.all()
     comment_form = CommentForm()
 
     if request.method == "POST":
@@ -36,5 +41,20 @@ def entry(request, blog_slug):
 
     return render(request, "individual_blog.html", {
         "entry": the_entry,
-        "comment_form": comment_form
+        "comment_form": comment_form,
+        "tags": tags
+    })
+
+
+def by_tag(request, tag_slug):
+    """
+
+    A list of blogs with entries having a tag with the given tag_slug.
+    """
+    entries = Entry.objects.filter(tags__slug=tag_slug).all()
+    tags = Tag.objects_by_entry_count.all()
+
+    return render(request, "blog_list.html", {
+        "entries": entries,
+        "tags": tags
     })

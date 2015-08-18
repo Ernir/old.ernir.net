@@ -4,5 +4,6 @@ from blog import views
 urlpatterns = patterns(
     '',
     url(r"^$", views.index, name="index"),
+    url(r"^tag/(?P<tag_slug>.+)/$", views.by_tag, name="by_tag"),
     url(r"^(?P<blog_slug>.+)/$", views.entry, name="entry"),
 )

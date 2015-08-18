@@ -20,10 +20,10 @@
         </span>
         <span>
             Tags:
-{#            {% for tag in entry.tags %}#}
-{#                <a href="/blog/tags/{{ tag.name }}">{{ tag.name }}</a>#}
-{#                {%- if not loop.last %},{% endif %}#}
-{#            {% endfor %}#}
+            {% for tag in entry.tags.all %}
+                <a href="/blog/tag/{{ tag.slug }}/">{{ tag.name }}</a>
+                {% if not forloop.last %},{% endif %}
+            {% endfor %}
         </span>
         </p>
         <hr/>

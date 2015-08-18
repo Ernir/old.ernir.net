@@ -27,10 +27,11 @@
             </div>
             <div class="sidebar-module">
                 <h4>Tags</h4>
-                {#            {% for tag in tags %}#}
-                {#                <a href="/blog/tags/{{ tag[0] }}">{{ tag[0] }} ({{ tag[1] }})</a>#}
-                {#                {%- if not loop.last %},{% endif %}#}
-                {#            {% endfor %}#}
+                {% for tag in tags %}
+                    <a href="/blog/tag/{{ tag.slug }}/">{{ tag.name }}
+                        ({{ tag.num_tags }})</a>
+                    {% if not forloop.last %},{% endif %}
+                {% endfor %}
             </div>
         </div>
         <!-- /.blog-sidebar -->
