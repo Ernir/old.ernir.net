@@ -16,6 +16,9 @@
     <!-- handcrafted artisanal CSS -->
     <link rel="stylesheet" href="{% static "style.css" %}"/>
 
+    {% block more_css %}
+    {% endblock %}
+
     <link rel="shortcut icon" type="image/png" sizes="16x16 24x24 32x32 48x48" href="{% static "ernir.ico" %}"/>
 
     <title>Ernir.net</title>
@@ -42,6 +45,9 @@
 
 <!-- minified bootstrap -->
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+{% block more_js %}
+{% endblock %}
 
 </body>
 </html>

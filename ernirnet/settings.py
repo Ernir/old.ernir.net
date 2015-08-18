@@ -41,7 +41,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     "shepherd",
     "blog",
-    "indexpage"
+    "indexpage",
+    "vanciantopsionics"
 )
 
 MIDDLEWARE_CLASSES = (
