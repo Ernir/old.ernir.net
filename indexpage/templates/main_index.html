@@ -2,8 +2,23 @@
 
 {% block content %}
 
-    <h1>Welcome to Ernir.net</h1>
-    <p>This is a generic personal website with limited content and no interesting stylesheets.</p>
-    <p>Things you can find here include:</p>
+<h1>Welcome to Ernir.net</h1>
+<p>This is Eiríkur Ernir Þorsteinsson's generic personal website. It has limited content and no interesting stylesheets.</p>
+<p>Things you can find here include...</p>
+
+<div class="row">
+<div class="col-sm-6">
+{% autoescape off %}
+{% for section in sections %}
+    <h2>{{ section.title }}</h2>
+    <div>{{ section.text }}</div>
+    {% for subsection in section.subsections.all %}
+        <h3>{{ subsection.title }}</h3>
+        <div>{{ subsection.text }}</div>
+    {% endfor %}
+{% endfor %}
+{% endautoescape %}
+</div>
+</div>
 
 {% endblock %}
