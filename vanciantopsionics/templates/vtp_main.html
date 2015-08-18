@@ -3,154 +3,212 @@
 {% load static %}
 
 {% block more_css %}
-    <link rel="stylesheet" href="{% static "vtp.css" %}" />
+    <link rel="stylesheet" href="{% static "vtp.css" %}"/>
 {% endblock %}
 
 {% block content %}
+    <div>
+        <h1><a href="{% url "vanciantopsionics.views.vtp_index" %}">The
+            Vancian to Psionics project</a></h1>
+    </div>
+
     <div class="row">
-    <div class="col-md-6">
-        <h2 class="col-md-12">The Vancian to Psionics project</h2>
+            <div class="col-sm-7 blog-main">
+            <p>The "Vancian to Psionics" project is a conversion of the standard
+            (Vancian) system of magic used by version 3.5 of the <i>Dungeons and
+            Dragons</i> role-playing game over to a different (Psionic) system.</p>
 
-        <p>The "Vancian to Psionics" project is a conversion of the standard (Vancian) system of magic used by version
-            3.5 of the <i>Dungeons and Dragons</i> role-playing game over to a different (Psionic) system.</p>
+            <p>The result is a .pdf with a current page count over 300.</p>
 
-        <p>The result is a .pdf with a current page count over 300.</p>
+            <p>The project has a <a href=
+            "http://www.giantitp.com/forums/showthread.php?t=194002">discussion
+            thread</a> on giantitp.com.</p>
 
-        <p>The project has a <a href="http://www.giantitp.com/forums/showthread.php?t=194002">discussion thread</a> on
-            giantitp.com.</p>
+            <div id="statement">
+                <h4 id="statement-title"><a href="#">Read more (for D&D
+                fans)</a></h4>
 
-        <div id="statement">
-            <h4 id="statement-title"><a href="#">Read more (for D&D fans)</a></h4>
+                <div id="statement-body">
+                    <p>I am one of those who thinks the psionic subsystem is one of
+                    the most elegantly designed things in D&D 3.5. In many ways, I
+                    think it's how spellcasting should have been done in 3.5 to
+                    begin with. And I'd like to use it for more things.</p>
 
-            <div id="statement-body">
-                <p>I am one of those who thinks the psionic subsystem is one of the most elegantly designed things in
-                    D&D 3.5. In many ways, I think it's how spellcasting should have been done in 3.5 to begin with. And
-                    I'd like to use it for more things.</p>
+                    <p>But when I try to replace the core vancian casting with
+                    psionics, I run into a couple of problems.</p>
 
-                <p>But when I try to replace the core vancian casting with psionics, I run into a couple of
-                    problems.</p>
-                <ul>
-                    <li>Options are missing. There are things the core classes can do that simply can't be faithfully
-                        replicated with psionics. The psionic system is powerful enough, no doubt about that. It can
-                        pretty much always get the job done. But if I wanted to, say, play a necromancer, I'd probably
-                        have to reflavor Astral Constructs as my zombies and some Stygian powers as my negative energy
-                        effects. Which works, but wasn't really what I was looking for in the first place. Which brings
-                        me to the second problem:
-                    </li>
-                    <li>The flavor doesn't always fit. Now, I think it's cool - if viewed on its own terms. The crystals
-                        and tattoo theme the books have going on is a perfectly good way to look at magic, but in my
-                        experience, it doesn't always live up to people's ideas about what D&D magic "should" look like.
-                        DMs still ban psionics for "flavor reasons", or because it doesn't "fit their setting". Which, I
-                        must say, I understand perfectly.
-                    </li>
-                </ul>
-                <p>So what can I do? Well, I devised a twofold solution to the twofold problem.</p>
-                <ul>
-                    <li>I translated the core spells and classes over to psionic mechanics.</li>
-                    <li>As for the system itself (as well as some doodads like the basic magic items), I changed every
-                        reference to "power", "manifester", "crystals" and "psionic", and so on to... well, their arcane
-                        counterparts. In other words, when people say "just reflavor psionics to fit your
-                        setting/concept" - I'd like to think I did precisely that.
-                    </li>
-                </ul>
-                The result, which can be found to the right, includes a complete conversion of the psionic base system,
-                feats and fundamental items over to magical terminology. More importantly, what fans know as the
-                Sorcerer/Wizard, Cleric, Bard, Paladin, Assassin and Blackguard spell lists have been thoroughly
-                translated to psionic mechanics. For classes presented so far, it should be playable from 1 to 20.
+                    <ul>
+                        <li>Options are missing. There are things the core classes
+                        can do that simply can't be faithfully replicated with
+                        psionics. The psionic system is powerful enough, no doubt
+                        about that. It can pretty much always get the job done. But
+                        if I wanted to, say, play a necromancer, I'd probably have
+                        to reflavor Astral Constructs as my zombies and some
+                        Stygian powers as my negative energy effects. Which works,
+                        but wasn't really what I was looking for in the first
+                        place. Which brings me to the second problem:</li>
+
+                        <li>The flavor doesn't always fit. Now, I think it's cool -
+                        if viewed on its own terms. The crystals and tattoo theme
+                        the books have going on is a perfectly good way to look at
+                        magic, but in my experience, it doesn't always live up to
+                        people's ideas about what D&D magic "should" look like. DMs
+                        still ban psionics for "flavor reasons", or because it
+                        doesn't "fit their setting". Which, I must say, I
+                        understand perfectly.</li>
+                    </ul>
+
+                    <p>So what can I do? Well, I devised a twofold solution to the
+                    twofold problem.</p>
+
+                    <ul>
+                        <li>I translated the core spells and classes over to
+                        psionic mechanics.</li>
+    
+                        <li>As for the system itself (as well as some doodads like
+                        the basic magic items), I changed every reference to
+                        "power", "manifester", "crystals" and "psionic", and so on
+                        to... well, their arcane counterparts. In other words, when
+                        people say "just reflavor psionics to fit your
+                        setting/concept" - I'd like to think I did precisely
+                        that.</li>
+                    </ul>The result, which can be found to the right, includes a
+                    complete conversion of the psionic base system, feats and
+                    fundamental items over to magical terminology. More
+                    importantly, what fans know as the Sorcerer/Wizard, Cleric,
+                    Bard, Paladin, Assassin and Blackguard spell lists have been
+                    thoroughly translated to psionic mechanics. For classes
+                    presented so far, it should be playable from 1 to 20.
+                </div>
+            </div>
+
+            <div id="faq">
+                <h4 id="faq-title"><a href="#">The FAQ (also for D&D fans)</a></h4>
+
+                <div id="faq-body">
+                    <ul>
+                        <li><b>There's a spell point variant in Unearthed
+                        Arcana/the SRD, as well as about 500 homebrew versions.
+                        Why, oh why, Ernir, are you trying to invent the
+                        wheel?</b><br>
+                        The primary difference between this project and every other
+                        spell point variant I have seen is simple - I rewrote the
+                        spells so that they take the system into account. No other
+                        spell point system I have seen has done this. In addition,
+                        this isn't really a new spell point system. This is the
+                        well known and researched psionic system, which we all know
+                        works. I just added a paint job and a new bell or two.</li>
+
+                        <li><b>Did you fix magic forever?</b><br>
+                        No, I didn't. My primary goal was to give the vancian
+                        flavor a better system, balancing it was not my <i>primary
+                        concern</i>. The Wizard class resulting from this is still
+                        exorbitantly more powerful than any "mundane" class in WotC
+                        D&D, if you ask me. That being said, I did rewrite all the
+                        spells, and of course I couldn't resist ironing out some of
+                        the kinks I know of. When it came to this, I concentrated
+                        my efforts on getting rid of the spells that have truly
+                        unbounded/uncontrollable consequences. Wizards can probably
+                        still solo most level appropriate encounters, but I hope
+                        they'll now run into trouble solo-ing some campaign
+                        settings.</li>
+
+                        <li><b>Did you leave some spells out?</b><br>
+                        Lots of spells weren't precisely reproduced. Most of those,
+                        however, I just merged with others. The augment system
+                        provided by psionics makes it particularly easy to merge
+                        spell chains (that is, spells that are just greater/lesser
+                        versions of other spells). In addition, I merged some
+                        spells that I knew would just never be taken as a spell
+                        known otherwise.</li>
+
+                        <li><b>Did you add a lot of your own content?</b><br>
+                        Mixing the core spells up with my own eccentricities was
+                        not my original intent. Nevertheless, I did eventually
+                        decide to make up quite a few spells of my own (and steal a
+                        few psionic powers), usually to fill in nearly-empty spell
+                        levels. Entirely new content has been delegated to its own
+                        section, clearly marked near the bottom of the file.</li>
+
+                        <li>
+                            <b>Did you change the psionic base system at
+                            all?</b><br>
+                            A few changes were necessary, for example, changing the
+                            discipline/subdiscipline arrangement to fit the
+                            school/subschool structure of traditional casting. But
+                            I did make some less trivial changes.
+
+                            <ul>
+                                <li>Most significantly, save DCs are now calculated
+                                using the number of spell points (power points)
+                                spent on the spell, rather than the level of the
+                                spell (power). Also, you can now spend more points
+                                on a spell than given in its spell points (power
+                                points) line, usually to increase the save DC (in
+                                other words, all spells now have a "null augment").
+                                This is mostly because adding "Augment: For every 2
+                                additional spell points you spend, this spell's
+                                save DC increases by 1." to every single thing was
+                                starting to look really ugly.</li>
+
+                                <li>I added a "Polymorph" subschool to the
+                                transmutation school to contain the mechanics of my
+                                new Polymorph-ish spells.</li>
+
+                                <li>I added a "minion" type of spells to put a cap
+                                on the number of will-less minions any given caster
+                                can control.</li>
+                            </ul>
+                        </li>
+
+                        <li><b>Are you done working on this?</b><br>
+                        No. Next up is to update more magic items, and hack on some
+                        epic support. Maybe make some more base classes of my own!
+                        I'll be here for a while.</li>
+
+                        <li><b>What are you working on right now?</b><br>
+                        New base classes, and trying to find the courage needed to
+                        tackle Epic.</li>
+
+                        <li>
+                            <b>Can I contribute?</b><br>
+                            Yes, you can! Feedback in <a href=
+                            "http://www.giantitp.com/forums/showthread.php?t=194002k">
+                            the giantitp.com comment thread</a> is always
+                            appreciated, much of it has already made its way into
+                            the document one way or another. If you are daring (and
+                            have the tiniest bit of LaTeX know-how), you can head
+                            over to Github (see to the right) and have a peek at
+                            the source, too.
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <div id="faq">
-            <h4 id="faq-title"><a href="#">The FAQ (also for D&D fans)</a></h4>
+        <div class="col-sm-4 col-sm-offset-1">
+            <div>
+                <h4>Download</h4>
 
-            <div id="faq-body">
+                <p>The current version of the document is <a
+                        href="{{ latest_file.url }}">{{ latest_file.name }}</a>,
+                    released {{ latest_file.released }}.</p>
+            </div>
+            <div>
+                <p>Previously released:</p>
                 <ul>
-                    <li><b>There's a spell point variant in Unearthed Arcana/the SRD, as well as about 500 homebrew
-                        versions. Why, oh why, Ernir, are you trying to invent the wheel?</b><br/>
-                        The primary difference between this project and every other spell point variant I have seen is
-                        simple - I rewrote the spells so that they take the system into account. No other spell point
-                        system I have seen has done this.
-                        In addition, this isn't really a new spell point system. This is the well known and researched
-                        psionic system, which we all know works. I just added a paint job and a new bell or two.
-                    </li>
-                    <li><b>Did you fix magic forever?</b><br/>
-                        No, I didn't. My primary goal was to give the vancian flavor a better system, balancing it was
-                        not my <i>primary concern</i>. The Wizard class resulting from this is still exorbitantly more
-                        powerful than any "mundane" class in WotC D&D, if you ask me. That being said, I did rewrite all
-                        the spells, and of course I couldn't resist ironing out some of the kinks I know of. When it
-                        came to this, I concentrated my efforts on getting rid of the spells that have truly
-                        unbounded/uncontrollable consequences. Wizards can probably still solo most level appropriate
-                        encounters, but I hope they'll now run into trouble solo-ing some campaign settings.
-                    </li>
-                    <li><b>Did you leave some spells out?</b><br/>
-                        Lots of spells weren't precisely reproduced. Most of those, however, I just merged with others.
-                        The augment system provided by psionics makes it particularly easy to merge spell chains (that
-                        is, spells that are just greater/lesser versions of other spells). In addition, I merged some
-                        spells that I knew would just never be taken as a spell known otherwise.
-                    </li>
-                    <li><b>Did you add a lot of your own content?</b><br/>
-                        Mixing the core spells up with my own eccentricities was not my original intent. Nevertheless, I
-                        did eventually decide to make up quite a few spells of my own (and steal a few psionic powers),
-                        usually to fill in nearly-empty spell levels. Entirely new content has been delegated to its own
-                        section, clearly marked near the bottom of the file.
-                    </li>
-                    <li><b>Did you change the psionic base system at all?</b><br/>
-                        A few changes were necessary, for example, changing the discipline/subdiscipline arrangement to
-                        fit
-                        the school/subschool structure of traditional casting. But I did make some less trivial changes.
-                        <ul>
-                            <li>Most significantly, save DCs are now calculated using the number of spell points (power
-                                points) spent on the spell, rather than the level of the spell (power). Also, you can
-                                now spend more points on a spell than given in its spell points (power points) line,
-                                usually to increase the save DC (in other words, all spells now have a "null augment").
-                                This is mostly because adding "Augment: For every 2 additional spell points you spend,
-                                this spell's save DC increases by 1." to every single thing was starting to look really
-                                ugly.
-                            </li>
-                            <li>I added a "Polymorph" subschool to the transmutation school to contain the mechanics of
-                                my new Polymorph-ish spells.
-                            </li>
-                            <li>I added a "minion" type of spells to put a cap on the number of will-less minions any
-                                given caster can control.
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <b>Are you done working on this?</b><br/>
-                        No. Next up is to update more magic items, and hack on some epic support. Maybe make some more
-                        base classes of my own! I'll be here for a while.
-                    </li>
-                    <li><b>What are you working on right now?</b><br/>
-                        New base classes, and trying to find the courage needed to tackle Epic.
-                    </li>
-                    <li><b>Can I contribute?</b><br/>
-                        Yes, you can! Feedback in <a href="http://www.giantitp.com/forums/showthread.php?t=194002k">the
-                            giantitp.com comment thread</a> is always appreciated, much of it has already made its way
-                        into the document one way or another. If you are daring (and have the tiniest bit of LaTeX
-                        know-how), you can head over to Github (see to the right) and have a peek at the source, too.
-                    </li>
+                    {% for file in older_files %}
+                        <li>
+                            <a href="{{ file.url }}">{{ file.name }}</a>
+                            ({{ file.released }})
+                        </li>
+                    {% endfor %}
                 </ul>
+                <p>Older versions still can be found on the project's <a
+                        href="https://github.com/Ernir/VancianToPsionics">Github
+                    repository</a>.</p>
             </div>
         </div>
-
-    </div>
-
-    <div class="col-md-4 col-md-offset-2">
-        <h3>Download</h3>
-
-        <p>The current version of the document is <a href="{{ latest_file.url }}">{{ latest_file.name }}</a>, released {{ latest_file.released }}.</p>
-
-        <p>Previously released:</p>
-        <ul>
-            {% for file in older_files %}
-                <li>
-                    <a href="{{ file.url }}">{{ file.name }}</a> ({{ file.released }})
-                </li>
-            {% endfor %}
-        </ul>
-        <p>Older versions still can be found on the project's <a
-                href="https://github.com/Ernir/VancianToPsionics">Github repository</a>.</p>
-    </div>
     </div>
 {% endblock content %}
 
