@@ -4,7 +4,7 @@
     <hr/>
     {% for entry in entries %}
         <h4>
-            <a href="/blog/{{ entry.slug }}/">{{ entry.title }}</a>
+            <a href="/blog/entry/{{ entry.slug }}/">{{ entry.title }}</a>
             <small>({{ entry.published }})</small>
         </h4>
         <p>
@@ -16,6 +16,14 @@
                 1 comment.
             {% else %}
                 {{ entry.comments.count }} comments.
+            {% endif %}
+        </span>
+        <span>
+            Language:
+            {% if entry.language == "EN" %}
+                <a href="/blog/en/">English.</a>
+            {% else %}
+                <a href="/blog/is/">Icelandic.</a>
             {% endif %}
         </span>
         <span>

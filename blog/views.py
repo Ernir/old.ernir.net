@@ -5,17 +5,20 @@ from blog.forms import CommentForm
 from datetime import datetime
 
 
-def index(request):
+def index(request, language_filter=None):
     """
 
     The list of all blogs.
     """
 
-    entries = Entry.objects.all()
+    entries = Entry.objects
     tags = Tag.objects_by_entry_count.all()
 
+    if language_filter is not None:
+        entries = entries.filter(language__iexact=language_filter)
+
     return render(request, "blog_list.html", {
-        "entries": entries,
+        "entries": entries.all(),
         "tags": tags
     })
 

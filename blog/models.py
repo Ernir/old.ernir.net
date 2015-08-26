@@ -38,6 +38,19 @@ class Entry(models.Model):
     excerpt = models.CharField(max_length=400)
     tags = models.ManyToManyField(Tag, related_name="entries")
 
+    # Tiny little language association for each article.
+    _is = "IS"
+    _en = "EN"
+    _language_choices = (
+        (_is, "Icelandic"),
+        (_en, "English")
+    )
+    language = models.CharField(
+        max_length=2,
+        choices=_language_choices,
+        default=_en
+    )
+
     def __str__(self):
         return self.title
 
