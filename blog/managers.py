@@ -11,4 +11,4 @@ class TagByCountManager(models.Manager):
     def get_queryset(self):
         return super(TagByCountManager, self). \
             get_queryset().annotate(num_tags=Count("entries")).\
-            order_by("-num_tags")
+            order_by("-num_tags", "name")

@@ -23,6 +23,9 @@ class Tag(models.Model):
         self.slug = slugify(self.name)
         super(Tag, self).save(*args, **kwargs)
 
+    class Meta:
+        ordering = ("name", )
+
 
 class Entry(models.Model):
     """
