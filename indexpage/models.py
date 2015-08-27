@@ -25,7 +25,7 @@ class SubSection(models.Model):
     """
 
     title = models.CharField(max_length=200)
-    text = models.TextField(null=True)
+    text = models.TextField(blank=True, default="")
     parent_section = models.ForeignKey(Section, related_name="subsections")
 
     priority = models.IntegerField()
