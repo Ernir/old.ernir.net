@@ -42,7 +42,8 @@ INSTALLED_APPS = (
     "shepherd",
     "blog",
     "indexpage",
-    "vanciantopsionics"
+    "vanciantopsionics",
+    "bufftracker"
 )
 
 MIDDLEWARE_CLASSES = (

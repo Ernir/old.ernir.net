@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^blog/', include("blog.urls")),
     url(r'^social/', include("shepherd.urls")),
     url(r'^vanciantopsionics/', include("vanciantopsionics.urls")),
+    url(r'^bufftracker/', include("bufftracker.urls")),
     url(r'^admin/', include(admin.site.urls)),
 ]
