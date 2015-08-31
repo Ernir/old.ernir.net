@@ -1,0 +1,21 @@
+@font-face {
+    font-family: CelestiaAniquaStd;
+    src: url("celestiaantiquastd.otf") format("opentype");
+}
+
+body {
+    font-family: CelestiaAniquaStd;
+}
+
+h2 {
+    text-transform: uppercase;
+}
+
+.control-container {
+    height: 26px;
+}
+
+.control-container > label {
+    display: inline-block;
+    width: 200px;
+}
