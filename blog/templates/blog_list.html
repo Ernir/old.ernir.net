@@ -34,7 +34,7 @@
             {% endfor %}
         </span>
         </p>
-        <hr/>
+        {% if not forloop.last %}<hr/>{% endif %}
     {% endfor %}
 
 {% endblock %}
