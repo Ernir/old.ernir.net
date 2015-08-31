@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="spell-list-container">
+        {% for source in source_list %}
+            <h2 id="{{ source.short_name }}">
+                <a href="#{{ source.short_name }}">
+                    {{ source.name }} Buff Spells
+                </a>
+            </h2>
+            {% for spell in spell_list %}
+                {% if spell.source_id == source.id %}
+                    {% if not spell.size_modifying %}
+                        <div class="checkbox control-container">
+                            {% if spell.varies_by_cl %}
+                                <label>
+                                    <input type="checkbox"
+                                           id="spell-{{ spell.id }}">
+                                    {{ spell.name }}
+                                </label>
+                                <input type="number"
+                                       id="caster-level-{{ spell.id }}"
+                                       class="cl-detail"
+                                       value="1" min="1" max="100">
+                            {% else %}
+                                <label>
+                                    <input type="checkbox"
+                                           id="spell-{{ spell.id }}">
+                                    {{ spell.name }}
+                                </label>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="radio control-container">
+                            {% if spell.varies_by_cl %}
+                                <label>
+                                    <input type="radio" name="size"
+                                           id="spell-{{ spell.id }}">
+                                    {{ spell.name }}
+                                </label>
+                                <input type="number"
+                                       id="caster-level-{{ spell.id }}"
+                                       class="cl-detail"
+                                       value="1" min="1" max="100">
+                            {% else %}
+                                <label>
+                                    <input type="radio" name="size"
+                                           id="spell-{{ spell.id }}">
+                                    {{ spell.name }}
+                                </label>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+    <h2>Results</h2>
+
+    <div id="results-container">
+    </div>
+    <h2>Your Character</h2>
+
+    <div id="character-container">
+        <div>
+            <label for="caster-level">
+                Set global Caster Level:
+            </label>
+            <input type="number" id="caster-level" value="1" min="1"
+                   max="100">
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static "listeners.js" %}"></script>
+    <script src="{% static "update.js" %}"></script>
+    <script src="{% static "initialize.js" %}"></script>
+{% endblock %}

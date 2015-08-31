@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="keywords" content="Dungeons and Dragons, calculator, DnD, buff spells, buffs, buff tracker"/>
+    {% block metatags %}
+    {% endblock %}
+
+    <link rel="stylesheet" href="{% static "style.css" %}"/>
+
+{#    <link rel="shortcut icon" type="image/png" sizes="16x16 24x24 32x32 48x48" href="{% static "fav.ico" %}"/>#}
+
+    <title>Dungeons and Dragons 3.5 Buff Tracker</title>
+</head>
+<body>
+
+<div id="content" class="container">
+    {% block content %}
+        This should be overridden.
+    {% endblock %}
+</div>
+
+<!-- minified jQuery -->
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+
+<!-- other JS -->
+{% block scripts %}
+{% endblock %}
+
+</body>
+</html>
