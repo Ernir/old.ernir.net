@@ -71,7 +71,7 @@ function updateResults() {
     var message = constructMessage(CL);
 
     $.ajax({
-        url: "/behind-the-scenes/bonuses/",
+        url: "/bufftracker/behind-the-scenes/bonuses/",
         type: "get",
         data: message,
 
@@ -106,8 +106,8 @@ function constructMessage(CL) {
  */
 function displayResults(numericalBonuses, miscBonuses) {
 
-    var $resultsContainer = $("#results-container");
-    $resultsContainer.empty();
+    var $resultsList = $("#results-list");
+    $resultsList.empty();
     $.each(statisticsGroups, function (i, group) {
         $.each(group.statistics, function (j, statistic) {
             if(numericalBonuses[statistic.id]) {
@@ -116,11 +116,11 @@ function displayResults(numericalBonuses, miscBonuses) {
                     + ": " + (numericalBonuses[statistic.id] > 0 ? "+" : "")
                     + numericalBonuses[statistic.id]
                     + "</div>";
-                $resultsContainer.append(resultDiv);
+                $resultsList.append(resultDiv);
             }
         });
     });
     $.each(miscBonuses, function(i, bonus) {
-        $resultsContainer.append("<div>" + bonus + "</div>")
+        $resultsList.append("<div>" + bonus + "</div>")
     })
 }

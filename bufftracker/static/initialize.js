@@ -6,7 +6,7 @@ var selectedSpellIDs;
 var statisticsGroups;
 
 $(function () {
-    $.getJSON("/behind-the-scenes/statistics/", function (data) {
+    $.getJSON("/bufftracker/behind-the-scenes/statistics/", function (data) {
         statisticsGroups = data.groups;
     });
 
