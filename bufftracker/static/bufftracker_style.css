@@ -1,3 +1,4 @@
+/* Basic colours and appearance */
 @font-face {
     font-family: CelestiaAniquaStd;
     src: url("celestiaantiquastd.otf") format("opentype");
@@ -5,11 +6,19 @@
 
 body {
     font-family: CelestiaAniquaStd;
+    color: #111111;
+    background-color: #fffff8;
 }
 
 h2 {
     text-transform: uppercase;
 }
+
+a {
+    color: #111111;
+}
+
+/* Necessary changes to the width of the checkbox labels to make them align */
 
 .control-container {
     height: 26px;
@@ -18,4 +27,46 @@ h2 {
 .control-container > label {
     display: inline-block;
     width: 200px;
+}
+
+.spell-list-container {
+    width: 300px;
+    min-width: 300px;
+}
+
+/* Space for the other containers */
+
+.results-container {
+    width: 300px;
+    min-width: 200px;
+}
+
+.character-container {
+    width: 300px;
+    min-width: 200px;
+}
+
+/* The most terrible media queries.
+   If you see this - I need help.*/
+
+@media (min-width: 900px) {
+    .container {
+        display: flex;
+        flex-direction: row;
+    }
+}
+@media (min-width: 1000px) {
+    .spell-list-container {
+        margin-left: 100px;
+    }
+}
+@media (min-width: 1100px) {
+    .spell-list-container {
+        margin-left: 150px;
+    }
+}
+@media (min-width: 1200px) {
+    .spell-list-container {
+        margin-left: 200px;
+    }
 }
