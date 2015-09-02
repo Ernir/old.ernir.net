@@ -71,6 +71,7 @@ class MiscBonus(models.Model):
     class Meta:
         ordering = ("description", )
 
+
 class NumericalBonus(models.Model):
     bonus_formula = models.ForeignKey(CasterLevelFormula, null=True)
     modifier_type = models.ForeignKey(ModifierType)

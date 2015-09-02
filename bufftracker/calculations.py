@@ -1,4 +1,4 @@
-from bufftracker.models import Statistic, NumericalBonus, MiscBonus
+from bufftracker.models import Statistic, NumericalBonus, MiscBonus, TempHPBonus
 
 
 def get_applicable_bonuses(cl_dict):
@@ -43,6 +43,26 @@ def get_applicable_bonuses(cl_dict):
 
     return result
 
+
+def get_temp_hp_bonuses(cl_dict):
+
+    selected_spell_ids = [key for key in cl_dict]
+
+    bonuses = TempHPBonus.objects.filter(spell__in=selected_spell_ids)
+
+
+# class TempHPBonus(models.Model):
+#     die_number_formula = models.ForeignKey(
+#         CasterLevelFormula,
+#         related_name="die_number",
+#         null=True
+#     )
+#     die_size = models.IntegerField(default=0)
+#     other_bonus_formula = models.ForeignKey(
+#         CasterLevelFormula,
+#         related_name="other_bonus",
+#         null=True
+#     )
 
 def get_misc_bonuses(cl_dict):
     """

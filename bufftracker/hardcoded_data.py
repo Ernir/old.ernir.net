@@ -59,6 +59,10 @@ class ScalingFunctions:
         return min(cl // 4, 5)
 
     @staticmethod
+    def one_per_five_max_4(cl):
+        return min(cl // 5, 4)
+
+    @staticmethod
     def two_plus_one_per_three_above_three_max_5(cl):
         return min(2 + max((cl - 3) // 3, 0), 5)
 
