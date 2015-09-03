@@ -35,6 +35,10 @@ class ScalingFunctions:
         return 4
 
     @staticmethod
+    def ten(cl):
+        return 10
+
+    @staticmethod
     def equal(cl):
         return cl
 
