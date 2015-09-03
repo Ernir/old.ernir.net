@@ -47,6 +47,10 @@ class ScalingFunctions:
         return min(cl, 20)
 
     @staticmethod
+    def equal_plus_5_max_20(cl):
+        return min(cl, 20) + 5
+
+    @staticmethod
     def one_per_two(cl):
         return cl // 2
 
