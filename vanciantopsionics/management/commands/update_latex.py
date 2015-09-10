@@ -57,8 +57,9 @@ class Command(BaseCommand):
             if line[0] == "%":
                 continue
 
-            # link_match = link_pattern.match(line)
-            # if link_match:
+            link_match = link_pattern.match(line)
+            if link_match:
+                line = line.replace(link_match.group("whole_link"), "")
             #     url_components = links[link_match.group("label")]
             #     url = "\href{" + url_components["url"] + "}{" + url_components[
             #         "caption"] + "}"
@@ -124,6 +125,8 @@ class Command(BaseCommand):
                 lines = current_batch[latest_sec_break+1:line_no]
                 cls.parse_section(current_title, lines, order, current_object, parent_object)
 
+                # And then massive branching to see where the next section
+                # belongs in the document tree. :(
                 new_section_type = section_match.group("section_type")
                 if new_section_type == "section":
                     if current_section_type == "chapter":

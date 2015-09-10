@@ -22,7 +22,8 @@ class Chapter(models.Model):
     def __str__(self):
         return self.title
 
-    level = 0
+    class Meta:
+        ordering = ("order", )
 
 
 class Section(models.Model):
@@ -33,9 +34,10 @@ class Section(models.Model):
     order = models.IntegerField()
 
     def __str__(self):
-        return self.title
+        return self.parent.title + ": " + self.title
 
-    level = 1
+    class Meta:
+        ordering = ("parent__order", "order", )
 
 
 class Subsection(models.Model):
@@ -46,9 +48,10 @@ class Subsection(models.Model):
     order = models.IntegerField()
 
     def __str__(self):
-        return self.title
+        return self.parent.title + ": " + self.title
 
-    level = 2
+    class Meta:
+        ordering = ("parent__parent__order", "parent__order", "order", )
 
 
 class Subsubsection(models.Model):
@@ -59,6 +62,11 @@ class Subsubsection(models.Model):
     order = models.IntegerField()
 
     def __str__(self):
-        return self.title
+        return self.parent.title + ": " + self.title
 
-    level = 3
+    class Meta:
+        ordering = (
+            "parent__parent__parent__order",
+            "parent__parent__order",
+            "parent__order", "order",
+        )
