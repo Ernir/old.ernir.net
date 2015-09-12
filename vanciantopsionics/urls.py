@@ -4,4 +4,5 @@ from vanciantopsionics import views
 urlpatterns = patterns(
     '',
     url(r"^$", views.vtp_index, name="vtp_index"),
+    url(r"^chapter/(?P<chapter_number>\d)/$", views.vtp_chapter, name="vtp_chapter"),
 )

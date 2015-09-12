@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block more_css %}
+    <link rel="stylesheet" href="{% static "vtp.css" %}"/>
+{% endblock %}
+
+{% block content %}
+    {% autoescape off %}
+    <h1>{{ chapter.title }}</h1>
+    {{ chapter.first_text }}
+    {% for section in chapter.section_set.all %}
+        <h2>{{ section.title }}</h2>
+        {{ section.first_text }}
+        {% for subsection in section.subsection_set.all %}
+            <h3>{{ subsection.title }}</h3>
+            {{ subsection.first_text }}
+            {% for subsubsection in subsection.subsubsection_set.all %}
+                <h4>{{ subsubsection.title }}</h4>
+                {{ subsubsection.first_text }}
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+    {% endautoescape %}
+    <div>
+    </div>
+{% endblock content %}
+
+{% block more_js %}
+    <script src="{% static "vtp.js" %}"></script>
+{% endblock %}

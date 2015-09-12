@@ -1,6 +1,10 @@
 from django.core.management.base import BaseCommand
-from vanciantopsionics.models import Chapter, Section, Subsection, Subsubsection
+from vanciantopsionics.models import Chapter, Section, Subsection, \
+    Subsubsection
+from bs4 import BeautifulSoup
+from django.utils.text import slugify
 import os
+import sys
 import re
 import subprocess
 
@@ -51,15 +55,22 @@ class Command(BaseCommand):
         label_pattern = re.compile(r"(?P<pre>.*)\\label\{(Spell|Feat|Sec|sec|Item):(.*)\}(?P<post>.*)")
 
         lines = []
+        special_line_numbers = []
+        print_mode = False
 
-        for line in current_batch:
+        for number, line in enumerate(current_batch):
+
+            if line == "%pandoc_print_begin\n":
+                print_mode = True
+            if line == "%pandoc_print_end\n":
+                print_mode = False
 
             if line[0] == "%":
-                continue
+                line = ""
 
             link_match = link_pattern.match(line)
             if link_match:
-                line = line.replace(link_match.group("whole_link"), "")
+                line = line.replace(link_match.group("whole_link"), " ")
             #     url_components = links[link_match.group("label")]
             #     url = "\href{" + url_components["url"] + "}{" + url_components[
             #         "caption"] + "}"
@@ -68,6 +79,7 @@ class Command(BaseCommand):
             table_match = p_column_pattern.match(line)
             if table_match:
                 line = re.sub(r"\|?p\{.*?\}", "l", line)
+
 
             rule_match = rule_pattern.match(line)
             if rule_match:
@@ -82,7 +94,9 @@ class Command(BaseCommand):
             multicolumn_match = multicolumn_pattern.match(line)
             cmidrule_match = cmidrule_pattern.match(line)
             if box_match or multicolumn_match or cmidrule_match:
-                continue
+                line = ""
+
+            line = line.replace("tableonecolumn", "table")
 
             label_match = label_pattern.match(line)
             if label_match:
@@ -91,19 +105,39 @@ class Command(BaseCommand):
             line = line.replace("&Known", "&Spells Known")
             line = line.replace("tabular}}}", "tabular}")
             line = line.replace("tabular}}", "tabular}")
+
+            if "tabular" in line:
+                special_line_numbers.append(number)
+
+            if print_mode:
+                sys.stdout.write(line)
+
             lines.append(line)
 
-        return "".join(current_batch)
+        lines = cls.replace_super_special(lines, special_line_numbers)
+
+        return lines
+
+    @classmethod
+    def replace_super_special(cls, lines, line_numbers):
+        """
+        Some lines are so messed up they must be handled on their own. :(
+        """
+        for number in line_numbers:
+            line = lines[number]
+
+            # Chapter 1
+            line = line.replace(r"\begin{tabular}{l*{19}{l}l}", r"\begin{tabular}{lllllllllllllllllllll}")
+            line = line.replace(r"\begin{tabular}{l*{9}{c}}", r"\begin{tabular}{llllllllll}")
+
+
+            lines[number] = line
+
+        return lines
+
 
     @classmethod
     def store_chapter(cls, current_batch):
-
-        level_map = {
-            "chapter": 0,
-            "section": 1,
-            "subsection": 2,
-            "subsubsection": 3
-        }
 
         chapter_name = "Magic Overview"
         current_object = Chapter.objects.get(title=chapter_name)
@@ -205,4 +239,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         tex_file_names = self.get_tex_names("./vanciantopsionics/latex/Chapter1SpellcastingSystem/")
         batch = self.read_file_to_list(tex_file_names[0])
+        batch = self.preprocess_file(batch)
         self.store_chapter(batch)
