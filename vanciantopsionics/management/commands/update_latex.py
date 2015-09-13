@@ -129,7 +129,6 @@ class Command(BaseCommand):
             line = line.replace(r"\begin{tabular}{l*{19}{l}l}", r"\begin{tabular}{lllllllllllllllllllll}")
             line = line.replace(r"\begin{tabular}{l*{9}{c}}", r"\begin{tabular}{llllllllll}")
 
-
             lines[number] = line
 
         return lines
@@ -264,6 +263,14 @@ class Command(BaseCommand):
                         sibling.insert(0, new_tag)
 
                     break
+
+        # Moving paragraphs and subparagraphs down a level
+        h5s = soup.find("h5")
+        if h5s:
+            h5s.name = "h6"
+        h4s = soup.find("h4")
+        if h4s:
+            h4s.name = "h5"
 
         return str(soup)
 
