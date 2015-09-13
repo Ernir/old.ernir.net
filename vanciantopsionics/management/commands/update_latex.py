@@ -7,6 +7,7 @@ import os
 import sys
 import re
 import subprocess
+import time
 
 
 class Command(BaseCommand):
@@ -17,13 +18,13 @@ class Command(BaseCommand):
         return [line for line in file]
 
     @classmethod
-    def get_tex_names(cls, base_path):
+    def get_chapter_names(cls, base_path):
         tex_file_names = []
 
-        # Finds all .tex files in "base_path" as well as all subdirectories
+        # Finds all Chapter*.tex files in "base_path" as well as subdirs
         for (path, directories, files) in os.walk(base_path):
             for filename in files:
-                if re.match(r".*\.tex$", filename):
+                if re.match(r"_Chapter.*\.tex$", filename):
                     full_name = os.path.join(path, filename)
                     tex_file_names.append(full_name)
 
@@ -135,17 +136,14 @@ class Command(BaseCommand):
 
 
     @classmethod
-    def store_chapter(cls, current_batch):
+    def store_chapter(cls, current_batch, current_object, order):
 
-        chapter_name = "The Spellcasting System"
-        current_object = Chapter.objects.get(title=chapter_name)
-        order = 1
         parent_object = None
         current_section_type = "chapter"
         cls.clear_chapter(current_object)
 
         latest_sec_break = 0
-        current_title = chapter_name
+        current_title = current_object.title
 
         for line_no, line in enumerate(current_batch):
 
@@ -333,22 +331,88 @@ class Command(BaseCommand):
 
         return out.decode("UTF-8")
 
+    @classmethod
+    def walk_tex_tree(cls, base_folder, base_filepath):
+        base_file = cls.read_file_to_list(base_filepath)
+
+        input_pattern = re.compile(r"\\input\{(?P<rel_path>.*)\}")
+        output_file = []
+
+        lineno = 0
+        for line in base_file:
+            input_match = re.match(input_pattern, line)
+            if input_match:
+                new_filepath = base_folder + input_match.group("rel_path")
+                addition = cls.walk_tex_tree(base_folder, new_filepath)
+                lineno += len(addition)
+                output_file = \
+                    output_file[:lineno] \
+                    + addition \
+                    + base_file[lineno:]
+            else:
+                output_file.append(line)
+            lineno += 1
+
+        return output_file
+
     def handle(self, *args, **options):
-        tex_file_names = self.get_tex_names("./vanciantopsionics/latex/")
+        start = time.clock()
+        base_folder = "./vanciantopsionics/latex/"
+        chapter_filenames = self.get_chapter_names(base_folder)
+
+        # ToDo: actually dig this information out of the file...
+        chapter_name_dict = {
+            './vanciantopsionics/latex/Chapter1SpellcastingSystem/_Chapter1SpellcastingSystem.tex': "The Spellcasting System",
+            './vanciantopsionics/latex/Chapter2RacesAndClasses/_Chapter2RacesAndClasses.tex': "Races and Classes",
+            './vanciantopsionics/latex/Chapter3FeatsAndSkills/_Chapter3FeatsAndSkills.tex': "Feats and Skills",
+            './vanciantopsionics/latex/Chapter4Spells/_Chapter4Spells.tex': "Spells",
+            './vanciantopsionics/latex/Chapter5Creatures/_Chapter5Creatures.tex': "Creatures",
+            './vanciantopsionics/latex/Chapter6Items/_Chapter6Items.tex': "Items",
+            './vanciantopsionics/latex/Chapter7New/_Chapter7New.tex': "New Content",
+            './vanciantopsionics/latex/Chapter8EndNotes/_Chapter8EndNotes.tex': "End Notes"
+        }
 
         link_dict = {}
-        for number, file_name in enumerate(tex_file_names):
-            batch = self.read_file_to_list(file_name)
-            link_dict = self.generate_link_dict(link_dict, batch, number+1)
 
-        #ToDo: Put this into the loop.
-        batch = self.read_file_to_list(tex_file_names[0])
-        batch = self.preprocess_file(batch, link_dict)
-        self.store_chapter(batch)
-        self.postprocess_chapter(Chapter.objects.get(order=1), link_dict)
+        #ToDo: Remove horrible duplication
+        order = 1
+        for file_name in chapter_filenames:
+            batch = self.walk_tex_tree(base_folder, file_name)
+            link_dict = self.generate_link_dict(link_dict, batch, order)
+            order += 1
+        dprint("Link index compiled.")
+
+        for chapter in Chapter.objects.all():
+            chapter.delete()
+
+        order = 1
+        for file_name in chapter_filenames:
+            batch = self.walk_tex_tree(base_folder, file_name)
+            batch = self.preprocess_file(batch, link_dict)
+            chapter = Chapter()
+            chapter.title = chapter_name_dict[file_name]
+            chapter.order = order
+            chapter.save()
+
+            self.store_chapter(batch, chapter, order)
+            self.postprocess_chapter(chapter, link_dict)
+
+            dprint("Chapter " + str(order) + " compiled.")
+            order += 1
+
+        time_elapsed = time.clock() - start
+        dprint("Compilation finished in " + str(time_elapsed) + "s.")
 
 
 def pprint(input_object):
     import pprint
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(input_object)
+
+
+debug = False
+
+
+def dprint(input_object):
+    if debug:
+        print(input_object)
