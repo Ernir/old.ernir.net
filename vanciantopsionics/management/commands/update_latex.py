@@ -39,8 +39,7 @@ class Command(BaseCommand):
         """
 
         # Links
-        link_pattern = re.compile(
-            r"((.*?)(?P<whole_link>\\nameref\{(?P<label>.*?)\})(.*?)*)")
+        link_pattern = r"(?P<whole_link>\\nameref\{(?P<label>.*?)\})"
 
         # Tables
         p_column_pattern = re.compile(r"\\begin\{tabular\}\{(\|?p\{.*?\})+\|?\}")
@@ -69,18 +68,17 @@ class Command(BaseCommand):
             if line[0] == "%":
                 line = ""
 
-            # ToDo: Make this parse all links, not just the first in line
-            link_match = link_pattern.match(line)
-            if link_match:
-                url_components = links[link_match.group("label")]
-                url = "\href{" + url_components["url"] + "}{" + url_components[
-                    "caption"] + "}"
-                line = line.replace(link_match.group("whole_link"), url)
+            link_matches = re.findall(link_pattern, line)
+            for match in link_matches:
+                internal_link, label = match
+                url = links[label]["url"]
+                caption = links[label]["caption"]
+                hyperlink = "\href{" + url + "}{" + caption + "}"
+                line = line.replace(internal_link, hyperlink)
 
             table_match = p_column_pattern.match(line)
             if table_match:
                 line = re.sub(r"\|?p\{.*?\}", "l", line)
-
 
             rule_match = rule_pattern.match(line)
             if rule_match:
