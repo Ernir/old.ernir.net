@@ -4,29 +4,39 @@
 
 {% block more_css %}
     <link rel="stylesheet" href="{% static "vtp.css" %}"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/stylesheets/jquery.tocify.min.css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css"/>
 {% endblock %}
 
 {% block content %}
-    {% autoescape off %}
-    <h1>{{ chapter.title }}</h1>
-    {{ chapter.first_text }}
-    {% for section in chapter.section_set.all %}
-        <h2>{{ section.title }}</h2>
-        {{ section.first_text }}
-        {% for subsection in section.subsection_set.all %}
-            <h3>{{ subsection.title }}</h3>
-            {{ subsection.first_text }}
-            {% for subsubsection in subsection.subsubsection_set.all %}
-                <h4>{{ subsubsection.title }}</h4>
-                {{ subsubsection.first_text }}
+    <div class="row">
+    <div class="col-md-3">
+        <div id="toc"></div>
+    </div>
+    <div class="col-md-offset-1 col-md-8">
+        {% autoescape off %}
+        <h1>{{ chapter.title }}</h1>
+        {{ chapter.first_text }}
+        {% for section in chapter.section_set.all %}
+            <hr/>
+            <h2>{{ section.title }}</h2>
+            {{ section.first_text }}
+            {% for subsection in section.subsection_set.all %}
+                <h3>{{ subsection.title }}</h3>
+                {{ subsection.first_text }}
+                {% for subsubsection in subsection.subsubsection_set.all %}
+                    <h4>{{ subsubsection.title }}</h4>
+                    {{ subsubsection.first_text }}
+                {% endfor %}
             {% endfor %}
         {% endfor %}
-    {% endfor %}
-    {% endautoescape %}
-    <div>
+        {% endautoescape %}
+    </div>
     </div>
 {% endblock content %}
 
 {% block more_js %}
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js"></script>
     <script src="{% static "vtp.js" %}"></script>
 {% endblock %}

@@ -27,3 +27,8 @@ $(function () {
         }
     });
 });
+
+$("#toc").tocify({
+    selectors: "h1,h2,h3,h4",
+    hashGenerator: "pretty"
+});

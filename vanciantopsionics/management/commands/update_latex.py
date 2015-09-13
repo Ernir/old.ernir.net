@@ -311,7 +311,7 @@ class Command(BaseCommand):
                     "url": "/vanciantopsionics/chapter/"
                            + str(chapter_number)
                            + "/#"
-                           + slugify(name),
+                           + slugify(name), #ToDo use the tocify.js pretty hashing function instead.
                     "caption": name
                 }
 
