@@ -30,14 +30,15 @@ class Command(BaseCommand):
         return sorted(tex_file_names)
 
     @classmethod
-    def preprocess_file(cls, current_batch):
+    def preprocess_file(cls, current_batch, links):
         """
 
         :param current_batch: A list of strings, each representing a line
         of LaTeX code.
         :return: A list of strings, cleaned up for Pandoc.
         """
-            # Links
+
+        # Links
         link_pattern = re.compile(
             r"((.*?)(?P<whole_link>\\nameref\{(?P<label>.*?)\})(.*?)*)")
 
@@ -68,13 +69,13 @@ class Command(BaseCommand):
             if line[0] == "%":
                 line = ""
 
+            # ToDo: Make this parse all links, not just the first in line
             link_match = link_pattern.match(line)
             if link_match:
-                line = line.replace(link_match.group("whole_link"), " ")
-            #     url_components = links[link_match.group("label")]
-            #     url = "\href{" + url_components["url"] + "}{" + url_components[
-            #         "caption"] + "}"
-            #     line = line.replace(link_match.group("whole_link"), url)
+                url_components = links[link_match.group("label")]
+                url = "\href{" + url_components["url"] + "}{" + url_components[
+                    "caption"] + "}"
+                line = line.replace(link_match.group("whole_link"), url)
 
             table_match = p_column_pattern.match(line)
             if table_match:
@@ -139,7 +140,7 @@ class Command(BaseCommand):
     @classmethod
     def store_chapter(cls, current_batch):
 
-        chapter_name = "Magic Overview"
+        chapter_name = "The Spellcasting System"
         current_object = Chapter.objects.get(title=chapter_name)
         order = 1
         parent_object = None
@@ -222,6 +223,97 @@ class Command(BaseCommand):
         for section in chapter_object.section_set.all():
             section.delete()
 
+    @classmethod
+    def postprocess_chapter(cls, chapter, link_dict):
+        clean = cls.postprocess_text(chapter.first_text, link_dict)
+        chapter.first_text = clean
+        chapter.save()
+        for s in chapter.section_set.all():
+            clean = cls.postprocess_text(s.first_text, link_dict)
+            s.first_text = clean
+            s.save()
+            for ss in s.subsection_set.all():
+                clean = cls.postprocess_text(ss.first_text, link_dict)
+                ss.first_text = clean
+                ss.save()
+                for sss in ss.subsubsection_set.all():
+                    clean = cls.postprocess_text(sss.first_text, link_dict)
+                    sss.first_text = clean
+                    sss.save()
+
+
+    @classmethod
+    def postprocess_text(cls, input_string, link_dict):
+        soup = BeautifulSoup(input_string, "html.parser")
+
+        # Fixing table classes
+        for table in soup.find_all("table"):
+            table["class"] = "table"
+
+        # Fixing table labels
+        old_labels = soup.find_all(text=re.compile("\[tab:"))
+        for old_label in old_labels:
+            for sibling in old_label.parent.next_siblings:
+                if sibling.name == "table":
+                    label_name = old_label[1:-1]
+                    new_id = slugify(label_name[4:])
+                    sibling["id"] = new_id
+                    old_label.parent.extract()
+
+                    if label_name in link_dict:
+                        new_tag = soup.new_tag("caption")
+                        new_tag.string = "Table: " + link_dict[label_name]["caption"]
+                        sibling.insert(0, new_tag)
+
+                    break
+
+        return str(soup)
+
+    @classmethod
+    def generate_link_dict(cls, d, current_batch, chapter_number):
+        # d will be set in label -> url, caption format.
+
+        # Loop through and find all types of section headings
+        # and label-able environments
+        for line in current_batch:
+
+            chapter_match = re.match(
+                r"\\(chapter|section|subsection|subsubsection|paragraph|subparagraph)(\[(?P<shortname>.*)\]|\{(?P<longname>.*?)\})",
+                line)
+            if chapter_match:
+                if chapter_match.group("shortname"):
+                    name = chapter_match.group("shortname")
+                else:
+                    name = chapter_match.group("longname")
+
+            caption_match = re.match(r"\\caption\{(.*)\}", line)
+            if caption_match:
+                # If the caption comes after the label, all is okay,
+                # This should not be an issue in recent document versions.
+                name = caption_match.group(1)
+
+            label_match = re.match(r"\\label\{(.*)\}", line)
+            if label_match:
+                label = label_match.group(1)
+
+                # Spells and feats have special rules
+                if label[0:4] == "Feat":
+                    # Some feat names have additional
+                    # square brackets in the title
+                    extra_tags = re.match(r"(.*)]", name)
+                    if extra_tags:
+                        name = extra_tags.group(1)
+
+                d[label] = {
+                    "url": "/vanciantopsionics/chapter/"
+                           + str(chapter_number)
+                           + "/#"
+                           + slugify(name),
+                    "caption": name
+                }
+
+        return d
+
 
     @classmethod
     def call_pandoc(cls, input_string):
@@ -237,7 +329,21 @@ class Command(BaseCommand):
         return out.decode("UTF-8")
 
     def handle(self, *args, **options):
-        tex_file_names = self.get_tex_names("./vanciantopsionics/latex/Chapter1SpellcastingSystem/")
+        tex_file_names = self.get_tex_names("./vanciantopsionics/latex/")
+
+        link_dict = {}
+        for number, file_name in enumerate(tex_file_names):
+            batch = self.read_file_to_list(file_name)
+            link_dict = self.generate_link_dict(link_dict, batch, number+1)
+
+        #ToDo: Put this into the loop.
         batch = self.read_file_to_list(tex_file_names[0])
-        batch = self.preprocess_file(batch)
+        batch = self.preprocess_file(batch, link_dict)
         self.store_chapter(batch)
+        self.postprocess_chapter(Chapter.objects.get(order=1), link_dict)
+
+
+def pprint(input_object):
+    import pprint
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(input_object)
