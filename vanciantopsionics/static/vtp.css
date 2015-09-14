@@ -1,3 +1,20 @@
 #faq-body,#statement-body {
     display: none;
 }
+
+.section-sep {
+    border-width: 3px;
+}
+
+.subsection-sep {
+    border-width: 2px;
+}
+
+.subsubsection-sep {
+    margin-right: 50%;
+}
+
+#toc {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}

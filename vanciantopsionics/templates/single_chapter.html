@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "vtp_base.html" %}
 
 {% load static %}
 
@@ -10,21 +10,23 @@
 
 {% block content %}
     <div class="row">
-    <div class="col-md-3">
+    <div class="col-xs-3">
         <div id="toc"></div>
     </div>
-    <div class="col-md-offset-1 col-md-8">
+    <div class="col-xs-offset-1 col-xs-7 text-justify">
         {% autoescape off %}
         <h1>{{ chapter.title }}</h1>
         {{ chapter.first_text }}
         {% for section in chapter.section_set.all %}
-            <hr/>
+            <hr class="section-sep"/>
             <h2>{{ section.title }}</h2>
             {{ section.first_text }}
             {% for subsection in section.subsection_set.all %}
+                <hr class="subsection-sep"/>
                 <h3>{{ subsection.title }}</h3>
                 {{ subsection.first_text }}
                 {% for subsubsection in subsection.subsubsection_set.all %}
+                    <hr class="subsubsection-sep"/>
                     <h4>{{ subsubsection.title }}</h4>
                     {{ subsubsection.first_text }}
                 {% endfor %}
