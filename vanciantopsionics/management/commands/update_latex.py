@@ -105,9 +105,12 @@ class Command(BaseCommand):
             line = line.replace("&Known", "&Spells Known")
             line = line.replace("tabular}}}", "tabular}")
             line = line.replace("tabular}}", "tabular}")
+            line = line.replace(r"\paragraph", r"\textbf")
+            line = line.replace(r"\subparagraph", r"\emph")
 
             if "tabular" in line:
                 special_line_numbers.append(number)
+
 
             if print_mode:
                 sys.stdout.write(line)
@@ -262,15 +265,7 @@ class Command(BaseCommand):
 
                     break
 
-        # Moving paragraphs and subparagraphs down a level
-        h5s = soup.find("h5")
-        if h5s:
-            h5s.name = "h6"
-        h4s = soup.find("h4")
-        if h4s:
-            h4s.name = "h5"
-
-        return str(soup)
+        return soup.prettify()
 
     @classmethod
     def generate_link_dict(cls, d, current_batch, chapter_number):
@@ -387,6 +382,7 @@ class Command(BaseCommand):
 
         order = 1
         for file_name in chapter_filenames:
+            start_chapter_parse = time.clock()
             batch = self.walk_tex_tree(base_folder, file_name)
             batch = self.preprocess_file(batch, link_dict)
             chapter = Chapter()
@@ -397,7 +393,8 @@ class Command(BaseCommand):
             self.store_chapter(batch, chapter, order)
             self.postprocess_chapter(chapter, link_dict)
 
-            dprint("Chapter " + str(order) + " compiled.")
+            time_elapsed = time.clock() - start_chapter_parse
+            dprint("Chapter " + str(order) + " compiled in " + str(time_elapsed) + "s.")
             order += 1
 
         time_elapsed = time.clock() - start
