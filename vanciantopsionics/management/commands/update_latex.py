@@ -105,8 +105,8 @@ class Command(BaseCommand):
             line = line.replace("&Known", "&Spells Known")
             line = line.replace("tabular}}}", "tabular}")
             line = line.replace("tabular}}", "tabular}")
-            line = line.replace(r"\paragraph", r"\textbf")
-            line = line.replace(r"\subparagraph", r"\emph")
+            line = line.replace(r"\paragraph", "\n \\textbf")
+            line = line.replace(r"\subparagraph", "\n \\emph")
 
             if "tabular" in line:
                 special_line_numbers.append(number)
@@ -265,7 +265,7 @@ class Command(BaseCommand):
 
                     break
 
-        return soup.prettify()
+        return str(soup)
 
     @classmethod
     def generate_link_dict(cls, d, current_batch, chapter_number):
