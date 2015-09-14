@@ -22,7 +22,9 @@ def vtp_index(request):
 
 def vtp_chapter(request, chapter_number):
     chapter = get_object_or_404(Chapter, order=chapter_number)
+    all_chapters = Chapter.objects.values("title", "order")
 
     return render(request, "single_chapter.html", {
-        "chapter": chapter
+        "chapter": chapter,
+        "chapters": all_chapters
     })

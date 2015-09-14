@@ -14,6 +14,10 @@
     margin-right: 50%;
 }
 
+body {
+    padding-top: 50px
+}
+
 #toc {
     margin-top: 50px;
     margin-bottom: 50px;

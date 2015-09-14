@@ -27,6 +27,9 @@
 <body>
 
 <div id="content" class="container">
+    {% if chapters %}
+        {% include "vtp_navbar.html" %}
+    {% endif %}
     {% block content %}
         This should be overridden.
     {% endblock %}
