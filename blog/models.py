@@ -41,6 +41,8 @@ class Entry(models.Model):
     excerpt = models.CharField(max_length=400)
     tags = models.ManyToManyField(Tag, related_name="entries")
 
+    visible = models.BooleanField(default=True)
+
     # Tiny little language association for each article.
     _is = "IS"
     _en = "EN"

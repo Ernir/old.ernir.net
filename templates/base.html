@@ -21,9 +21,13 @@
 
     <link rel="shortcut icon" type="image/png" sizes="16x16 24x24 32x32 48x48" href="{% static "ernir.ico" %}"/>
 
-    <title>Ernir.net</title>
+    {% block meta %}
+        <title>Ernir.net</title>
+    {% endblock %}
 </head>
 <body>
+
+{% include "fb-sdk.html" %}
 
 <div id="content" class="container">
     <div class="text-center"><a href="/">Ernir.net home</a> </div>
