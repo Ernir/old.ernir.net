@@ -1,4 +1,4 @@
-from blog.managers import TagByCountManager
+from blog.managers import TagByCountManager, VisibleEntriesManager
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -55,6 +55,9 @@ class Entry(models.Model):
         choices=_language_choices,
         default=_en
     )
+
+    objects = models.Manager()
+    visible_entries = VisibleEntriesManager()
 
     def __str__(self):
         return self.title

@@ -11,7 +11,7 @@ def index(request, language_filter=None):
     The list of all blogs.
     """
 
-    entries = Entry.objects
+    entries = Entry.visible_entries
     tags = Tag.objects_by_entry_count.all()
 
     if language_filter is not None:
@@ -54,7 +54,7 @@ def by_tag(request, tag_slug):
 
     A list of blogs with entries having a tag with the given tag_slug.
     """
-    entries = Entry.objects.filter(tags__slug=tag_slug).all()
+    entries = Entry.visible_entries.filter(tags__slug=tag_slug).all()
     tags = Tag.objects_by_entry_count.all()
 
     return render(request, "blog_list.html", {
