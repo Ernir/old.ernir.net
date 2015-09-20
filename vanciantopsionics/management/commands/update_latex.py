@@ -13,15 +13,48 @@ import time
 class Command(BaseCommand):
 
     @classmethod
-    def read_file_to_list(cls, file_path):
-        file = open(file_path, "r")
-        return [line for line in file]
+    def walk_tex_tree(cls, base_folder, base_filepath):
+        """
+        Takes a .tex files, and parses its \include commands to make one
+        big happy document.
+
+        :param base_folder: A path to a folder containing .tex files.
+        :param base_filepath: A path to a file that may or may not have
+        \include commands.
+        :return: A concatenated file.
+        """
+        base_file = cls.read_file_to_list(base_filepath)
+
+        input_pattern = re.compile(r"\\input\{(?P<rel_path>.*)\}")
+        output_file = []
+
+        lineno = 0
+        for line in base_file:
+            input_match = re.match(input_pattern, line)
+            if input_match:
+                new_filepath = base_folder + input_match.group("rel_path")
+                addition = cls.walk_tex_tree(base_folder, new_filepath)
+                lineno += len(addition)
+                output_file = \
+                    output_file[:lineno] \
+                    + addition \
+                    + base_file[lineno:]
+            else:
+                output_file.append(line)
+            lineno += 1
+
+        return output_file
 
     @classmethod
     def get_chapter_names(cls, base_path):
+        """
+
+        :param base_path: A path to a folder containing .tex files.
+        :return: A list of all .tex filepaths in the base folder and its
+        subdirectories that have "Chapter" in the file name.
+        """
         tex_file_names = []
 
-        # Finds all Chapter*.tex files in "base_path" as well as subdirs
         for (path, directories, files) in os.walk(base_path):
             for filename in files:
                 if re.match(r"_Chapter.*\.tex$", filename):
@@ -31,8 +64,19 @@ class Command(BaseCommand):
         return sorted(tex_file_names)
 
     @classmethod
+    def read_file_to_list(cls, file_path):
+        """
+
+        :param file_path: A path to a .tex document.
+        :return: A list containing each line of the document on own line.
+        """
+        file = open(file_path, "r")
+        return [line for line in file]
+
+    @classmethod
     def preprocess_file(cls, current_batch, links):
         """
+        Preprocesses a list of strings so that Pandoc can handle them.
 
         :param current_batch: A list of strings, each representing a line
         of LaTeX code.
@@ -61,14 +105,17 @@ class Command(BaseCommand):
 
         for number, line in enumerate(current_batch):
 
+            # Optional printing for debugging purposes
             if line == "%pandoc_print_begin\n":
                 print_mode = True
             if line == "%pandoc_print_end\n":
                 print_mode = False
 
+            # Skipping comments
             if line[0] == "%":
                 line = ""
 
+            # Handling internal links, turning them into http hyperlinks
             link_matches = re.findall(link_pattern, line)
             for match in link_matches:
                 internal_link, label = match
@@ -77,40 +124,37 @@ class Command(BaseCommand):
                 hyperlink = "\href{" + url + "}{" + caption + "}"
                 line = line.replace(internal_link, hyperlink)
 
+            # Handling basic tables
             table_match = p_column_pattern.match(line)
             if table_match:
                 line = re.sub(r"\|?p\{.*?\}", "l", line)
-
             rule_match = rule_pattern.match(line)
             if rule_match:
                 line = "\hline\n"
-
-            enumerated_item_match = enumerated_item_pattern.match(line)
-            if enumerated_item_match:
-                line = "  \item " + "(" + enumerated_item_match.group("number") + \
-                       ") " + enumerated_item_match.group("contents")
-
             box_match = box_pattern.match(line)
             multicolumn_match = multicolumn_pattern.match(line)
             cmidrule_match = cmidrule_pattern.match(line)
             if box_match or multicolumn_match or cmidrule_match:
                 line = ""
-
             line = line.replace("tableonecolumn", "table")
-
-            label_match = label_pattern.match(line)
-            if label_match:
-                line = label_match.group("pre") + label_match.group("post")
-
-            line = line.replace("&Known", "&Spells Known")
             line = line.replace("tabular}}}", "tabular}")
             line = line.replace("tabular}}", "tabular}")
-            line = line.replace(r"\paragraph", "\n \\textbf")
-            line = line.replace(r"\subparagraph", "\n \\emph")
-
+            line = line.replace("&Known", "&Spells Known")
             if "tabular" in line:
                 special_line_numbers.append(number)
 
+            # Handling enumerated environments
+            enumerated_item_match = enumerated_item_pattern.match(line)
+            if enumerated_item_match:
+                line = "  \item " + "(" + enumerated_item_match.group("number") + \
+                       ") " + enumerated_item_match.group("contents")
+
+            # Other substitutions
+            label_match = label_pattern.match(line)
+            if label_match:
+                line = label_match.group("pre") + label_match.group("post")
+            line = line.replace(r"\paragraph", "\n \\textbf")
+            line = line.replace(r"\subparagraph", "\n \\emph")
 
             if print_mode:
                 sys.stdout.write(line)
@@ -139,7 +183,14 @@ class Command(BaseCommand):
 
 
     @classmethod
-    def store_chapter(cls, current_batch, current_object, order):
+    def store_chapter(cls, current_batch, current_object):
+        """
+
+        :param current_batch: A list of strings, each item representing a
+        line of a .tex document.
+        :param current_object: A chapter object.
+        :return: Nothing, but see parse_section.
+        """
 
         parent_object = None
         current_section_type = "chapter"
@@ -147,6 +198,7 @@ class Command(BaseCommand):
 
         latest_sec_break = 0
         current_title = current_object.title
+        order = current_object.order
 
         for line_no, line in enumerate(current_batch):
 
@@ -204,6 +256,21 @@ class Command(BaseCommand):
 
     @classmethod
     def parse_section(cls, title, input_lines, order, current_object, parent):
+        """
+        Takes in .tex info, stores equivalent .html info in the given
+        model instance.
+
+        :param title: The title of the current lexical section to store.
+        :param input_lines: A list of the lines the current section should
+        have, in .tex format.
+        :param order: The order of the current section, relative to
+        sections of the same level.
+        :param current_object: The actual chapter, section, subsection
+         or subsubsection instance.
+        :param parent: A reference to the section's parent in the
+        document structure
+        :return: The modified section object.
+        """
         tex_base = "".join(input_lines)
         html_source = cls.call_pandoc(tex_base)
 
@@ -218,11 +285,23 @@ class Command(BaseCommand):
 
     @classmethod
     def clear_chapter(cls, chapter_object):
+        """
+        Deletes all lexical children of the given chapter object instance.
+        """
         for section in chapter_object.section_set.all():
             section.delete()
 
     @classmethod
     def postprocess_chapter(cls, chapter, link_dict):
+        """
+        Applies postprocess_text to all lexical children of the given
+        chapter.
+
+        :param chapter: A Chapter model instance.
+        :param link_dict: A dictionary object as given by
+        generate_link_dict.
+        :return: None
+        """
         clean = cls.postprocess_text(chapter.first_text, link_dict)
         chapter.first_text = clean
         chapter.save()
@@ -242,6 +321,14 @@ class Command(BaseCommand):
 
     @classmethod
     def postprocess_text(cls, input_string, link_dict):
+        """
+        Cleans up some HTML artifacts left by Pandoc.
+
+        :param input_string: A string of html code, as returned by Pandoc.
+        :param link_dict: A dictionary object as given by
+        generate_link_dict.
+        :return: A cleaner, slightly less invalid html string.
+        """
         soup = BeautifulSoup(input_string, "html.parser")
 
         # Fixing table classes
@@ -269,10 +356,16 @@ class Command(BaseCommand):
 
     @classmethod
     def generate_link_dict(cls, d, current_batch, chapter_number):
-        # d will be set in label -> url, caption format.
+        """
 
-        # Loop through and find all types of section headings
-        # and label-able environments
+        :param d: A dictionary, containing latex labels as keys. As values,
+        there are tuples the label's new url-to be and the corresponding
+        caption.
+        :param current_batch: A list of strings where each item in the list
+        is one line of a .tex document.
+        :param chapter_number: The number of the current chapter.
+        :return:
+        """
         for line in current_batch:
 
             chapter_match = re.match(
@@ -315,9 +408,12 @@ class Command(BaseCommand):
 
     @classmethod
     def call_pandoc(cls, input_string):
-        # Pipes the input string to
-        #    pandoc -f latex -t html
-        # And returns the result.
+        """
+
+        :param input_string: a string containing a .tex document.
+        :return: the result of piping input_string to
+        pandoc -f latex -t html
+        """
 
         process = subprocess.Popen(["pandoc -f latex -t html"],
                                    stdin=subprocess.PIPE, shell=True,
@@ -325,30 +421,6 @@ class Command(BaseCommand):
         out, err = process.communicate(bytes(input_string, "UTF-8"))
 
         return out.decode("UTF-8")
-
-    @classmethod
-    def walk_tex_tree(cls, base_folder, base_filepath):
-        base_file = cls.read_file_to_list(base_filepath)
-
-        input_pattern = re.compile(r"\\input\{(?P<rel_path>.*)\}")
-        output_file = []
-
-        lineno = 0
-        for line in base_file:
-            input_match = re.match(input_pattern, line)
-            if input_match:
-                new_filepath = base_folder + input_match.group("rel_path")
-                addition = cls.walk_tex_tree(base_folder, new_filepath)
-                lineno += len(addition)
-                output_file = \
-                    output_file[:lineno] \
-                    + addition \
-                    + base_file[lineno:]
-            else:
-                output_file.append(line)
-            lineno += 1
-
-        return output_file
 
     def handle(self, *args, **options):
         start = time.clock()
@@ -390,7 +462,7 @@ class Command(BaseCommand):
             chapter.order = order
             chapter.save()
 
-            self.store_chapter(batch, chapter, order)
+            self.store_chapter(batch, chapter)
             self.postprocess_chapter(chapter, link_dict)
 
             time_elapsed = time.clock() - start_chapter_parse
