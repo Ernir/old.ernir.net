@@ -16,6 +16,7 @@ class VtPFile(models.Model):
 class Chapter(models.Model):
     title = models.CharField(max_length=200)
     first_text = models.TextField()
+    filepath = models.CharField(max_length=200, blank=True, default="")
 
     order = models.IntegerField()
 

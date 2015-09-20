@@ -282,16 +282,16 @@ class Command(BaseCommand):
         document structure
         :return: The modified section object.
         """
-        tex_base = "".join(input_lines)
-        html_source = cls.call_pandoc(tex_base)
+        if parent: # Chapters don't need more work.
+            tex_base = "".join(input_lines)
+            html_source = cls.call_pandoc(tex_base)
 
-        current_object.title = title
-        current_object.first_text = html_source
-        current_object.order = order
-        if parent:
+            current_object.title = title
+            current_object.first_text = html_source
+            current_object.order = order
             current_object.parent = parent
 
-        current_object.save()
+            current_object.save()
         return current_object
 
     @classmethod
@@ -416,6 +416,38 @@ class Command(BaseCommand):
 
         return d
 
+    @classmethod
+    def parse_main(cls):
+        base_folder = "./vanciantopsionics/latex/"
+        base_filepath = base_folder + "VancianToPsionics.tex"
+        lines = cls.read_file_to_list(base_filepath)
+
+        # RegExes for matching all sorts of things in the main file
+        chapter_title_pattern = re.compile(r"\\part\{(?P<title>.*?)\}")
+        input_begin_pattern = re.compile(r"\\input\{(?P<path>.*?)\}")
+
+        chapters = {}
+
+        for line_no, line in enumerate(lines):
+            chapter_begin_match = chapter_title_pattern.match(line)
+            if chapter_begin_match:
+                latest_sec_break = line_no+1
+                current_title = chapter_begin_match.group("title")
+
+            input_begin_match = input_begin_pattern.match(line)
+            if input_begin_match:
+                path = input_begin_match.group("path")
+                if not "Other" in path:
+                    # Then we're done parsing the chapter's initial text
+                    tex_text = "".join(lines[latest_sec_break:line_no])
+                    html_text = cls.call_pandoc(tex_text)
+                    chapter = {
+                        "title": current_title,
+                        "first_text": html_text
+                    }
+                    chapters[(base_folder + path)] = chapter
+        return chapters
+
 
     @classmethod
     def call_pandoc(cls, input_string):
@@ -439,16 +471,7 @@ class Command(BaseCommand):
         chapter_filenames = self.get_chapter_names(base_folder)
 
         # ToDo: actually dig this information out of the file...
-        chapter_name_dict = {
-            './vanciantopsionics/latex/Chapter1SpellcastingSystem/_Chapter1SpellcastingSystem.tex': "The Spellcasting System",
-            './vanciantopsionics/latex/Chapter2RacesAndClasses/_Chapter2RacesAndClasses.tex': "Races and Classes",
-            './vanciantopsionics/latex/Chapter3FeatsAndSkills/_Chapter3FeatsAndSkills.tex': "Feats and Skills",
-            './vanciantopsionics/latex/Chapter4Spells/_Chapter4Spells.tex': "Spells",
-            './vanciantopsionics/latex/Chapter5Creatures/_Chapter5Creatures.tex': "Creatures",
-            './vanciantopsionics/latex/Chapter6Items/_Chapter6Items.tex': "Items",
-            './vanciantopsionics/latex/Chapter7New/_Chapter7New.tex': "New Content",
-            './vanciantopsionics/latex/Chapter8EndNotes/_Chapter8EndNotes.tex': "End Notes"
-        }
+        chapter_name_dict = self.parse_main()
 
         link_dict = {}
 
@@ -469,7 +492,9 @@ class Command(BaseCommand):
             batch = self.walk_tex_tree(base_folder, file_name)
             batch = self.preprocess_file(batch, link_dict)
             chapter = Chapter()
-            chapter.title = chapter_name_dict[file_name]
+            chapter.title = chapter_name_dict[file_name]["title"]
+            chapter.first_text = chapter_name_dict[file_name]["first_text"]
+            chapter.filepath = file_name
             chapter.order = order
             chapter.save()
 
