@@ -99,6 +99,10 @@ class Command(BaseCommand):
         # Labels
         label_pattern = re.compile(r"(?P<pre>.*)\\label\{(Spell|Feat|Sec|sec|Item):(.*)\}(?P<post>.*)")
 
+        # Section headings
+        # ToDo use the longnames instead?
+        section_pattern = re.compile(r"\\(?P<section_type>chapter|section|subsection|subsubsection|paragraph|subparagraph)(\[(?P<shortname>.*?)\]|\{(?P<longname>.*?)\})")
+
         lines = []
         special_line_numbers = []
         print_mode = False
@@ -148,6 +152,16 @@ class Command(BaseCommand):
             if enumerated_item_match:
                 line = "  \item " + "(" + enumerated_item_match.group("number") + \
                        ") " + enumerated_item_match.group("contents")
+
+            # Section headings with short names
+            chapter_match = section_pattern.match(line)
+            if chapter_match:
+                if chapter_match.group("shortname"):
+                    line = "\\" \
+                           + chapter_match.group("section_type") \
+                           + "{" \
+                           + chapter_match.group("shortname") \
+                           + "}"
 
             # Other substitutions
             label_match = label_pattern.match(line)
@@ -202,7 +216,7 @@ class Command(BaseCommand):
 
         for line_no, line in enumerate(current_batch):
 
-            section_match = re.match(r"\\(?P<section_type>section|subsection|subsubsection)(\[(?P<shortname>.*)\]|\{(?P<longname>.*?)\})", line)
+            section_match = re.match(r"\\(?P<section_type>section|subsection|subsubsection)\{(?P<title>.*?)\}", line)
             if section_match:
 
                 # Start by flushing in all the data we've read so far for
@@ -245,10 +259,7 @@ class Command(BaseCommand):
                     current_object = Subsubsection()
                 current_section_type = new_section_type
 
-                if section_match.group("shortname"):
-                    current_title = section_match.group("shortname")
-                else:
-                    current_title = section_match.group("longname")
+                current_title = section_match.group("title")
                 latest_sec_break = line_no
 
         lines = current_batch[latest_sec_break+1:]
@@ -369,7 +380,7 @@ class Command(BaseCommand):
         for line in current_batch:
 
             chapter_match = re.match(
-                r"\\(chapter|section|subsection|subsubsection|paragraph|subparagraph)(\[(?P<shortname>.*)\]|\{(?P<longname>.*?)\})",
+                r"\\(?P<section_type>chapter|section|subsection|subsubsection|paragraph|subparagraph)(\[(?P<shortname>.*?)\]|\{(?P<longname>.*?)\})",
                 line)
             if chapter_match:
                 if chapter_match.group("shortname"):
