@@ -1,29 +1,29 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed"
-                    data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{% url "vanciantopsionics.views.vtp_index" %}">
-                {# ToDo: Add the logo. #}
-                VTP
-            </a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                {% for c in chapters %}
+<ul class="nav nav-tabs">
+    <li role="presentation"
+            {% ifequal category "index" %}
+                class="active"
+            {% endifequal %}>
+        <a href="{% url "vanciantopsionics.views.vtp_index" %}">
+            Home
+        </a>
+    </li>
+    <li role="presentation" class="dropdown {% ifequal category "chapter" %} active {% endifequal %}">
+        <a class="dropdown-toggle"
+           data-toggle="dropdown"
+           href="#"
+           role="button"
+           aria-haspopup="true"
+           aria-expanded="false">
+            Chapters <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            {% for c in chapters %}
                 <li>
                     <a href="/vanciantopsionics/chapter/{{ c.order }}">
-                        Ch. {{ c.order }}: {{ c.title }}
+                        Chapter {{ c.order }}: {{ c.title }}
                     </a>
                 </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</nav>
+            {% endfor %}
+        </ul>
+    </li>
+</ul>
