@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from vanciantopsionics.models import Chapter
-from vanciantopsionics.utils import FileManagement, PostProcessing, PandocManager, PreProcessing
+from vanciantopsionics.utils import FileManagement, PreProcessing, \
+    PandocManager, PostProcessing
 import time
 
 
@@ -15,7 +16,7 @@ class Command(BaseCommand):
 
         link_dict = {}
 
-        #ToDo: Remove horrible duplication
+        # First: Generate the link dictionary.
         order = 1
         for file_name in chapter_filenames:
             batch = FileManagement.walk_tex_tree(base_folder, file_name)
@@ -26,6 +27,7 @@ class Command(BaseCommand):
         for chapter in Chapter.objects.all():
             chapter.delete()
 
+        # Second: Make chapters.
         order = 1
         for file_name in chapter_filenames:
             start_chapter_parse = time.clock()
