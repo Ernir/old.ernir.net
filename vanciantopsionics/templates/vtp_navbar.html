@@ -1,13 +1,14 @@
 <ul class="nav nav-tabs">
     <li role="presentation"
-            {% ifequal category "index" %}
-                class="active"
+            {% ifequal category "home" %}
+        class="active"
             {% endifequal %}>
         <a href="{% url "vanciantopsionics.views.vtp_index" %}">
             Home
         </a>
     </li>
-    <li role="presentation" class="dropdown {% ifequal category "chapter" %} active {% endifequal %}">
+    <li role="presentation"
+        class="dropdown {% ifequal category "chapter" %} active {% endifequal %}">
         <a class="dropdown-toggle"
            data-toggle="dropdown"
            href="#"
@@ -26,4 +27,19 @@
             {% endfor %}
         </ul>
     </li>
+    <li role="presentation"
+        class="dropdown {% ifequal category "index" %} active {% endifequal %}">
+        <a class="dropdown-toggle"
+           data-toggle="dropdown"
+           href="#"
+           role="button"
+           aria-haspopup="true"
+           aria-expanded="false">
+            Indices <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="{% url "vtp_spell_index" %}">Spell index</a>
+            </li>
+        </ul>
 </ul>

@@ -1,3 +1,5 @@
+import string
+from collections import OrderedDict
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from vanciantopsionics.models import VtPFile, Chapter, Spell
@@ -16,7 +18,7 @@ def vtp_index(request):
 
     all_chapters = Chapter.objects.values("title", "order")
 
-    category = "index"
+    category = "home"
 
     return render(request, "vtp_main.html", {
         "latest_file": latest_file,
@@ -47,4 +49,29 @@ def vtp_spell(request, spell_slug):
         "spell": spell,
         "chapters": all_chapters,
         "category": category
+    })
+
+
+def vtp_spell_index(request):
+
+    category = "index"
+    all_chapters = Chapter.objects.values("title", "order")
+
+    alphabet = string.ascii_uppercase
+    spell_bag = OrderedDict()
+    # The letters where we break the columns.
+    # This could be calculated with a fancy algorithm, but that's overkill.
+    breaks = ["F", "Q"]
+
+    spells = Spell.objects
+    for letter in alphabet:
+        spells_starting_with_letter = \
+            spells.filter(title__startswith=letter).all()
+        spell_bag[letter] = spells_starting_with_letter
+
+    return render(request, "spell_index.html", {
+        "category": category,
+        "chapters": all_chapters,
+        "spells_alphabetical": spell_bag,
+        "breaks": breaks
     })

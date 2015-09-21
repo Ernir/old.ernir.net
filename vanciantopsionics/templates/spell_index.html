@@ -1,0 +1,35 @@
+{% extends "vtp_base.html" %}
+
+{% load static %}
+
+{% block more_css %}
+    <link rel="stylesheet" href="{% static "vtp.css" %}"/>
+{% endblock %}
+
+{% block content %}
+    <h2>All Spells in Alphabetical Order</h2>
+    <div>Spells marked with <sup>New</sup> are considered extensions.</div>
+    <div class="row">
+        <div class="col-md-4">
+            {% for letter, spell_list in spells_alphabetical.items %}
+                <h3>"{{ letter }}" Spells</h3>
+                <ul>
+                    {% for spell in spell_list %}
+                        <li>
+                            <a href="{% url 'vtp_spell' spell.slug %}">
+                                {{ spell.title }}
+                            </a>
+                            {% if spell.is_new %}
+                                <sup>New</sup>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% if letter in breaks %}
+                    </div>
+                    <div class="col-md-4">
+                {% endif %}
+            {% endfor %}
+            </div>
+    </div>
+{% endblock %}
