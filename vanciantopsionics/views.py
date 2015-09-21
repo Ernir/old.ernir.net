@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from vanciantopsionics.models import VtPFile, Chapter
+from vanciantopsionics.models import VtPFile, Chapter, Spell
 
 
 def vtp_index(request):
@@ -33,6 +33,18 @@ def vtp_chapter(request, chapter_number):
 
     return render(request, "single_chapter.html", {
         "chapter": chapter,
+        "chapters": all_chapters,
+        "category": category
+    })
+
+
+def vtp_spell(request, spell_slug):
+    spell = get_object_or_404(Spell, slug=spell_slug)
+    all_chapters = Chapter.objects.values("title", "order")
+    category = "spell"
+
+    return render(request, "single_spell.html", {
+        "spell": spell,
         "chapters": all_chapters,
         "category": category
     })
