@@ -71,3 +71,16 @@ class Subsubsection(models.Model):
             "parent__parent__order",
             "parent__order", "order",
         )
+
+
+class Spell(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    slug = models.SlugField()
+    is_new = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ("title",)
