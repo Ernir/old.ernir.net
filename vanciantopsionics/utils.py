@@ -439,17 +439,17 @@ class PandocManager:
 
             new_spell = spell_pattern.match(line)
 
-            if new_spell and first_spell:
-                spell_name = new_spell.group("spell_name")
-                first_spell = False
-                continue
-
-            if new_spell and not first_spell:
-                cls.store_spell(current_spell_lines, link_dict, spell_name, non_core)
-                spell_name = new_spell.group("spell_name")
-                current_spell_lines = []
-
-            current_spell_lines.append(line)
+            if new_spell:
+                if first_spell:
+                    spell_name = new_spell.group("spell_name")
+                    first_spell = False
+                    continue
+                else:
+                    cls.store_spell(current_spell_lines, link_dict, spell_name, non_core)
+                    spell_name = new_spell.group("spell_name")
+                    current_spell_lines = []
+            else:
+                current_spell_lines.append(line)
 
         cls.store_spell(current_spell_lines, link_dict, spell_name, non_core)
 
