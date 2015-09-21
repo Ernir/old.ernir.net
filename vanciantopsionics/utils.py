@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 from django.utils.text import slugify
 import os
 import re
-from vanciantopsionics.models import Section, Subsection, Subsubsection
+from vanciantopsionics.models import Section, Subsection, Subsubsection, \
+    Spell
 
 
 class FileManagement:
@@ -29,6 +30,10 @@ class FileManagement:
         \include commands.
         :return: A concatenated file.
         """
+        # Exception: The spell indices are handled in a specific manner.
+        splitname = base_filepath.split("/")
+        if splitname[-1] == "Spells.tex":
+            return []
         base_file = cls.read_file_to_list(base_filepath)
 
         input_pattern = re.compile(r"\\input\{(?P<rel_path>.*)\}")
@@ -105,7 +110,7 @@ class FileManagement:
 
 class PreProcessing:
     @classmethod
-    def generate_link_dict(cls, d, current_batch, chapter_number):
+    def generate_link_dict(cls, d, current_batch, chapter_number=None):
         """
 
         :param d: A dictionary, containing latex labels as keys. As values,
@@ -137,6 +142,10 @@ class PreProcessing:
             if label_match:
                 label = label_match.group(1)
 
+                url_base = "/vanciantopsionics/chapter/" \
+                           + str(chapter_number) \
+                           + "/#"
+
                 # Spells and feats have special rules
                 if label[0:4] == "Feat":
                     # Some feat names have additional
@@ -144,12 +153,11 @@ class PreProcessing:
                     extra_tags = re.match(r"(.*)]", name)
                     if extra_tags:
                         name = extra_tags.group(1)
+                elif label[0:5] == "Spell":
+                    url_base = "/vanciantopsionics/spell/"
 
                 d[label] = {
-                    "url": "/vanciantopsionics/chapter/"
-                           + str(chapter_number)
-                           + "/#"
-                           + slugify(name),
+                    "url": url_base + slugify(name),
                     # ToDo use the tocify.js pretty hashing function instead.
                     "caption": name
                 }
@@ -194,7 +202,8 @@ class PreProcessing:
         special_line_numbers = []
         print_mode = False
 
-        for number, line in enumerate(current_batch):
+        line_no = 0  # Not iterating over this to enable fiddling possibility
+        for line in current_batch:
 
             # Optional printing for debugging purposes
             if line == "%pandoc_print_begin\n":
@@ -204,7 +213,7 @@ class PreProcessing:
 
             # Skipping comments
             if line[0] == "%":
-                line = ""
+                continue
 
             # Handling internal links, turning them into http hyperlinks
             link_matches = re.findall(link_pattern, line)
@@ -232,7 +241,7 @@ class PreProcessing:
             line = line.replace("tabular}}", "tabular}")
             line = line.replace("&Known", "&Spells Known")
             if "tabular" in line:
-                special_line_numbers.append(number)
+                special_line_numbers.append(line_no)
 
             # Handling enumerated environments
             enumerated_item_match = enumerated_item_pattern.match(line)
@@ -262,6 +271,7 @@ class PreProcessing:
                 sys.stdout.write(line)
 
             lines.append(line)
+            line_no += 1
 
         lines = cls.replace_super_special(lines, special_line_numbers)
 
@@ -304,7 +314,6 @@ class PandocManager:
         :param current_object: A chapter object.
         :return: Nothing, but see parse_section.
         """
-        # ToDo: Figure out why this bastard of a class stops working if placed in the utils file.
 
         parent_object = None
         current_section_type = "chapter"
@@ -414,6 +423,48 @@ class PandocManager:
 
             current_object.save()
         return current_object
+
+    @classmethod
+    def process_spell_page(cls, spell_file_contents, link_dict, non_core):
+        patterns_to_skip = re.compile(r"(\\section(.*)|\\subsection(.*))")
+        spell_pattern = re.compile(r"\\subsubsection\{(?P<spell_name>.*?)\}")
+
+        spell_name = ""
+        first_spell = True
+        current_spell_lines = []
+
+        for line in spell_file_contents:
+            if patterns_to_skip.match(line):
+                continue
+
+            new_spell = spell_pattern.match(line)
+
+            if new_spell and first_spell:
+                spell_name = new_spell.group("spell_name")
+                first_spell = False
+                continue
+
+            if new_spell and not first_spell:
+                cls.store_spell(current_spell_lines, link_dict, spell_name, non_core)
+                spell_name = new_spell.group("spell_name")
+                current_spell_lines = []
+
+            current_spell_lines.append(line)
+
+        cls.store_spell(current_spell_lines, link_dict, spell_name, non_core)
+
+    @classmethod
+    def store_spell(cls, batch, link_dict, spell_name, new):
+        preprocessed = PreProcessing.preprocess_file(batch, link_dict)
+        tex_contents = "".join(preprocessed)
+        converted = cls.call_pandoc(tex_contents)
+        html_content = PostProcessing.postprocess_text(converted, link_dict)
+        url = slugify(spell_name)
+        spell = Spell(title=spell_name,
+                      slug=url,
+                      description=html_content,
+                      is_new=new)
+        spell.save()
 
 
 class PostProcessing:

@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from vanciantopsionics.models import Chapter
+from vanciantopsionics.models import Chapter, Spell
 from vanciantopsionics.utils import FileManagement, PreProcessing, \
     PandocManager, PostProcessing
 import time
@@ -8,12 +8,16 @@ import time
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
+        # ToDo split this into more functions.
         start = time.clock()
         base_folder = "./vanciantopsionics/latex/"
         chapter_filenames = FileManagement.get_chapter_names(base_folder)
+        spell_files = [
+            base_folder + "Chapter4Spells/Spells.tex",
+            base_folder + "Chapter7New/Spells.tex"
+        ]
 
         chapter_name_dict = FileManagement.parse_main()
-
         link_dict = {}
 
         # First: Generate the link dictionary.
@@ -22,7 +26,10 @@ class Command(BaseCommand):
             batch = FileManagement.walk_tex_tree(base_folder, file_name)
             link_dict = PreProcessing.generate_link_dict(link_dict, batch, order)
             order += 1
-        dprint("Link index compiled.")
+        for file_name in spell_files:
+            batch = FileManagement.read_file_to_list(file_name)
+            link_dict = PreProcessing.generate_link_dict(link_dict, batch)
+        dprint("Link index compiled in " + str(time.clock() - start) + "s.")
 
         for chapter in Chapter.objects.all():
             chapter.delete()
@@ -30,7 +37,7 @@ class Command(BaseCommand):
         # Second: Make chapters.
         order = 1
         for file_name in chapter_filenames:
-            start_chapter_parse = time.clock()
+            start_time = time.clock()
             batch = FileManagement.walk_tex_tree(base_folder, file_name)
             batch = PreProcessing.preprocess_file(batch, link_dict)
             chapter = Chapter()
@@ -43,9 +50,22 @@ class Command(BaseCommand):
             PandocManager.store_chapter(batch, chapter)
             PostProcessing.postprocess_chapter(chapter, link_dict)
 
-            time_elapsed = time.clock() - start_chapter_parse
+            time_elapsed = time.clock() - start_time
             dprint("Chapter " + str(order) + " compiled in " + str(time_elapsed) + "s.")
             order += 1
+
+        # The spell list is a special case:
+        start_time = time.clock()
+        Spell.objects.all().delete()
+        for file_name in spell_files:
+            batch = FileManagement.read_file_to_list(file_name)
+            if "New" in file_name:
+                non_core = True
+            else:
+                non_core = False
+            PandocManager.process_spell_page(batch, link_dict, non_core)
+        time_elapsed = time.clock() - start_time
+        dprint("Spells parsed in " + str(time_elapsed) + "s.")
 
         time_elapsed = time.clock() - start
         dprint("Compilation finished in " + str(time_elapsed) + "s.")
@@ -57,7 +77,7 @@ def pprint(input_object):
     pp.pprint(input_object)
 
 
-debug = False
+debug = True
 
 
 def dprint(input_object):
