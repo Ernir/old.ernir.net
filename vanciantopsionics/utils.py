@@ -530,4 +530,9 @@ class PostProcessing:
 
                     break
 
+        images = soup.img
+        if images:
+            images["src"] = images["src"].replace("Pics/", "https://notendur.hi.is/~eth31/DnDstuff/Pics/")
+            images["class"] = "img-responsive"
+
         return str(soup)
