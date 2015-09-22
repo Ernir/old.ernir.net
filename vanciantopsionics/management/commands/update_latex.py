@@ -1,3 +1,4 @@
+import re
 from django.core.management.base import BaseCommand
 from vanciantopsionics.models import Chapter, Spell
 from vanciantopsionics.utils import FileManagement, PreProcessing, \
@@ -12,9 +13,10 @@ class Command(BaseCommand):
         start = time.clock()
         base_folder = "./vanciantopsionics/latex/"
         chapter_filenames = FileManagement.get_chapter_names(base_folder)
+        chapter_filenames = natural_sort(chapter_filenames)
         spell_files = [
-            base_folder + "Chapter4Spells/Spells.tex",
-            base_folder + "Chapter7New/Spells.tex"
+            base_folder + "Chapter6Spells/Spells.tex",
+            base_folder + "Chapter9New/Spells.tex"
         ]
 
         chapter_name_dict = FileManagement.parse_main()
@@ -83,3 +85,9 @@ debug = True
 def dprint(input_object):
     if debug:
         print(input_object)
+
+
+def natural_sort(l):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
+    return sorted(l, key = alphanum_key)
