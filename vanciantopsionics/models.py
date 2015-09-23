@@ -84,3 +84,25 @@ class Spell(models.Model):
 
     class Meta:
         ordering = ("title",)
+
+
+class CharacterClass(models.Model):
+    short_name = models.CharField(max_length=200)
+    long_name = models.CharField(max_length=200)
+    description = models.TextField()
+    slug = models.SlugField()
+    is_new = models.BooleanField(default=False)
+
+    class_types = (
+        ("base", "Base Class"),
+        ("prestige", "Prestige Class"),
+        ("npc", "NPC Class")
+    )
+
+    class_type = models.CharField(max_length=20, choices=class_types)
+
+    def __str__(self):
+        return self.short_name
+
+    class Meta:
+        ordering = ("short_name",)

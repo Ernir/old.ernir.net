@@ -1,6 +1,6 @@
 import re
 from django.core.management.base import BaseCommand
-from vanciantopsionics.models import Chapter, Spell
+from vanciantopsionics.models import Chapter, Spell, CharacterClass
 from vanciantopsionics.utils import FileManagement, PreProcessing, \
     PandocManager, PostProcessing
 import time
@@ -18,6 +18,10 @@ class Command(BaseCommand):
             base_folder + "Chapter6Spells/Spells.tex",
             base_folder + "Chapter9New/Spells.tex"
         ]
+        class_files = [
+            base_folder + "Chapter3Classes/Classes.tex",
+            base_folder + "Chapter9New/Classes.tex"
+        ]
 
         chapter_name_dict = FileManagement.parse_main()
         link_dict = {}
@@ -30,6 +34,9 @@ class Command(BaseCommand):
             order += 1
         for file_name in spell_files:
             batch = FileManagement.read_file_to_list(file_name)
+            link_dict = PreProcessing.generate_link_dict(link_dict, batch)
+        for file_name in class_files:
+            batch = FileManagement.walk_tex_tree(base_folder, file_name, False)
             link_dict = PreProcessing.generate_link_dict(link_dict, batch)
         dprint("Link index compiled in " + str(time.clock() - start) + "s.")
 
@@ -56,7 +63,25 @@ class Command(BaseCommand):
             dprint("Chapter " + str(order) + " compiled in " + str(time_elapsed) + "s.")
             order += 1
 
-        # The spell list is a special case:
+        # The classes are a special case
+        start_time = time.clock()
+        CharacterClass.objects.all().delete()
+        for file_name in class_files:
+            for class_filename, class_type, non_core \
+                    in FileManagement.extract_class_paths(file_name):
+                batch = FileManagement.read_file_to_list(
+                    base_folder + class_filename
+                )
+                PandocManager.store_class(
+                    batch,
+                    link_dict,
+                    class_type,
+                    non_core
+                )
+        time_elapsed = time.clock() - start_time
+        dprint("Classes parsed in " + str(time_elapsed) + "s.")
+
+        # The spell list is as well
         start_time = time.clock()
         Spell.objects.all().delete()
         for file_name in spell_files:

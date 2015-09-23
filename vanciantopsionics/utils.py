@@ -5,7 +5,7 @@ from django.utils.text import slugify
 import os
 import re
 from vanciantopsionics.models import Section, Subsection, Subsubsection, \
-    Spell
+    Spell, CharacterClass
 
 
 class FileManagement:
@@ -20,7 +20,7 @@ class FileManagement:
         return [line for line in file]
 
     @classmethod
-    def walk_tex_tree(cls, base_folder, base_filepath):
+    def walk_tex_tree(cls, base_folder, base_filepath, ignoring=True):
         """
         Takes a .tex files, and parses its \include commands to make one
         big happy document.
@@ -32,7 +32,7 @@ class FileManagement:
         """
         # Exception: The spell indices are handled in a specific manner.
         splitname = base_filepath.split("/")
-        if splitname[-1] == "Spells.tex":
+        if ignoring and (splitname[-1] == "Spells.tex" or splitname[-1] == "Classes.tex"):
             return []
         base_file = cls.read_file_to_list(base_filepath)
 
@@ -107,6 +107,27 @@ class FileManagement:
                     chapters[(base_folder + path)] = chapter
         return chapters
 
+    @classmethod
+    def extract_class_paths(cls, base_filepath):
+        if "New" in base_filepath:
+            non_core = True
+        else:
+            non_core = False
+
+        input_pattern = re.compile(r"\\input\{(?P<path>.*?)\}")
+
+        lines = cls.read_file_to_list(base_filepath)
+        class_type = "base" # The default is a base class
+        for line in lines:
+            if "NPC" in line:
+                class_type = "npc"
+            elif "Prestige" in line:
+                class_type = "prestige"
+            else:
+                input_match = input_pattern.match(line)
+                if input_match:
+                    path = input_match.group("path")
+                    yield (path, class_type, non_core)
 
 class PreProcessing:
     @classmethod
@@ -465,6 +486,31 @@ class PandocManager:
                       description=html_content,
                       is_new=new)
         spell.save()
+
+    @classmethod
+    def store_class(cls, batch, link_dict, prestige, non_core):
+        title_pattern = r"\\subsection\[(?P<short_name>.*?)\]\{(?P<long_name>.*?)\}"
+        title_match = re.match(title_pattern, batch[0])
+
+        short_name = title_match.group("short_name")
+        long_name = title_match.group("long_name")
+
+        preprocessed = PreProcessing.preprocess_file(batch[1:], link_dict)
+        tex_contents = "".join(preprocessed)
+        converted = cls.call_pandoc(tex_contents)
+        html_content = PostProcessing.postprocess_text(converted, link_dict)
+        url = slugify(short_name)
+
+        character_class = CharacterClass(
+            short_name=short_name,
+            long_name=long_name,
+            description=html_content,
+            slug=url,
+            class_type=prestige,
+            is_new=non_core
+        )
+        character_class.save()
+
 
 
 class PostProcessing:
