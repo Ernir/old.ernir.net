@@ -2,7 +2,8 @@ import string
 from collections import OrderedDict
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from vanciantopsionics.models import VtPFile, Chapter, Spell
+from vanciantopsionics.models import VtPFile, Chapter, Spell, \
+    CharacterClass
 
 
 def vtp_index(request):
@@ -52,6 +53,18 @@ def vtp_spell(request, spell_slug):
     })
 
 
+def vtp_class(request, class_slug):
+    character_class = get_object_or_404(CharacterClass, slug=class_slug)
+    all_chapters = Chapter.objects.values("title", "order")
+    category = "class"
+
+    return render(request, "single_class.html", {
+        "character_class": character_class,
+        "chapters": all_chapters,
+        "category": category
+    })
+
+
 def vtp_spell_index(request):
 
     category = "index"
@@ -74,4 +87,28 @@ def vtp_spell_index(request):
         "chapters": all_chapters,
         "spells_alphabetical": spell_bag,
         "breaks": breaks
+    })
+
+
+def vtp_class_index(request):
+
+    category="index"
+    all_chapters = Chapter.objects.values("title", "order")
+
+    base = CharacterClass.objects.filter(
+        class_type="base",
+    )
+    npc = [CharacterClass.objects.get(
+        class_type="npc",
+    )]
+    prestige = CharacterClass.objects.filter(
+        class_type="prestige",
+    )
+
+    return render(request, "class_index.html", {
+        "category": category,
+        "chapters": all_chapters,
+        "base": base,
+        "npc": npc,
+        "prestige": prestige
     })

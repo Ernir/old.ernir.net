@@ -1,0 +1,22 @@
+{% extends "vtp_base.html" %}
+
+{% load static %}
+
+{% block more_css %}
+    <link rel="stylesheet" href="{% static "vtp.css" %}"/>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-offset-4 col-md-7 text-justify">
+        {% autoescape off %}
+        <h3>{{ character_class.long_name }}</h3>
+        {{ character_class.description }}
+        {% endautoescape %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block more_js %}
+    <script src="{% static "vtp.js" %}"></script>
+{% endblock %}

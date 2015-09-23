@@ -1,0 +1,61 @@
+{% extends "vtp_base.html" %}
+
+{% load static %}
+
+{% block more_css %}
+    <link rel="stylesheet" href="{% static "vtp.css" %}"/>
+{% endblock %}
+
+{% block content %}
+    <h2>All Spellcasting Classes</h2>
+    <div>
+        Classes marked with <sup>New</sup> are considered extensions.
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Base Classes</h3>
+            <ul>
+                {% for base_class in base %}
+                    <li>
+                        <a href="{% url 'vtp_class' base_class.slug %}">
+                            {{ base_class.short_name }}
+                        </a>
+                        {% if base_class.is_new %}
+                            <sup>New</sup>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h3>Prestige Classes</h3>
+            <ul>
+                {% for prestige_class in prestige %}
+                    <li>
+                        <a href="{% url 'vtp_class' prestige_class.slug %}">
+                            {{ prestige_class.short_name }}
+                        </a>
+                        {% if prestige_class.is_new %}
+                            <sup>New</sup>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h3>NPC class</h3>
+            <ul>
+                {% for npc_class in npc %}
+                    <li>
+                        <a href="{% url 'vtp_class' npc_class.slug %}">
+                            {{ npc_class.short_name }}
+                        </a>
+                        {% if npc_class.is_new %}
+                            <sup>New</sup>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

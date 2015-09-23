@@ -160,6 +160,7 @@ class PreProcessing:
                 name = caption_match.group(1)
 
             label_match = re.match(r"\\label\{(.*)\}", line)
+            # ToDo match all class labels specifically.
             if label_match:
                 label = label_match.group(1)
 
