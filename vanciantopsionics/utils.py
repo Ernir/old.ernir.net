@@ -129,6 +129,7 @@ class FileManagement:
                     path = input_match.group("path")
                     yield (path, class_type, non_core)
 
+
 class PreProcessing:
     @classmethod
     def generate_link_dict(cls, d, current_batch, chapter_number=None):
@@ -142,6 +143,7 @@ class PreProcessing:
         :param chapter_number: The number of the current chapter.
         :return:
         """
+        # ToDo make tables in spells and classes actually point to something
         for line in current_batch:
 
             chapter_match = re.match(
@@ -160,7 +162,6 @@ class PreProcessing:
                 name = caption_match.group(1)
 
             label_match = re.match(r"\\label\{(.*)\}", line)
-            # ToDo match all class labels specifically.
             if label_match:
                 label = label_match.group(1)
 
@@ -168,7 +169,7 @@ class PreProcessing:
                            + str(chapter_number) \
                            + "/#"
 
-                # Spells and feats have special rules
+                # Spells, classes and feats have special rules
                 if label[0:4] == "Feat":
                     # Some feat names have additional
                     # square brackets in the title
@@ -177,6 +178,8 @@ class PreProcessing:
                         name = extra_tags.group(1)
                 elif label[0:5] == "Spell":
                     url_base = "/vanciantopsionics/spell/"
+                elif label[0:5] == "Class":
+                    url_base = "/vanciantopsionics/class/"
 
                 d[label] = {
                     "url": url_base + slugify(name),
@@ -213,7 +216,7 @@ class PreProcessing:
 
         # Labels
         label_pattern = re.compile(
-            r"(?P<pre>.*)\\label\{(Spell|Feat|Sec|sec|Item):(.*)\}(?P<post>.*)")
+            r"(?P<pre>.*)\\label\{(Spell|Feat|Sec|Class|sec|Item):(.*)\}(?P<post>.*)")
 
         # Section headings
         # ToDo use the longnames instead?
