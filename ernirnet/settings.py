@@ -16,18 +16,16 @@ import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY') or "not_at_all_secret"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get("DEBUG_MODE")))
+DEBUG = bool(int(os.environ.get("DEBUG_MODE") or 1))
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -88,10 +86,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-   'social.backends.facebook.FacebookOAuth2',
-   'social.backends.google.GoogleOAuth2',
-   'social.backends.twitter.TwitterOAuth',
-   'django.contrib.auth.backends.ModelBackend',
+    'social.backends.facebook.FacebookOAuth2',
+    'social.backends.google.GoogleOAuth2',
+    'social.backends.twitter.TwitterOAuth',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 LOGIN_REDIRECT_URL = '/'
@@ -120,13 +118,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Parse database configuration from $DATABASE_URL
-DATABASES = {"default": dj_database_url.config("ERNIRNET_DB_URL")}
+# Database
+DATABASES = {"default": {}}
 # Enable Connection Pooling
 DATABASES["default"]["ENGINE"] = "django_postgrespool"
-
 # Parse database configuration from $DATABASE_URL
 DATABASES['default'] = dj_database_url.config("ERNIRNET_DB_URL")
+print(DATABASES)
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
