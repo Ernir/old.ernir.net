@@ -3,9 +3,10 @@
 *.pyc
 *.wsgi
 *.sh
+.env
 venv/
 staticfiles
+*.dump
 
-ernirnet_flask/
 vanciantopsionics/latex/
 vanciantopsionics/db/
