@@ -34,7 +34,7 @@ class StatisticGroup(models.Model):
 
 class Statistic(models.Model):
     name = models.CharField(max_length=100)
-    group = models.ForeignKey(StatisticGroup)
+    group = models.ForeignKey(StatisticGroup, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
@@ -73,9 +73,9 @@ class MiscBonus(models.Model):
 
 
 class NumericalBonus(models.Model):
-    bonus_formula = models.ForeignKey(CasterLevelFormula, null=True)
-    modifier_type = models.ForeignKey(ModifierType)
-    applies_to = models.ForeignKey(Statistic)
+    bonus_formula = models.ForeignKey(CasterLevelFormula, null=True, on_delete=models.PROTECT)
+    modifier_type = models.ForeignKey(ModifierType, on_delete=models.PROTECT)
+    applies_to = models.ForeignKey(Statistic, on_delete=models.PROTECT)
 
     def __str__(self):
         if self.bonus_formula:
@@ -98,13 +98,15 @@ class TempHPBonus(models.Model):
     die_number_formula = models.ForeignKey(
         CasterLevelFormula,
         related_name="die_number",
-        null=True
+        null=True,
+        on_delete=models.PROTECT
     )
     die_size = models.IntegerField(default=0)
     other_bonus_formula = models.ForeignKey(
         CasterLevelFormula,
         related_name="other_bonus",
-        null=True
+        null=True,
+        on_delete=models.PROTECT
     )
 
     def __str__(self):
@@ -122,7 +124,7 @@ class TempHPBonus(models.Model):
 
 class Spell(models.Model):
     name = models.CharField(max_length=100)
-    source = models.ForeignKey(Source)
+    source = models.ForeignKey(Source, on_delete=models.PROTECT)
 
     numerical_bonuses = models.ManyToManyField(NumericalBonus, blank=True)
     misc_bonuses = models.ManyToManyField(MiscBonus, blank=True)

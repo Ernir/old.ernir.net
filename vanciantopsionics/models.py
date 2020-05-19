@@ -30,7 +30,7 @@ class Chapter(models.Model):
 class Section(models.Model):
     title = models.CharField(max_length=200)
     first_text = models.TextField()
-    parent = models.ForeignKey(Chapter)
+    parent = models.ForeignKey(Chapter, on_delete=models.PROTECT)
 
     order = models.IntegerField()
 
@@ -44,7 +44,7 @@ class Section(models.Model):
 class Subsection(models.Model):
     title = models.CharField(max_length=200)
     first_text = models.TextField()
-    parent = models.ForeignKey(Section)
+    parent = models.ForeignKey(Section, on_delete=models.PROTECT)
 
     order = models.IntegerField()
 
@@ -58,7 +58,7 @@ class Subsection(models.Model):
 class Subsubsection(models.Model):
     title = models.CharField(max_length=200)
     first_text = models.TextField()
-    parent = models.ForeignKey(Subsection)
+    parent = models.ForeignKey(Subsection, on_delete=models.PROTECT)
 
     order = models.IntegerField()
 
