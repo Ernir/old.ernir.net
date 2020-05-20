@@ -6,6 +6,7 @@ from bufftracker.hardcoded_data import CasterLevelFormula
 class SpellAdmin(admin.ModelAdmin):
     save_as = True
 
+
 admin.site.register(models.Source)
 admin.site.register(models.Statistic)
 admin.site.register(models.StatisticGroup)

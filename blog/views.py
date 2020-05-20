@@ -17,10 +17,7 @@ def index(request, language_filter=None):
     if language_filter is not None:
         entries = entries.filter(language__iexact=language_filter)
 
-    return render(request, "blog_list.html", {
-        "entries": entries.all(),
-        "tags": tags
-    })
+    return render(request, "blog_list.html", {"entries": entries.all(), "tags": tags})
 
 
 def entry(request, blog_slug):
@@ -42,11 +39,11 @@ def entry(request, blog_slug):
         new_comment.associated_with = the_entry
         new_comment.save()
 
-    return render(request, "individual_blog.html", {
-        "entry": the_entry,
-        "comment_form": comment_form,
-        "tags": tags
-    })
+    return render(
+        request,
+        "individual_blog.html",
+        {"entry": the_entry, "comment_form": comment_form, "tags": tags},
+    )
 
 
 def by_tag(request, tag_slug):
@@ -57,7 +54,4 @@ def by_tag(request, tag_slug):
     entries = Entry.visible_entries.filter(tags__slug=tag_slug).all()
     tags = Tag.objects_by_entry_count.all()
 
-    return render(request, "blog_list.html", {
-        "entries": entries,
-        "tags": tags
-    })
+    return render(request, "blog_list.html", {"entries": entries, "tags": tags})

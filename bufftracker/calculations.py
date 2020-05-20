@@ -33,9 +33,7 @@ def get_applicable_bonuses(cl_dict):
                         value = formula.calculate(cl_dict[spell.id])
                         type_id = bonus.modifier_type.id
                         if type_id in mod_type_dict:
-                            mod_type_dict[type_id] = max(
-                                mod_type_dict[type_id], value
-                            )
+                            mod_type_dict[type_id] = max(mod_type_dict[type_id], value)
                         else:
                             mod_type_dict[type_id] = value
 
@@ -63,6 +61,7 @@ def get_temp_hp_bonuses(cl_dict):
 #         related_name="other_bonus",
 #         null=True
 #     )
+
 
 def get_misc_bonuses(cl_dict):
     """

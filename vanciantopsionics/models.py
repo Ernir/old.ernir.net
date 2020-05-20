@@ -10,7 +10,7 @@ class VtPFile(models.Model):
         return self.name
 
     class Meta:
-        ordering = ("-released", )
+        ordering = ("-released",)
 
 
 class Chapter(models.Model):
@@ -24,13 +24,13 @@ class Chapter(models.Model):
         return self.title
 
     class Meta:
-        ordering = ("order", )
+        ordering = ("order",)
 
 
 class Section(models.Model):
     title = models.CharField(max_length=200)
     first_text = models.TextField()
-    parent = models.ForeignKey(Chapter)
+    parent = models.ForeignKey(Chapter, on_delete=models.PROTECT)
 
     order = models.IntegerField()
 
@@ -38,13 +38,16 @@ class Section(models.Model):
         return self.parent.title + ": " + self.title
 
     class Meta:
-        ordering = ("parent__order", "order", )
+        ordering = (
+            "parent__order",
+            "order",
+        )
 
 
 class Subsection(models.Model):
     title = models.CharField(max_length=200)
     first_text = models.TextField()
-    parent = models.ForeignKey(Section)
+    parent = models.ForeignKey(Section, on_delete=models.PROTECT)
 
     order = models.IntegerField()
 
@@ -52,13 +55,17 @@ class Subsection(models.Model):
         return self.parent.title + ": " + self.title
 
     class Meta:
-        ordering = ("parent__parent__order", "parent__order", "order", )
+        ordering = (
+            "parent__parent__order",
+            "parent__order",
+            "order",
+        )
 
 
 class Subsubsection(models.Model):
     title = models.CharField(max_length=200)
     first_text = models.TextField()
-    parent = models.ForeignKey(Subsection)
+    parent = models.ForeignKey(Subsection, on_delete=models.PROTECT)
 
     order = models.IntegerField()
 
@@ -69,7 +76,8 @@ class Subsubsection(models.Model):
         ordering = (
             "parent__parent__parent__order",
             "parent__parent__order",
-            "parent__order", "order",
+            "parent__order",
+            "order",
         )
 
 
@@ -96,7 +104,7 @@ class CharacterClass(models.Model):
     class_types = (
         ("base", "Base Class"),
         ("prestige", "Prestige Class"),
-        ("npc", "NPC Class")
+        ("npc", "NPC Class"),
     )
 
     class_type = models.CharField(max_length=20, choices=class_types)

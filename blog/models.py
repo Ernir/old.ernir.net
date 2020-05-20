@@ -24,7 +24,7 @@ class Tag(models.Model):
         super(Tag, self).save(*args, **kwargs)
 
     class Meta:
-        ordering = ("name", )
+        ordering = ("name",)
 
 
 class Entry(models.Model):
@@ -46,15 +46,8 @@ class Entry(models.Model):
     # Tiny little language association for each article.
     _is = "IS"
     _en = "EN"
-    _language_choices = (
-        (_is, "Icelandic"),
-        (_en, "English")
-    )
-    language = models.CharField(
-        max_length=2,
-        choices=_language_choices,
-        default=_en
-    )
+    _language_choices = ((_is, "Icelandic"), (_en, "English"))
+    language = models.CharField(max_length=2, choices=_language_choices, default=_en)
 
     objects = models.Manager()
     visible_entries = VisibleEntriesManager()
@@ -68,7 +61,7 @@ class Entry(models.Model):
 
     class Meta:
         verbose_name_plural = "entries"
-        ordering = ("-published", )
+        ordering = ("-published",)
 
 
 class Comment(models.Model):
@@ -79,8 +72,10 @@ class Comment(models.Model):
 
     content = models.TextField()
     published = models.DateTimeField()
-    associated_with = models.ForeignKey(Entry, related_name="comments")
-    author = models.ForeignKey(User)
+    associated_with = models.ForeignKey(
+        Entry, related_name="comments", on_delete=models.PROTECT
+    )
+    author = models.ForeignKey(User, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.author.username + " at " + str(self.published)

@@ -7,20 +7,19 @@ admin.site.register(Comment)
 
 
 class EntryAdmin(admin.ModelAdmin):
-    exclude = ("slug", )  # these are auto-generated
+    exclude = ("slug",)  # these are auto-generated
     formfield_overrides = {
-        models.TextField: {
-            'widget': forms.Textarea(attrs={'class': 'ckeditor'})
-        },
+        models.TextField: {"widget": forms.Textarea(attrs={"class": "ckeditor"})},
     }
 
     class Media:
         css = {"all": ("admin_style.css",)}
-        js = ('//cdn.ckeditor.com/4.4.7/standard/ckeditor.js',)
+        js = ("//cdn.ckeditor.com/4.4.7/standard/ckeditor.js",)
 
 
 class TagAdmin(admin.ModelAdmin):
-    exclude = ("slug", )
+    exclude = ("slug",)
+
 
 admin.site.register(Entry, EntryAdmin)
 admin.site.register(Tag, TagAdmin)

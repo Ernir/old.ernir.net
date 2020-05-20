@@ -8,10 +8,9 @@ def index(request):
     spell_list = Spell.objects.all()
     source_list = Source.objects.all()
 
-    return render(request, "index.html", {
-        "spell_list": spell_list,
-        "source_list": source_list
-    })
+    return render(
+        request, "index.html", {"spell_list": spell_list, "source_list": source_list}
+    )
 
 
 def get_statistics(request):
@@ -19,9 +18,7 @@ def get_statistics(request):
     groups_query = StatisticGroup.objects
     groups = [group.get_as_dict() for group in groups_query.all()]
 
-    return JsonResponse({
-        "groups": groups
-    })
+    return JsonResponse({"groups": groups})
 
 
 def calculate_bonuses(request):
@@ -35,11 +32,6 @@ def calculate_bonuses(request):
         numerical_bonuses = get_applicable_bonuses(cl_dict)
         misc_bonuses = get_misc_bonuses(cl_dict)
 
-        content = {
-            "numerical": numerical_bonuses,
-            "misc": misc_bonuses
-        }
+        content = {"numerical": numerical_bonuses, "misc": misc_bonuses}
 
-        return JsonResponse({
-            "content": content,
-        })
+        return JsonResponse({"content": content,})

@@ -14,7 +14,7 @@ class CasterLevelFormula(models.Model):
         return self.displayed_formula
 
     class Meta:
-        ordering = ("displayed_formula", )
+        ordering = ("displayed_formula",)
 
 
 class ScalingFunctions:
@@ -96,7 +96,7 @@ class ScalingFunctions:
 
     @staticmethod
     def twelve_per_cl_max_120(cl):
-        return min(cl*12, 120)
+        return min(cl * 12, 120)
 
     @staticmethod
     def ten_increased_at_seven_and_eleven(cl):
