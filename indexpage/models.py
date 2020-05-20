@@ -6,6 +6,7 @@ class Section(models.Model):
 
     One section of the index page.
     """
+
     title = models.CharField(max_length=200)
     text = models.TextField()
 
@@ -15,7 +16,7 @@ class Section(models.Model):
         return self.title + " (priority:" + str(self.priority) + ")"
 
     class Meta:
-        ordering = ("priority", )
+        ordering = ("priority",)
 
 
 class SubSection(models.Model):
@@ -26,13 +27,24 @@ class SubSection(models.Model):
 
     title = models.CharField(max_length=200)
     text = models.TextField(blank=True, default="")
-    parent_section = models.ForeignKey(Section, related_name="subsections", on_delete=models.PROTECT)
+    parent_section = models.ForeignKey(
+        Section, related_name="subsections", on_delete=models.PROTECT
+    )
 
     priority = models.IntegerField()
 
     def __str__(self):
-        return self.parent_section.title + ": " \
-               + self.title + " (priority:" + str(self.priority) + ")"
+        return (
+            self.parent_section.title
+            + ": "
+            + self.title
+            + " (priority:"
+            + str(self.priority)
+            + ")"
+        )
 
     class Meta:
-        ordering = ("parent_section__priority", "priority", )
+        ordering = (
+            "parent_section__priority",
+            "priority",
+        )

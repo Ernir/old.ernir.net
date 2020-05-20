@@ -18,9 +18,9 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
-    path('', include("indexpage.urls")),
-    path('blog/', include("blog.urls")),
-    path('vanciantopsionics/', include("vanciantopsionics.urls")),
-    path('bufftracker/', include("bufftracker.urls")),
-    path('admin/', admin.site.urls),
+    path("", include("indexpage.urls")),
+    path("blog/", include("blog.urls")),
+    path("vanciantopsionics/", include("vanciantopsionics.urls")),
+    path("bufftracker/", include("bufftracker.urls")),
+    path("admin/", admin.site.urls),
 ]

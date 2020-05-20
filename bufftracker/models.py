@@ -23,13 +23,11 @@ class StatisticGroup(models.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "statistics": [
-                stat.get_as_dict() for stat in self.statistic_set.all()
-            ]
+            "statistics": [stat.get_as_dict() for stat in self.statistic_set.all()],
         }
 
     class Meta:
-        ordering = ("name", )
+        ordering = ("name",)
 
 
 class Statistic(models.Model):
@@ -43,10 +41,7 @@ class Statistic(models.Model):
         """
         Returns a dictionary object representing this statistic.
         """
-        return {
-            "id": self.id,
-            "name": self.name
-        }
+        return {"id": self.id, "name": self.name}
 
     class Meta:
         ordering = ("group__name", "name")
@@ -59,7 +54,7 @@ class ModifierType(models.Model):
         return self.name
 
     class Meta:
-        ordering = ("name", )
+        ordering = ("name",)
 
 
 class MiscBonus(models.Model):
@@ -69,11 +64,13 @@ class MiscBonus(models.Model):
         return self.description
 
     class Meta:
-        ordering = ("description", )
+        ordering = ("description",)
 
 
 class NumericalBonus(models.Model):
-    bonus_formula = models.ForeignKey(CasterLevelFormula, null=True, on_delete=models.PROTECT)
+    bonus_formula = models.ForeignKey(
+        CasterLevelFormula, null=True, on_delete=models.PROTECT
+    )
     modifier_type = models.ForeignKey(ModifierType, on_delete=models.PROTECT)
     applies_to = models.ForeignKey(Statistic, on_delete=models.PROTECT)
 
@@ -91,7 +88,7 @@ class NumericalBonus(models.Model):
         self.formula = str(self)
 
     class Meta:
-        ordering = ("bonus_formula__displayed_formula", )
+        ordering = ("bonus_formula__displayed_formula",)
 
 
 class TempHPBonus(models.Model):
@@ -99,14 +96,14 @@ class TempHPBonus(models.Model):
         CasterLevelFormula,
         related_name="die_number",
         null=True,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
     )
     die_size = models.IntegerField(default=0)
     other_bonus_formula = models.ForeignKey(
         CasterLevelFormula,
         related_name="other_bonus",
         null=True,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
     )
 
     def __str__(self):

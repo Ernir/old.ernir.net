@@ -8,100 +8,176 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Chapter',
+            name="Chapter",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('first_text', models.TextField()),
-                ('filepath', models.CharField(blank=True, default='', max_length=200)),
-                ('order', models.IntegerField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("first_text", models.TextField()),
+                ("filepath", models.CharField(blank=True, default="", max_length=200)),
+                ("order", models.IntegerField()),
             ],
-            options={
-                'ordering': ('order',),
-            },
+            options={"ordering": ("order",),},
         ),
         migrations.CreateModel(
-            name='CharacterClass',
+            name="CharacterClass",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('short_name', models.CharField(max_length=200)),
-                ('long_name', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('slug', models.SlugField()),
-                ('is_new', models.BooleanField(default=False)),
-                ('class_type', models.CharField(choices=[('base', 'Base Class'), ('prestige', 'Prestige Class'), ('npc', 'NPC Class')], max_length=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("short_name", models.CharField(max_length=200)),
+                ("long_name", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                ("slug", models.SlugField()),
+                ("is_new", models.BooleanField(default=False)),
+                (
+                    "class_type",
+                    models.CharField(
+                        choices=[
+                            ("base", "Base Class"),
+                            ("prestige", "Prestige Class"),
+                            ("npc", "NPC Class"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
             ],
-            options={
-                'ordering': ('short_name',),
-            },
+            options={"ordering": ("short_name",),},
         ),
         migrations.CreateModel(
-            name='Section',
+            name="Section",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('first_text', models.TextField()),
-                ('order', models.IntegerField()),
-                ('parent', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='vanciantopsionics.Chapter')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("first_text", models.TextField()),
+                ("order", models.IntegerField()),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="vanciantopsionics.Chapter",
+                    ),
+                ),
             ],
-            options={
-                'ordering': ('parent__order', 'order'),
-            },
+            options={"ordering": ("parent__order", "order"),},
         ),
         migrations.CreateModel(
-            name='Spell',
+            name="Spell",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('slug', models.SlugField()),
-                ('is_new', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                ("slug", models.SlugField()),
+                ("is_new", models.BooleanField(default=False)),
             ],
-            options={
-                'ordering': ('title',),
-            },
+            options={"ordering": ("title",),},
         ),
         migrations.CreateModel(
-            name='Subsection',
+            name="Subsection",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('first_text', models.TextField()),
-                ('order', models.IntegerField()),
-                ('parent', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='vanciantopsionics.Section')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("first_text", models.TextField()),
+                ("order", models.IntegerField()),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="vanciantopsionics.Section",
+                    ),
+                ),
             ],
-            options={
-                'ordering': ('parent__parent__order', 'parent__order', 'order'),
-            },
+            options={"ordering": ("parent__parent__order", "parent__order", "order"),},
         ),
         migrations.CreateModel(
-            name='VtPFile',
+            name="VtPFile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('url', models.URLField(max_length=400)),
-                ('released', models.DateField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("url", models.URLField(max_length=400)),
+                ("released", models.DateField()),
             ],
-            options={
-                'ordering': ('-released',),
-            },
+            options={"ordering": ("-released",),},
         ),
         migrations.CreateModel(
-            name='Subsubsection',
+            name="Subsubsection",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('first_text', models.TextField()),
-                ('order', models.IntegerField()),
-                ('parent', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='vanciantopsionics.Subsection')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("first_text", models.TextField()),
+                ("order", models.IntegerField()),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="vanciantopsionics.Subsection",
+                    ),
+                ),
             ],
             options={
-                'ordering': ('parent__parent__parent__order', 'parent__parent__order', 'parent__order', 'order'),
+                "ordering": (
+                    "parent__parent__parent__order",
+                    "parent__parent__order",
+                    "parent__order",
+                    "order",
+                ),
             },
         ),
     ]

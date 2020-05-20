@@ -15,42 +15,81 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('slug', models.SlugField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("slug", models.SlugField()),
             ],
-            options={
-                'ordering': ('name',),
-            },
+            options={"ordering": ("name",),},
         ),
         migrations.CreateModel(
-            name='Entry',
+            name="Entry",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=400)),
-                ('body', models.TextField()),
-                ('published', models.DateTimeField()),
-                ('slug', models.SlugField()),
-                ('excerpt', models.CharField(max_length=400)),
-                ('visible', models.BooleanField(default=True)),
-                ('language', models.CharField(choices=[('IS', 'Icelandic'), ('EN', 'English')], default='EN', max_length=2)),
-                ('tags', models.ManyToManyField(related_name='entries', to='blog.Tag')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=400)),
+                ("body", models.TextField()),
+                ("published", models.DateTimeField()),
+                ("slug", models.SlugField()),
+                ("excerpt", models.CharField(max_length=400)),
+                ("visible", models.BooleanField(default=True)),
+                (
+                    "language",
+                    models.CharField(
+                        choices=[("IS", "Icelandic"), ("EN", "English")],
+                        default="EN",
+                        max_length=2,
+                    ),
+                ),
+                ("tags", models.ManyToManyField(related_name="entries", to="blog.Tag")),
             ],
-            options={
-                'verbose_name_plural': 'entries',
-                'ordering': ('-published',),
-            },
+            options={"verbose_name_plural": "entries", "ordering": ("-published",),},
         ),
         migrations.CreateModel(
-            name='Comment',
+            name="Comment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField()),
-                ('published', models.DateTimeField()),
-                ('associated_with', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='comments', to='blog.Entry')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField()),
+                ("published", models.DateTimeField()),
+                (
+                    "associated_with",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="comments",
+                        to="blog.Entry",
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

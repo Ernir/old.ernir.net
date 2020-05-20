@@ -1,13 +1,16 @@
 import re
 from django.core.management.base import BaseCommand
 from vanciantopsionics.models import Chapter, Spell, CharacterClass
-from vanciantopsionics.utils import FileManagement, PreProcessing, \
-    PandocManager, PostProcessing
+from vanciantopsionics.utils import (
+    FileManagement,
+    PreProcessing,
+    PandocManager,
+    PostProcessing,
+)
 import time
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **options):
         # ToDo split this into more functions.
         start = time.clock()
@@ -16,11 +19,11 @@ class Command(BaseCommand):
         chapter_filenames = natural_sort(chapter_filenames)
         spell_files = [
             base_folder + "Chapter6Spells/Spells.tex",
-            base_folder + "Chapter9New/Spells.tex"
+            base_folder + "Chapter9New/Spells.tex",
         ]
         class_files = [
             base_folder + "Chapter3Classes/Classes.tex",
-            base_folder + "Chapter9New/Classes.tex"
+            base_folder + "Chapter9New/Classes.tex",
         ]
 
         chapter_name_dict = FileManagement.parse_main()
@@ -67,17 +70,13 @@ class Command(BaseCommand):
         start_time = time.clock()
         CharacterClass.objects.all().delete()
         for file_name in class_files:
-            for class_filename, class_type, non_core \
-                    in FileManagement.extract_class_paths(file_name):
-                batch = FileManagement.read_file_to_list(
-                    base_folder + class_filename
-                )
-                PandocManager.store_class(
-                    batch,
-                    link_dict,
-                    class_type,
-                    non_core
-                )
+            for (
+                class_filename,
+                class_type,
+                non_core,
+            ) in FileManagement.extract_class_paths(file_name):
+                batch = FileManagement.read_file_to_list(base_folder + class_filename)
+                PandocManager.store_class(batch, link_dict, class_type, non_core)
         time_elapsed = time.clock() - start_time
         dprint("Classes parsed in " + str(time_elapsed) + "s.")
 
@@ -100,6 +99,7 @@ class Command(BaseCommand):
 
 def pprint(input_object):
     import pprint
+
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(input_object)
 
@@ -114,5 +114,5 @@ def dprint(input_object):
 
 def natural_sort(l):
     convert = lambda text: int(text) if text.isdigit() else text.lower()
-    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
-    return sorted(l, key = alphanum_key)
+    alphanum_key = lambda key: [convert(c) for c in re.split("([0-9]+)", key)]
+    return sorted(l, key=alphanum_key)

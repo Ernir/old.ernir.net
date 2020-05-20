@@ -4,8 +4,13 @@ from bs4 import BeautifulSoup
 from django.utils.text import slugify
 import os
 import re
-from vanciantopsionics.models import Section, Subsection, Subsubsection, \
-    Spell, CharacterClass
+from vanciantopsionics.models import (
+    Section,
+    Subsection,
+    Subsubsection,
+    Spell,
+    CharacterClass,
+)
 
 
 class FileManagement:
@@ -32,7 +37,9 @@ class FileManagement:
         """
         # Exception: The spell indices are handled in a specific manner.
         splitname = base_filepath.split("/")
-        if ignoring and (splitname[-1] == "Spells.tex" or splitname[-1] == "Classes.tex"):
+        if ignoring and (
+            splitname[-1] == "Spells.tex" or splitname[-1] == "Classes.tex"
+        ):
             return []
         base_file = cls.read_file_to_list(base_filepath)
 
@@ -46,10 +53,7 @@ class FileManagement:
                 new_filepath = base_folder + input_match.group("rel_path")
                 addition = cls.walk_tex_tree(base_folder, new_filepath)
                 lineno += len(addition)
-                output_file = \
-                    output_file[:lineno] \
-                    + addition \
-                    + base_file[lineno:]
+                output_file = output_file[:lineno] + addition + base_file[lineno:]
             else:
                 output_file.append(line)
             lineno += 1
@@ -73,7 +77,6 @@ class FileManagement:
                     tex_file_names.append(full_name)
 
         return sorted(tex_file_names)
-
 
     @classmethod
     def parse_main(cls):
@@ -100,10 +103,7 @@ class FileManagement:
                     # Then we're done parsing the chapter's initial text
                     tex_text = "".join(lines[latest_sec_break:line_no])
                     html_text = PandocManager.call_pandoc(tex_text)
-                    chapter = {
-                        "title": current_title,
-                        "first_text": html_text
-                    }
+                    chapter = {"title": current_title, "first_text": html_text}
                     chapters[(base_folder + path)] = chapter
         return chapters
 
@@ -117,7 +117,7 @@ class FileManagement:
         input_pattern = re.compile(r"\\input\{(?P<path>.*?)\}")
 
         lines = cls.read_file_to_list(base_filepath)
-        class_type = "base" # The default is a base class
+        class_type = "base"  # The default is a base class
         for line in lines:
             if "NPC" in line:
                 class_type = "npc"
@@ -148,7 +148,8 @@ class PreProcessing:
 
             chapter_match = re.match(
                 r"\\(?P<section_type>chapter|section|subsection|subsubsection|paragraph|subparagraph)(\[(?P<shortname>.*?)\]|\{(?P<longname>.*?)\})",
-                line)
+                line,
+            )
             if chapter_match:
                 if chapter_match.group("shortname"):
                     name = chapter_match.group("shortname")
@@ -165,9 +166,7 @@ class PreProcessing:
             if label_match:
                 label = label_match.group(1)
 
-                url_base = "/vanciantopsionics/chapter/" \
-                           + str(chapter_number) \
-                           + "/#"
+                url_base = "/vanciantopsionics/chapter/" + str(chapter_number) + "/#"
 
                 # Spells, classes and feats have special rules
                 if label[0:4] == "Feat":
@@ -184,7 +183,7 @@ class PreProcessing:
                 d[label] = {
                     "url": url_base + slugify(name),
                     # ToDo use the tocify.js pretty hashing function instead.
-                    "caption": name
+                    "caption": name,
                 }
 
         return d
@@ -203,8 +202,7 @@ class PreProcessing:
         link_pattern = r"(?P<whole_link>\\nameref\{(?P<label>.*?)\})"
 
         # Tables
-        p_column_pattern = re.compile(
-            r"\\begin\{tabular\}\{(\|?p\{.*?\})+\|?\}")
+        p_column_pattern = re.compile(r"\\begin\{tabular\}\{(\|?p\{.*?\})+\|?\}")
         rule_pattern = re.compile(r"\\toprule|\\midrule|\\bottomrule")
         box_pattern = re.compile(r"\\makebox\[\\textwidth\]")
         multicolumn_pattern = re.compile(r"(.*)\\multicolumn(.*)")
@@ -212,16 +210,19 @@ class PreProcessing:
 
         # Lists
         enumerated_item_pattern = re.compile(
-            r".*\\item\[(?P<number>\d)\](?P<contents>.*)")
+            r".*\\item\[(?P<number>\d)\](?P<contents>.*)"
+        )
 
         # Labels
         label_pattern = re.compile(
-            r"(?P<pre>.*)\\label\{(Spell|Feat|Sec|Class|sec|Item):(.*)\}(?P<post>.*)")
+            r"(?P<pre>.*)\\label\{(Spell|Feat|Sec|Class|sec|Item):(.*)\}(?P<post>.*)"
+        )
 
         # Section headings
         # ToDo use the longnames instead?
         section_pattern = re.compile(
-            r"\\(?P<section_type>chapter|section|subsection|subsubsection|paragraph|subparagraph)(\[(?P<shortname>.*?)\]|\{(?P<longname>.*?)\})")
+            r"\\(?P<section_type>chapter|section|subsection|subsubsection|paragraph|subparagraph)(\[(?P<shortname>.*?)\]|\{(?P<longname>.*?)\})"
+        )
 
         lines = []
         special_line_numbers = []
@@ -271,19 +272,25 @@ class PreProcessing:
             # Handling enumerated environments
             enumerated_item_match = enumerated_item_pattern.match(line)
             if enumerated_item_match:
-                line = "  \item " + "(" + enumerated_item_match.group(
-                    "number") + \
-                       ") " + enumerated_item_match.group("contents")
+                line = (
+                    "  \item "
+                    + "("
+                    + enumerated_item_match.group("number")
+                    + ") "
+                    + enumerated_item_match.group("contents")
+                )
 
             # Section headings with short names
             chapter_match = section_pattern.match(line)
             if chapter_match:
                 if chapter_match.group("shortname"):
-                    line = "\\" \
-                           + chapter_match.group("section_type") \
-                           + "{" \
-                           + chapter_match.group("shortname") \
-                           + "}"
+                    line = (
+                        "\\"
+                        + chapter_match.group("section_type")
+                        + "{"
+                        + chapter_match.group("shortname")
+                        + "}"
+                    )
 
             # Other substitutions
             label_match = label_pattern.match(line)
@@ -311,10 +318,13 @@ class PreProcessing:
             line = lines[number]
 
             # Chapter 1
-            line = line.replace(r"\begin{tabular}{l*{19}{l}l}",
-                                r"\begin{tabular}{lllllllllllllllllllll}")
-            line = line.replace(r"\begin{tabular}{l*{9}{c}}",
-                                r"\begin{tabular}{llllllllll}")
+            line = line.replace(
+                r"\begin{tabular}{l*{19}{l}l}",
+                r"\begin{tabular}{lllllllllllllllllllll}",
+            )
+            line = line.replace(
+                r"\begin{tabular}{l*{9}{c}}", r"\begin{tabular}{llllllllll}"
+            )
 
             lines[number] = line
 
@@ -352,14 +362,16 @@ class PandocManager:
 
             section_match = re.match(
                 r"\\(?P<section_type>section|subsection|subsubsection)\{(?P<title>.*?)\}",
-                line)
+                line,
+            )
             if section_match:
 
                 # Start by flushing in all the data we've read so far for
                 # this particular section
-                lines = current_batch[latest_sec_break + 1:line_no]
-                PandocManager.parse_section(current_title, lines, order,
-                                            current_object, parent_object)
+                lines = current_batch[latest_sec_break + 1 : line_no]
+                PandocManager.parse_section(
+                    current_title, lines, order, current_object, parent_object
+                )
 
                 # And then massive branching to see where the next section
                 # belongs in the document tree. :(
@@ -399,9 +411,10 @@ class PandocManager:
                 current_title = section_match.group("title")
                 latest_sec_break = line_no
 
-        lines = current_batch[latest_sec_break + 1:]
-        PandocManager.parse_section(current_title, lines, order,
-                                    current_object, parent_object)
+        lines = current_batch[latest_sec_break + 1 :]
+        PandocManager.parse_section(
+            current_title, lines, order, current_object, parent_object
+        )
 
     @classmethod
     def call_pandoc(cls, input_string):
@@ -412,16 +425,18 @@ class PandocManager:
         pandoc -f latex -t html
         """
 
-        process = subprocess.Popen(["pandoc -f latex -t html"],
-                                   stdin=subprocess.PIPE, shell=True,
-                                   stdout=subprocess.PIPE)
+        process = subprocess.Popen(
+            ["pandoc -f latex -t html"],
+            stdin=subprocess.PIPE,
+            shell=True,
+            stdout=subprocess.PIPE,
+        )
         out, err = process.communicate(bytes(input_string, "UTF-8"))
 
         return out.decode("UTF-8")
 
     @classmethod
-    def parse_section(cls, title, input_lines, order, current_object,
-                      parent):
+    def parse_section(cls, title, input_lines, order, current_object, parent):
         """
         Takes in .tex info, stores equivalent .html info in the given
         model instance.
@@ -470,7 +485,9 @@ class PandocManager:
                     first_spell = False
                     continue
                 else:
-                    cls.store_spell(current_spell_lines, link_dict, spell_name, non_core)
+                    cls.store_spell(
+                        current_spell_lines, link_dict, spell_name, non_core
+                    )
                     spell_name = new_spell.group("spell_name")
                     current_spell_lines = []
             else:
@@ -485,10 +502,7 @@ class PandocManager:
         converted = cls.call_pandoc(tex_contents)
         html_content = PostProcessing.postprocess_text(converted, link_dict)
         url = slugify(spell_name)
-        spell = Spell(title=spell_name,
-                      slug=url,
-                      description=html_content,
-                      is_new=new)
+        spell = Spell(title=spell_name, slug=url, description=html_content, is_new=new)
         spell.save()
 
     @classmethod
@@ -511,10 +525,9 @@ class PandocManager:
             description=html_content,
             slug=url,
             class_type=prestige,
-            is_new=non_core
+            is_new=non_core,
         )
         character_class.save()
-
 
 
 class PostProcessing:
@@ -545,7 +558,6 @@ class PostProcessing:
                     sss.first_text = clean
                     sss.save()
 
-
     @classmethod
     def postprocess_text(cls, input_string, link_dict):
         """
@@ -574,15 +586,16 @@ class PostProcessing:
 
                     if label_name in link_dict:
                         new_tag = soup.new_tag("caption")
-                        new_tag.string = "Table: " + link_dict[label_name][
-                            "caption"]
+                        new_tag.string = "Table: " + link_dict[label_name]["caption"]
                         sibling.insert(0, new_tag)
 
                     break
 
         images = soup.img
         if images:
-            images["src"] = images["src"].replace("Pics/", "https://notendur.hi.is/~eth31/DnDstuff/Pics/")
+            images["src"] = images["src"].replace(
+                "Pics/", "https://notendur.hi.is/~eth31/DnDstuff/Pics/"
+            )
             images["class"] = "img-responsive"
 
         return str(soup)

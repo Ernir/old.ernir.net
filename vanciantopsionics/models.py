@@ -10,7 +10,7 @@ class VtPFile(models.Model):
         return self.name
 
     class Meta:
-        ordering = ("-released", )
+        ordering = ("-released",)
 
 
 class Chapter(models.Model):
@@ -24,7 +24,7 @@ class Chapter(models.Model):
         return self.title
 
     class Meta:
-        ordering = ("order", )
+        ordering = ("order",)
 
 
 class Section(models.Model):
@@ -38,7 +38,10 @@ class Section(models.Model):
         return self.parent.title + ": " + self.title
 
     class Meta:
-        ordering = ("parent__order", "order", )
+        ordering = (
+            "parent__order",
+            "order",
+        )
 
 
 class Subsection(models.Model):
@@ -52,7 +55,11 @@ class Subsection(models.Model):
         return self.parent.title + ": " + self.title
 
     class Meta:
-        ordering = ("parent__parent__order", "parent__order", "order", )
+        ordering = (
+            "parent__parent__order",
+            "parent__order",
+            "order",
+        )
 
 
 class Subsubsection(models.Model):
@@ -69,7 +76,8 @@ class Subsubsection(models.Model):
         ordering = (
             "parent__parent__parent__order",
             "parent__parent__order",
-            "parent__order", "order",
+            "parent__order",
+            "order",
         )
 
 
@@ -96,7 +104,7 @@ class CharacterClass(models.Model):
     class_types = (
         ("base", "Base Class"),
         ("prestige", "Prestige Class"),
-        ("npc", "NPC Class")
+        ("npc", "NPC Class"),
     )
 
     class_type = models.CharField(max_length=20, choices=class_types)
