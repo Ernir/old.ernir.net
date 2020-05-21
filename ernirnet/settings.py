@@ -3,6 +3,8 @@ import os
 import django_heroku
 from dotenv import load_dotenv
 
+from django.utils.log import DEFAULT_LOGGING
+
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -67,6 +69,8 @@ AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 WSGI_APPLICATION = "ernirnet.wsgi.application"
 
+DEFAULT_LOGGING["handlers"]["console"]["filters"] = []
+
 # Internationalization
 
 LANGUAGE_CODE = "en-us"
@@ -80,5 +84,8 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Static asset configuration
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 django_heroku.settings(locals())
