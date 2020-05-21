@@ -69,7 +69,7 @@ AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 WSGI_APPLICATION = "ernirnet.wsgi.application"
 
-DEFAULT_LOGGING['handlers']['console']['filters'] = []
+DEFAULT_LOGGING["handlers"]["console"]["filters"] = []
 
 # Internationalization
 
