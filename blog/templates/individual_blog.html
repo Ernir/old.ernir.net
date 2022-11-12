@@ -32,43 +32,5 @@
             {% if not forloop.last %},{% endif %}
         {% endfor %}
     </p>
-
-    <div class="fb-share-button" data-href="http://eirikur.ernir.net/blog/entry/{{ entry.slug }}" data-layout="button_count"></div>
-
-    <h3>Comments</h3>
-
-    <div class="comment-section">
-        <div class="comment-list">
-            <hr/>
-            {% if entry.comments.count != 0 %}
-                {% for comment in entry.comments.all %}
-                    <div class="comment">
-                        <p>
-                            <b>On {{ comment.published }}, {{ comment.author.username }}
-                                said:</b></p>
-                    </div>
-                    <p>{{ comment.content }}</p>
-                    <hr/>
-                {% endfor %}
-            {% else %}
-                <p>No comments yet.</p>
-            {% endif %}
-        </div>
-
-        {% if user and not user.is_anonymous %}
-            <form action="" method="post">
-                {% csrf_token %}
-                <label for="{{ comment_form.content.auto_id }}"
-                       class="control-label">
-                    Leave a comment:
-                </label>
-                {{ comment_form.content }}
-                <input type="submit" value="Submit"/>
-            </form>
-        {% else %}
-            <a href="{% url "shepherd.views.home" %}" target="_blank">Log
-                in</a> to comment.
-        {% endif %}
-    </div>
 </div>
 {% endblock blog_main %}
