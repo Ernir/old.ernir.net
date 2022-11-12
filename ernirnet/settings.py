@@ -69,6 +69,8 @@ AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 WSGI_APPLICATION = "ernirnet.wsgi.application"
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 DEFAULT_LOGGING["handlers"]["console"]["filters"] = []
 
 # Internationalization
