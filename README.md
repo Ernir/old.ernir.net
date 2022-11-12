@@ -1,6 +1,6 @@
-This is Eiríkur Ernir Þorsteinsson's personal webpage. Uses Django 3.0.
+This is Eiríkur Ernir Þorsteinsson's old personal webpage. Uses Django 3.2.
 
-A live version can be found at [eirikur.ernir.net](http://eirikur.ernir.net/), hosted with [Heroku](http://heroku.com/).
+A live version can be found at [old.ernir.net](http://old.ernir.net/).
 
 Setup notes: a few config vars and other externals need to be set.
 
